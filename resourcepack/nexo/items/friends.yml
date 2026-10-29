@@ -1,0 +1,95 @@
+arrow_left:
+  itemname: 'arrow_left'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/arrow_left.png
+arrow_right:
+  itemname: 'arrow_right'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/arrow_right.png
+cancel:
+  itemname: 'cancel'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/cancel.png
+confirm:
+  itemname: 'confirm'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/confirm.png
+like:
+  itemname: 'like'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/like.png
+notify:
+  itemname: 'notify'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/notify.png
+no_notify:
+  itemname: 'no_notify'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/no_notify.png
+settings:
+  itemname: 'settings'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/settings.png
+toggle_off:
+  itemname: 'toggle_off'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/toggle_off.png
+toggle_on:
+  itemname: 'toggle_on'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/toggle_on.png
+toggle_onlyfriends:
+  itemname: 'toggle_onlyfriends'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/toggle_onlyfriends.png
+sort:
+  itemname: 'sort'
+  material: PAPER
+  Pack:
+    texture: party/buttons/generated/sort.png
+empty:
+  itemname: 'empty'
+  material: PAPER
+  Pack:
+    model: party/empty
+accept:
+  itemname: 'accept'
+  material: PAPER
+  Pack:
+    model: party/accept
+deny:
+  itemname: 'deny'
+  material: PAPER
+  Pack:
+    model: party/deny
+invite:
+  itemname: 'invite'
+  material: PAPER
+  Pack:
+    model: party/invite
+jump:
+  itemname: 'jump'
+  material: PAPER
+  Pack:
+    model: party/jump
+send:
+  itemname: 'send'
+  material: PAPER
+  Pack:
+    model: party/send
+teleport:
+  itemname: 'teleport'
+  material: PAPER
+  Pack:
+    model: party/teleport

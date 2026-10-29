@@ -1,0 +1,43 @@
+import mc.xalitoria.gradle.Load
+import mc.xalitoria.gradle.RelativeLoad
+
+plugins {
+    id("mc.xalitoria.minecraft")
+}
+
+subprojects {
+    group = "mc.xalitoria"
+    version = "0.0.1"
+}
+
+tasks.named("build") {
+    dependsOn(subprojects.map { "${it.path}:build" })
+}
+
+paper {
+    name = "XaliFriends"
+    main = "mc.xalitoria.friends.paper.XaliFriends"
+    prefix = "XaliFriends"
+    author = "audizian"
+    website = "https://xalitoria.com"
+    apiVersion = "26.2"
+    load = Load.POSTWORLD
+    foliaSupported = true
+    relocateSources = true
+    serverDependencies {
+        // All three load first: the menus and the message gate are registered while this plugin enables.
+        register("PlaceholderAPI") { load = RelativeLoad.BEFORE; required = false }
+        register("XaliMenu") { load = RelativeLoad.BEFORE; required = false }
+        register("XaliChat") { load = RelativeLoad.BEFORE; required = false }
+    }
+}
+
+velocity {
+    name = "XaliFriends"
+    id = "xalifriends"
+    main = "mc.xalitoria.friends.velocity.XaliFriends"
+    author = "audizian"
+    url = "https://xalitoria.com"
+    description = "Tells the servers when a friend joins, leaves or switches server."
+    relocateSources = true
+}

@@ -1,0 +1,13 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:directory",
+      "prefix": "party/buttons/",
+      "source": "party/buttons"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "minecraft:required/particle"
+    }
+  ]
+}
