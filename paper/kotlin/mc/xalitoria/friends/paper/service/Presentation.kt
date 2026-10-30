@@ -25,9 +25,23 @@ class Presentation(private val plugin: XaliFriends) {
         return formatter.format(date.atZone(ZoneId.systemDefault()))
     }
 
-    /** Whether [friend] is online on this server or, with XaliChat, anywhere behind the proxy. */
+    /** Whether [friend] is online on this server or, with the proxy plugin or XaliChat, anywhere behind the proxy. */
     fun isOnline(viewer: Player?, friend: Profile): Boolean =
-        plugin.server.getPlayer(friend.uuid) != null || plugin.chat?.isOnline(friend.name, viewer) == true
+        plugin.server.getPlayer(friend.uuid) != null || plugin.link?.isOnline(friend.uuid) == true ||
+            plugin.chat?.isOnline(friend.name, viewer) == true
+
+    /** The server [friend] is on, as players read it; empty when it isn't known or they keep it to themselves. */
+    fun server(friend: Profile): String {
+        if (!friend.settings.showServer) return ""
+        val link = plugin.link ?: return ""
+        return link.serverOf(friend.uuid)?.let(link::displayName).orEmpty()
+    }
+
+    /** "Online", and where when that is known. */
+    fun online(friend: Profile): String {
+        val server = server(friend)
+        return if (server.isEmpty()) words.online else "${words.online} ${words.onServer(server)}"
+    }
 
     fun onlineWord(online: Boolean): String = if (online) words.online else words.offline
 

@@ -5,16 +5,16 @@ sk8ingDuck, whose jars are kept in `ref` for reference (see below), and it moves
 Parties are not part of it.
 
 What it does: friend requests, favourites, a status line, settings, a friend menu (with [XaliMenu](../menu/README.md)),
-and private messages that can be limited to friends (with [XaliChat](../chat/README.md)). What it doesn't do yet: tell
-friends on *other* servers that someone came or went, and jump to a friend's server (both need the proxy, and the Velocity
-plugin only registers its channel so far).
+and private messages that can be limited to friends (with [XaliChat](../chat/README.md)). Behind Velocity, with the
+proxy plugin, it also tells friends on other servers that someone came or went, shows which server a friend is on, lets a
+player jump to a friend, and passes requests and answers on to players on other servers ([below](#behind-velocity)).
 
 ## Modules
 
 | Module | What it is |
 |---|---|
 | `friends/paper` | The Paper plugin, `xali-friends-<version>-paper.jar`: commands, storage (Exposed over SQLite or MariaDB/MySQL), the cache, the placeholders and the hooks into XaliMenu and XaliChat. |
-| `friends/velocity` | The Velocity plugin, `xali-friends-<version>-velocity.jar`. Registers the `xalifriends:main` channel; it will tell friends when someone joins, leaves or switches server. |
+| `friends/velocity` | The Velocity plugin, `xali-friends-<version>-velocity.jar`. Tells every server who is where, moves a player to a friend's server, and passes a request, an answer or a removal on to the server the other player is on ([below](#behind-velocity)). |
 | `friends/common` | What both share (the channel name). No platform API; targets Java 17. |
 
 The descriptors come from the [Gradle plugin](../plugin/README.md); the `paper { }` and `velocity { }` blocks are in
@@ -33,11 +33,12 @@ XaliMenu, XaliChat and PlaceholderAPI are all optional. Without them the friend 
 | `/xfriend remove <player>`, `favourite <player>` | | End a friendship; flip a favourite (favourites are listed first). |
 | `/xfriend list [page]`, `requests [page]` | | Your friends, and the requests waiting for you. |
 | `/xfriend status <text>`, `removestatus` | | Say what you are up to (64 characters). |
-| `/xfriend toggle <invites\|notifies\|msgs\|lastseen>` | | Change a setting. |
+| `/xfriend jump <friend>` | | Go to the server a friend is on (behind Velocity). |
+| `/xfriend toggle <invites\|notifies\|msgs\|lastseen\|jump\|server>` | | Change a setting. |
 | `/xfriend menu`, `menu page <friends\|requests> <next\|previous\|first>`, `menu select <n>` | | What the menus run; they only set what the next draw shows. |
 | `/xalifriends reload` | `friends` | Reload the config and messages. `xalifriends.reload`. |
 
-Everyone may use the friend commands (`xalifriends.friend`, default on). A player is named by their name or UUID, and found
+Everyone may use the friend commands (`xalifriends.friend`, default on; `xalifriends.jump`, default on, for `jump`). A player is named by their name or UUID, and found
 by the last name they were seen under, so a request can go to someone who is offline.
 
 ## The database
@@ -52,7 +53,8 @@ the prefix), built for size and for lookups rather than to match the original Fr
   in MySQL.)
 - Names have an indexed lowercase column, so finding a player by name isn't a scan.
 - A foreign key to `player` with `ON DELETE CASCADE` on both friendship sides and on requests.
-- Left out: the original's `jump`, `showServer` and `partyInvites`, which nothing here uses.
+- Left out: the original's `partyInvites`, since there are no parties. Its `jump` and `showServer` are kept (`jump`,
+  `show_server`); a database made before they were added gains them, switched on.
 
 ### Moving the original's data in
 
@@ -116,18 +118,44 @@ its own copy of the Kotlin runtime can't pass Kotlin-typed objects (an action's 
 | `friends`, `online`, `requests` | Counts. `status` is the player's own status. |
 | `page_friends`, `pages_friends`, `page_requests`, `pages_requests` | The page the menu is on, and how many there are. |
 | `has_next_friends`, `has_previous_friends`, `has_next_requests`, `has_previous_requests` | `true` or `false`. |
-| `setting_invites`, `setting_notifies`, `setting_msgs`, `setting_lastseen` | A setting as a word (from `words` in the language file). |
-| `friend_<n>_<field>` | Place *n* (from 1) of the friends on the current page. Fields: `present`, `name`, `uuid`, `status`, `online`, `state`, `seen`, `since`, `favourite`, `marker`. |
+| `setting_invites`, `setting_notifies`, `setting_msgs`, `setting_lastseen`, `setting_jump`, `setting_server` | A setting as a word (from `words` in the language file). |
+| `friend_<n>_<field>` | Place *n* (from 1) of the friends on the current page. Fields: `present`, `name`, `uuid`, `status`, `online`, `state`, `seen` (online, and on which server when that is known and shown), `server` (empty when unknown or hidden), `jumpable` (`true` when the viewer may jump to them now), `since`, `favourite`, `marker`. |
 | `request_<n>_<field>` | The same for requests: `present`, `name`, `uuid`, `date`. |
 | `selected_<field>` | The friend picked in the menu, with a friend's fields. |
 
 A place with nobody in it answers with nothing (`present` with `false`).
 
+## Behind Velocity
+
+Put `xali-friends-<version>-velocity.jar` on the proxy and the Paper plugin on each server. The two talk over the
+`xalifriends:main` plugin channel, signed with Velocity's forwarding secret (the one XaliChat uses): the servers read it
+from `config/paper-global.yml` (`proxies.velocity`), so modern forwarding has to be on. Without a secret, or with
+`proxy.enabled: false`, each server works alone.
+
+- **Who is where.** The proxy tells a server where every player is when someone arrives on it, and tells all servers when
+  a player comes onto the network, changes server or leaves. Friends are told once for the network ("Alice joined."), not for
+  each server a player passes through, and the "n friends online" summary is for coming onto the network only.
+- **Servers.** Lists and menus say which server an online friend is on (`Online on survival`), unless they turned
+  `server` off. `proxy.server-names` renames servers for players.
+- **Jump.** `/friend jump <friend>` asks the proxy to send the player to their friend's server. The server checks that they
+  are friends, that the friend allows it (`jump` setting) and that `proxy.jump` is on; the proxy checks that the player is
+  on the server that asked. The friends menu has a jump button for those who can.
+- **Across servers.** A request, an acceptance, a refusal or a removal reaches a player on another server at once, and
+  reloads their friends there, instead of waiting for the cache refresh.
+- **Vanish.** The proxy does not know of vanished players (PremiumVanish and the like), so a vanished friend is announced
+  and shown as online. Friends-only private messages are not affected.
+
+The proxy plugin has no configuration of its own. It trusts the servers to have checked that two players are friends.
+
+`Protocol` in `friends/common/test` checks the messages and their signing. The relay was tested with two Folia servers
+behind Velocity and mineflayer bots: arrivals, leaving, switching server, jumping (allowed, refused, already there), and
+requests, acceptances, refusals and removals between servers.
+
 ## Not covered
 
-- Online status is from this server and, with XaliChat, from the proxy's player list (vanished players are not shown). A
-  friend's *server* isn't known, so `showServer` and `jump` are stored but not used.
-- Joining and leaving are announced to friends on the same server only.
+- Without the proxy plugin, online status is from this server and, with XaliChat, from the proxy's player list; the
+  friend's server isn't known, and joining and leaving are announced to friends on the same server only.
+- Vanished players are shown as online behind Velocity (see above).
 - The menus don't use shift-click: in testing, a client's shift-clicks reached XaliMenu as a plain click, not as
   `shiftLeft`, so removing a friend asks for confirmation in a menu instead.
 

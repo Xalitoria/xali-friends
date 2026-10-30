@@ -16,6 +16,7 @@ import mc.xalitoria.friends.paper.external.ChatHook
 import mc.xalitoria.friends.paper.external.FriendsExpansion
 import mc.xalitoria.friends.paper.external.MenuHook
 import mc.xalitoria.friends.paper.listener.PlayerListener
+import mc.xalitoria.friends.paper.proxy.ProxyLink
 import mc.xalitoria.friends.paper.service.FriendCache
 import mc.xalitoria.friends.paper.service.FriendService
 import mc.xalitoria.friends.paper.service.Listings
@@ -56,6 +57,10 @@ class XaliFriends : JavaPlugin() {
     var menu: MenuHook? = null
         private set
 
+    /** The link to the Velocity plugin, when the server is behind Velocity with modern forwarding and `proxy.enabled` is on. */
+    var link: ProxyLink? = null
+        private set
+
     private var expansion: FriendsExpansion? = null
 
     override fun onEnable() {
@@ -94,12 +99,21 @@ class XaliFriends : JavaPlugin() {
 
         // Everyone may use the friend commands unless a permissions plugin says otherwise.
         pm.addPermission(Permission(Permissions.FRIEND, PermissionDefault.TRUE))
+        pm.addPermission(Permission(Permissions.JUMP, PermissionDefault.TRUE))
 
         cache = FriendCache(this)
         presentation = Presentation(this)
         listings = Listings(this)
         service = FriendService(this)
         cache.startRefreshing()
+
+        if (config.data.proxy.enabled) {
+            val secret = ProxyLink.readSecret(this)
+            if (secret.isNotEmpty()) {
+                link = ProxyLink(this, secret).also { it.start() }
+                logger.info("Velocity forwarding found: friends are told of arrivals across the network, and can jump to each other")
+            } else debug("No Velocity secret in paper-global.yml, so this server works alone")
+        }
 
         if (pm.isPluginEnabled("XaliChat")) {
             chat = ChatHook(this).also { it.register() }
@@ -130,6 +144,7 @@ class XaliFriends : JavaPlugin() {
 
     override fun onDisable() {
         expansion?.unregister()
+        link?.stop()
         server.servicesManager.unregisterAll(this)
         if (::scope.isInitialized) scope.cancel("XaliFriends is disabling")
         DatabaseManager.close()

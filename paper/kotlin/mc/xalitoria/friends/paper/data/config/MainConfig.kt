@@ -26,6 +26,11 @@ data class MainConfig(
     val cache: Cache = Cache(),
     val database: Database = Database(),
     @YamlComment(
+        "The proxy plugin (XaliFriends on Velocity) tells the servers where players are. It needs Velocity's modern",
+        "forwarding: the secret is read from Paper's config/paper-global.yml. Without it everything works for this server alone.",
+    )
+    val proxy: Proxy = Proxy(),
+    @YamlComment(
         "Moving the original FriendSystem's data in. It happens once, on the first start that finds its tables, and the",
         "original's tables are DROPPED afterwards: back the database up before that start.",
     )
@@ -64,12 +69,19 @@ data class MainConfig(
         val privateMessages: SettingState = SettingState.FRIENDS_ONLY,
         @SerialName("show-last-seen")
         val showLastSeen: Boolean = true,
+        @YamlComment("Whether friends may jump to a player's server (with the proxy plugin).")
+        val jump: Boolean = true,
+        @SerialName("show-server")
+        @YamlComment("Whether friends are told which server a player is on (with the proxy plugin).")
+        val showServer: Boolean = true,
     ) {
         fun settings(): Settings = Settings(
             invites = friendRequests,
             notifies = notifications,
             msgs = privateMessages,
             showLastSeen = showLastSeen,
+            jump = jump,
+            showServer = showServer,
         )
     }
 
@@ -98,6 +110,16 @@ data class MainConfig(
         val friendsPerPage: Int = 21,
         @SerialName("requests-per-page")
         val requestsPerPage: Int = 21,
+    )
+
+    @Serializable
+    data class Proxy(
+        val enabled: Boolean = true,
+        @YamlComment("Whether /friend jump is on: a friend may be followed to their server.")
+        val jump: Boolean = true,
+        @YamlComment("How a server is called to players, by the name it has on the proxy: survival: \"Survival\". Others show as they are.")
+        @SerialName("server-names")
+        val serverNames: Map<String, String> = emptyMap(),
     )
 
     @Serializable

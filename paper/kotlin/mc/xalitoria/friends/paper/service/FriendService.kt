@@ -7,8 +7,12 @@ import mc.xalitoria.friends.paper.data.db.repository.PlayerRepository
 import mc.xalitoria.friends.paper.data.db.repository.SettingKey
 import mc.xalitoria.friends.paper.data.model.Profile
 import mc.xalitoria.friends.paper.data.model.Snapshot
+import mc.xalitoria.friends.paper.data.constants.Permissions
+import mc.xalitoria.friends.protocol.Message.Notify
 import mc.xalitoria.util.message.fail
+import mc.xalitoria.util.message.info
 import mc.xalitoria.util.message.pass
+import mc.xalitoria.util.message.send
 import org.bukkit.entity.Player
 import java.util.UUID
 
@@ -34,7 +38,7 @@ class FriendService(private val plugin: XaliFriends) {
                 FriendRepository.addRequest(actor.uniqueId, other.uuid)
                 reload(actor.uniqueId, other.uuid)
                 actor.pass(msg.sent(other.name))
-                plugin.server.getPlayer(other.uuid)?.pass(msg.received(me.name))
+                tell(Notify.Kind.REQUESTED, other.uuid, me)
             }
         }
     }
@@ -43,7 +47,7 @@ class FriendService(private val plugin: XaliFriends) {
         if (FriendRepository.remove(actor.uniqueId, other.uuid)) {
             reload(actor.uniqueId, other.uuid)
             actor.pass(msg.removed(other.name))
-            plugin.server.getPlayer(other.uuid)?.pass(msg.removedOther(me.name))
+            tell(Notify.Kind.REMOVED, other.uuid, me)
         } else actor.fail(msg.notFriends(other.name))
     }
 
@@ -56,7 +60,7 @@ class FriendService(private val plugin: XaliFriends) {
             FriendRepository.accept(actor.uniqueId, other.uuid) -> {
                 reload(actor.uniqueId, other.uuid)
                 actor.pass(msg.accepted(other.name))
-                plugin.server.getPlayer(other.uuid)?.pass(msg.acceptedOther(me.name))
+                tell(Notify.Kind.ACCEPTED, other.uuid, me)
             }
             else -> actor.fail(msg.noRequest(other.name))
         }
@@ -66,7 +70,7 @@ class FriendService(private val plugin: XaliFriends) {
         if (FriendRepository.deny(actor.uniqueId, other.uuid)) {
             reload(actor.uniqueId, other.uuid)
             actor.pass(msg.denied(other.name))
-            plugin.server.getPlayer(other.uuid)?.fail(msg.deniedOther(me.name))
+            tell(Notify.Kind.DENIED, other.uuid, me)
         } else actor.fail(msg.noRequest(other.name))
     }
 
@@ -105,6 +109,16 @@ class FriendService(private val plugin: XaliFriends) {
                 reload(actor.uniqueId)
                 actor.pass(msg.toggleLastSeen(view.toggle(!own.showLastSeen)))
             }
+            SettingKey.JUMP -> {
+                PlayerRepository.set(actor.uniqueId, key, on = !own.jump)
+                reload(actor.uniqueId)
+                actor.pass(msg.toggleJump(view.toggle(!own.jump)))
+            }
+            SettingKey.SERVER -> {
+                PlayerRepository.set(actor.uniqueId, key, on = !own.showServer)
+                reload(actor.uniqueId)
+                actor.pass(msg.toggleServer(view.toggle(!own.showServer)))
+            }
             SettingKey.MSGS -> {
                 val next = own.msgs.toggled()
                 PlayerRepository.set(actor.uniqueId, key, state = next)
@@ -113,6 +127,62 @@ class FriendService(private val plugin: XaliFriends) {
             }
         }
         debug("{0} toggled {1}", actor.name, key)
+    }
+
+    /** Takes [actor] to the server their friend [target] is on, with the proxy plugin. */
+    suspend fun jump(actor: Player, target: String) {
+        val link = plugin.link
+        if (link == null || !plugin.config.data.proxy.jump) return actor.fail(msg.jumpUnavailable)
+        val own = cache.get(actor.uniqueId) ?: cache.load(actor.uniqueId) ?: return actor.fail(plugin.messageConfig.data.commands.unexpectedError)
+        val friend = own.friends.firstOrNull { it.profile.uuid.toString() == target || it.profile.name.equals(target, ignoreCase = true) }
+            ?: return actor.fail(msg.notFriends(target))
+        val name = friend.profile.name
+        val server = link.serverOf(friend.profile.uuid)
+        when {
+            server == null -> actor.fail(msg.jumpOffline(name))
+            !friend.profile.settings.jump -> actor.fail(msg.jumpDenied(name))
+            server == link.serverOf(actor.uniqueId) -> actor.info(msg.jumpSame(name))
+            else -> link.jump(actor, friend.profile.uuid, name)
+        }
+    }
+
+    /** Whether [actor] may jump to [friend] now: the proxy, the setting, the permission, and the friend being somewhere else. */
+    fun canJump(actor: Player, friend: Profile): Boolean {
+        val link = plugin.link ?: return false
+        if (!plugin.config.data.proxy.jump || !friend.settings.jump || !actor.hasPermission(Permissions.JUMP)) return false
+        val server = link.serverOf(friend.uuid) ?: return false
+        return server != link.serverOf(actor.uniqueId)
+    }
+
+    /** Tells the players on this server who are friends with [uuid] that they [joined] the network (or the server, with no proxy plugin) or left it. */
+    fun announce(uuid: UUID, name: String, joined: Boolean) {
+        for (online in plugin.server.onlinePlayers) {
+            if (online.uniqueId == uuid) continue
+            val snapshot = cache.get(online.uniqueId) ?: continue
+            if (uuid !in snapshot.friendIds || !snapshot.settings.notifies) continue
+            online send (if (joined) plugin.messageConfig.data.notify.join(name) else plugin.messageConfig.data.notify.leave(name))
+        }
+    }
+
+    /** What the other player is told, here when they are on this server and through the proxy when they are elsewhere. */
+    private fun tell(kind: Notify.Kind, target: UUID, from: Profile) {
+        val local = plugin.server.getPlayer(target)
+        if (local != null) show(local, kind, from.name)
+        else plugin.link?.takeIf { it.isOnline(target) }?.notify(kind, target, from.uuid, from.name)
+    }
+
+    /** A [Notify] from the proxy: [target], if they are here, has their friends read again and is told. */
+    suspend fun receive(kind: Notify.Kind, target: UUID, fromName: String) {
+        val player = plugin.server.getPlayer(target) ?: return
+        cache.load(target)
+        show(player, kind, fromName)
+    }
+
+    private fun show(player: Player, kind: Notify.Kind, name: String) = when (kind) {
+        Notify.Kind.REQUESTED -> player.pass(msg.received(name))
+        Notify.Kind.ACCEPTED -> player.pass(msg.acceptedOther(name))
+        Notify.Kind.DENIED -> player.fail(msg.deniedOther(name))
+        Notify.Kind.REMOVED -> player.pass(msg.removedOther(name))
     }
 
     /** Sets what [actor] is up to; an empty [text] clears it. */

@@ -23,6 +23,10 @@ data class Settings(
     val notifies: Boolean = true,
     val msgs: SettingState = SettingState.FRIENDS_ONLY,
     val showLastSeen: Boolean = true,
+    /** Whether friends may jump to this player's server. */
+    val jump: Boolean = true,
+    /** Whether friends are told which server this player is on. */
+    val showServer: Boolean = true,
 )
 
 /** A row of the player table. */

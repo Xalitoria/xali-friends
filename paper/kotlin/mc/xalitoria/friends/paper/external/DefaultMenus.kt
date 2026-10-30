@@ -155,7 +155,15 @@ object DefaultMenus {
                 click = "click.any.actions = [${open(REMOVE)}]",
             )
         )
-        appendLine(back(22, main))
+        appendLine(
+            item(
+                "jump", "ender_pearl", 22, "&bJump to %xalifriends_selected_name%", listOf("&7%xalifriends_selected_seen%", "", "&eClick to go to their server"),
+                update = true,
+                view = isTrue("%xalifriends_selected_jumpable%"),
+                click = "click.any.actions = [{ type = \"close\" }, ${command("xfriend jump %xalifriends_selected_uuid%")}]",
+            )
+        )
+        appendLine(back(18, main))
         appendLine("}")
     }
 
@@ -185,14 +193,16 @@ object DefaultMenus {
     }
 
     private fun settings(main: String): String = buildString {
-        append(header("Settings: each item flips one.", "&8Friend settings", 27))
+        append(header("Settings: each item flips one.", "&8Friend settings", 36))
         appendLine("items {")
-        appendLine(filler(27))
+        appendLine(filler(36))
         val toggles = listOf(
             Toggle("invites", "paper", 10, "Friend requests"),
             Toggle("notifies", "bell", 12, "Notifications"),
             Toggle("msgs", "writable_book", 14, "Private messages from"),
             Toggle("lastseen", "clock", 16, "Show when you were last online"),
+            Toggle("jump", "ender_pearl", 20, "Friends may jump to you"),
+            Toggle("server", "compass", 24, "Friends see which server you are on"),
         )
         for (toggle in toggles) {
             appendLine(
@@ -204,7 +214,7 @@ object DefaultMenus {
                 )
             )
         }
-        appendLine(back(22, main))
+        appendLine(back(31, main))
         appendLine("}")
     }
 

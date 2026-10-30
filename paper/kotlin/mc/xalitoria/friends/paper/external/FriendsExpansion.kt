@@ -14,10 +14,11 @@ import org.bukkit.entity.Player
  * - `friends`, `online`, `requests`: counts. `status`: the player's own status.
  * - `page_friends`, `pages_friends`, `page_requests`, `pages_requests`: the page the player's menu is on, and how many there are.
  * - `has_next_friends`, `has_previous_friends`, `has_next_requests`, `has_previous_requests`: true or false.
- * - `setting_invites`, `setting_notifies`, `setting_msgs`, `setting_lastseen`: a setting as a word.
+ * - `setting_invites`, `setting_notifies`, `setting_msgs`, `setting_lastseen`, `setting_jump`, `setting_server`: a setting as a word.
  * - `friend_<n>_<field>`: place n (from 1) of the friends page the player's menu is on. Fields: `present` (true/false),
- *   `name`, `uuid`, `status`, `online` (true/false), `state` (the online/offline word), `seen`, `since`,
- *   `favourite` (true/false), `marker`.
+ *   `name`, `uuid`, `status`, `online` (true/false), `state` (the online/offline word), `seen` (online, and on which
+ *   server when it is known and shown, or when they were last seen), `server` (empty when unknown), `jumpable`
+ *   (true/false: the viewer may jump to them now), `since`, `favourite` (true/false), `marker`.
  * - `request_<n>_<field>`: the same for requests, with `present`, `name`, `uuid`, `date`.
  * - `selected_<field>`: the friend picked in the menu, with the fields of a friend.
  *
@@ -52,6 +53,8 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
                 "notifies" -> view.toggle(snapshot.settings.notifies)
                 "msgs" -> view.messages(snapshot.settings.msgs)
                 "lastseen" -> view.toggle(snapshot.settings.showLastSeen)
+                "jump" -> view.toggle(snapshot.settings.jump)
+                "server" -> view.toggle(snapshot.settings.showServer)
                 else -> null
             }
             key.startsWith("friend_") -> place(key.removePrefix("friend_"))?.let {
@@ -106,7 +109,9 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
             "status" -> view.status(friend)
             "online" -> view.isOnline(viewer, friend).toString()
             "state" -> view.onlineWord(view.isOnline(viewer, friend))
-            "seen" -> if (view.isOnline(viewer, friend)) words.online else view.lastSeen(friend)
+            "seen" -> if (view.isOnline(viewer, friend)) view.online(friend) else view.lastSeen(friend)
+            "server" -> view.server(friend)
+            "jumpable" -> plugin.service.canJump(viewer, friend).toString()
             "since" -> view.date(entry.since)
             "favourite" -> entry.favourite.toString()
             "marker" -> if (entry.favourite) words.favouriteMarker else words.plainMarker

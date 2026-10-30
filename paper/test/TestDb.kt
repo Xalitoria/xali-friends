@@ -49,8 +49,8 @@ object TestDb {
         "CREATE TABLE IF NOT EXISTS friend(UUID TEXT, friendUUID TEXT, isFavourite BOOLEAN DEFAULT 0, friendshipStart DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (UUID, friendUUID), FOREIGN KEY (friendUUID) REFERENCES player(UUID));",
         "CREATE TABLE IF NOT EXISTS request(UUID TEXT, requestUUID TEXT, requestDate DATETIME, PRIMARY KEY (UUID, requestUUID), FOREIGN KEY (requestUUID) REFERENCES player(UUID));",
         "INSERT INTO player VALUES ('$OLD', 'OldTimer', 0, 2, 2, 2, 0, 2, 1, '2024-09-01 12:30:15', 'away')",
-        "INSERT INTO player VALUES ('$FRIEND', 'OldFriend', 2, 2, 1, 2, 2, 2, 1, '2024-09-05 00:00:00', NULL)",
-        "INSERT INTO player VALUES ('$ASKER', 'OldAsker', 2, 0, 0, 2, 2, 2, 1, '2024-09-06 06:00:00', '')",
+        "INSERT INTO player VALUES ('$FRIEND', 'OldFriend', 2, 2, 1, 0, 2, 2, 1, '2024-09-05 00:00:00', NULL)",
+        "INSERT INTO player VALUES ('$ASKER', 'OldAsker', 2, 0, 0, 2, 2, 0, 1, '2024-09-06 06:00:00', '')",
         "INSERT INTO player VALUES ('not-a-uuid', 'Broken', 2, 2, 1, 2, 2, 2, 1, '2024-09-01 00:00:00', NULL)",
         // OLD and FRIEND: both rows, only OLD's side a favourite.
         "INSERT INTO friend VALUES ('$OLD', '$FRIEND', 1, '2024-09-02 08:00:00')",

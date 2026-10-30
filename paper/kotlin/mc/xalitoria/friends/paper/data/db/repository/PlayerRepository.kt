@@ -21,7 +21,9 @@ enum class SettingKey(val key: String) {
     INVITES("invites"),
     NOTIFIES("notifies"),
     MSGS("msgs"),
-    LAST_SEEN("lastseen");
+    LAST_SEEN("lastseen"),
+    JUMP("jump"),
+    SERVER("server");
 
     companion object {
         fun of(key: String): SettingKey? = entries.firstOrNull { it.key.equals(key, ignoreCase = true) }
@@ -37,6 +39,8 @@ object PlayerRepository {
             notifies = this[PlayerTable.notifies],
             msgs = SettingState.of(this[PlayerTable.msgs].toInt()) ?: SettingState.FRIENDS_ONLY,
             showLastSeen = this[PlayerTable.showLastSeen],
+            jump = this[PlayerTable.jump],
+            showServer = this[PlayerTable.showServer],
         ),
         lastSeen = this[PlayerTable.lastSeen]?.let(Instant::ofEpochMilli),
         status = this[PlayerTable.status],
@@ -80,6 +84,8 @@ object PlayerRepository {
                     it[notifies] = defaults.notifies
                     it[msgs] = defaults.msgs.id.toByte()
                     it[showLastSeen] = defaults.showLastSeen
+                    it[jump] = defaults.jump
+                    it[showServer] = defaults.showServer
                     it[lastSeen] = now
                 }
             } else {
@@ -114,6 +120,8 @@ object PlayerRepository {
                     SettingKey.NOTIFIES -> it[notifies] = on
                     SettingKey.MSGS -> it[msgs] = state.id.toByte()
                     SettingKey.LAST_SEEN -> it[showLastSeen] = on
+                    SettingKey.JUMP -> it[jump] = on
+                    SettingKey.SERVER -> it[showServer] = on
                 }
             }
         }

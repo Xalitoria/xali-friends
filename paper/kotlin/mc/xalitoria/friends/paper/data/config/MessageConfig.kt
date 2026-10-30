@@ -26,7 +26,8 @@ data class MessageConfig(
             &d/{0} &rlist [page] &7- your friends
             &d/{0} &rrequests [page] &7- requests waiting for you
             &d/{0} &rstatus <text> &7- say what you are up to (&rremovestatus&7 clears it)
-            &d/{0} &rtoggle <invites|notifies|msgs|lastseen> &7- change a setting
+            &d/{0} &rjump <friend> &7- go to the server a friend is on
+            &d/{0} &rtoggle <invites|notifies|msgs|lastseen|jump|server> &7- change a setting
         """.trimIndent(),
         val reload: Reload = Reload(),
     ) {
@@ -80,6 +81,21 @@ data class MessageConfig(
         private val toggleMsgs: String = "Private messages from: {0}",
         @SerialName("toggle-last-seen")
         private val toggleLastSeen: String = "Showing when you were last online: {0}",
+        @SerialName("toggle-jump")
+        private val toggleJump: String = "Friends may jump to you: {0}",
+        @SerialName("toggle-server")
+        private val toggleServer: String = "Friends see which server you are on: {0}",
+        @SerialName("jump-unavailable")
+        val jumpUnavailable: String = "Jumping to a friend isn't available here.",
+        @SerialName("jump-offline")
+        private val jumpOffline: String = "{0} is not online.",
+        @SerialName("jump-denied")
+        private val jumpDenied: String = "{0} doesn't let friends jump to them.",
+        @SerialName("jump-same")
+        private val jumpSame: String = "You are already on {0}'s server.",
+        private val jumping: String = "Going to {0} on {1}...",
+        @SerialName("jump-failed")
+        private val jumpFailed: String = "Could not send you to {0}'s server.",
         @SerialName("status-updated")
         private val statusUpdated: String = "Your status is now '{0}'.",
         @SerialName("status-removed")
@@ -125,6 +141,13 @@ data class MessageConfig(
         fun toggleNotifies(state: String) = toggleNotifies.formatArgs(state)
         fun toggleMsgs(state: String) = toggleMsgs.formatArgs(state)
         fun toggleLastSeen(state: String) = toggleLastSeen.formatArgs(state)
+        fun toggleJump(state: String) = toggleJump.formatArgs(state)
+        fun toggleServer(state: String) = toggleServer.formatArgs(state)
+        fun jumpOffline(name: String) = jumpOffline.formatArgs(name)
+        fun jumpDenied(name: String) = jumpDenied.formatArgs(name)
+        fun jumpSame(name: String) = jumpSame.formatArgs(name)
+        fun jumping(name: String, server: String) = jumping.formatArgs(name, server)
+        fun jumpFailed(name: String) = jumpFailed.formatArgs(name)
         fun statusUpdated(status: String) = statusUpdated.formatArgs(status)
         fun statusTooLong(max: Int) = statusTooLong.formatArgs(max)
         fun listHeader(page: Int, pages: Int) = listHeader.formatArgs(page, pages)
@@ -162,6 +185,8 @@ data class MessageConfig(
         val offline: String = "&7Offline",
         @SerialName("last-seen")
         private val lastSeen: String = "last seen {0}",
+        @SerialName("on-server")
+        private val onServer: String = "on {0}",
         @SerialName("last-seen-hidden")
         val lastSeenHidden: String = "last seen hidden",
         val never: String = "never",
@@ -173,5 +198,6 @@ data class MessageConfig(
         val plainMarker: String = "&7-",
     ) {
         fun lastSeen(date: String) = lastSeen.formatArgs(date)
+        fun onServer(server: String) = onServer.formatArgs(server)
     }
 }

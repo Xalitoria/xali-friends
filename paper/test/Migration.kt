@@ -62,6 +62,12 @@ class Migration {
         assertEquals("away", oldTimer[PlayerTable.status])
         assertEquals(Instant.parse("2024-09-01T12:30:15Z").toEpochMilli(), oldTimer[PlayerTable.lastSeen])
 
+        assertEquals(true, oldTimer[PlayerTable.jump], "stored as 2")
+        assertEquals(true, oldTimer[PlayerTable.showServer])
+        assertEquals(false, players.getValue(friend)[PlayerTable.jump], "stored as 0")
+        assertEquals(false, players.getValue(asker)[PlayerTable.showServer], "stored as 0")
+        assertEquals(true, players.getValue(asker)[PlayerTable.jump])
+
         assertNull(players.getValue(friend)[PlayerTable.status])
         assertNull(players.getValue(asker)[PlayerTable.status], "an empty status is no status")
         assertEquals(0, players.getValue(asker)[PlayerTable.msgs].toInt(), "nobody stays nobody")

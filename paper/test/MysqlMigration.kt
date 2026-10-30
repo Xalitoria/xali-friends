@@ -47,6 +47,9 @@ class MysqlMigration {
         assertEquals(false, oldTimer.settings.invites)
         assertEquals(true, oldTimer.settings.notifies)
         assertEquals("away", oldTimer.status)
+        assertEquals(true, oldTimer.settings.jump)
+        assertEquals(false, PlayerRepository.get(friend)!!.settings.jump)
+        assertEquals(false, PlayerRepository.get(asker)!!.settings.showServer)
         // The original kept DATETIMEs in the server's zone; they are UTC now.
         assertEquals(
             LocalDateTime.of(2024, 9, 1, 12, 30, 15).atZone(ZoneId.systemDefault()).toInstant(),

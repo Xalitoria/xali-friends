@@ -15,8 +15,8 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 /**
- * Makes a player's row on their first login, keeps their name and last seen current, and tells their friends on this
- * server when they come and go. (Friends on other servers aren't told: only this server's players are known to it.)
+ * Makes a player's row on their first login, keeps their name and last seen current, and tells their friends when they
+ * come and go: on this server alone, or, with the proxy plugin, on the whole network (see [mc.xalitoria.friends.paper.proxy.ProxyLink]).
  */
 class PlayerListener(private val plugin: XaliFriends) : Listener {
     private val notify get() = plugin.messageConfig.data.notify
@@ -39,11 +39,18 @@ class PlayerListener(private val plugin: XaliFriends) : Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         val player = event.player
+        // With the proxy plugin the proxy announces arrivals once for the whole network; alone, this server does.
+        if (plugin.link == null) plugin.service.announce(player.uniqueId, player.name, joined = true)
+        // The proxy tells this server where everyone is a moment after the player arrives, and the summary needs it.
+        if (plugin.link == null) summary(player)
+        else player.scheduler.runDelayed(plugin, {
+            // Only for coming onto the network, not for each server a player passes through.
+            if (plugin.link?.consumeArrival(player.uniqueId) == true) summary(player)
+        }, null, SUMMARY_DELAY_TICKS)
+    }
+
+    private fun summary(player: Player) {
         val snapshot = plugin.cache.get(player.uniqueId) ?: return
-        for (friend in snapshot.friends) {
-            val online = plugin.server.getPlayer(friend.profile.uuid) ?: continue
-            if (plugin.cache.get(online.uniqueId)?.settings?.notifies != false) online send notify.join(player.name)
-        }
         val counts = plugin.config.data.notifications
         val onlineFriends = snapshot.friends.count { plugin.presentation.isOnline(player, it.profile) }
         if (onlineFriends > 0 && onlineFriends >= counts.onlineFriendsMinimum) player send notify.onlineFriends(onlineFriends)
@@ -54,12 +61,13 @@ class PlayerListener(private val plugin: XaliFriends) : Listener {
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
         val player = event.player
-        plugin.cache.get(player.uniqueId)?.friends?.forEach { friend ->
-            val online = plugin.server.getPlayer(friend.profile.uuid) ?: return@forEach
-            if (plugin.cache.get(online.uniqueId)?.settings?.notifies != false) online send notify.leave(player.name)
-        }
+        if (plugin.link == null) plugin.service.announce(player.uniqueId, player.name, joined = false)
         plugin.cache.drop(player.uniqueId)
         seen(player)
+    }
+
+    companion object {
+        private const val SUMMARY_DELAY_TICKS = 40L
     }
 
     private fun seen(player: Player) {

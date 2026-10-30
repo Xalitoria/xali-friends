@@ -14,6 +14,8 @@ object PlayerTable : Table(DatabaseManager.tableName("player")) {
     val invites = bool("invites").default(true)
     val notifies = bool("notifies").default(true)
     val showLastSeen = bool("show_last_seen").default(true)
+    val jump = bool("jump").default(true)
+    val showServer = bool("show_server").default(true)
 
     /** 0 nobody, 1 friends only, 2 everyone. */
     val msgs = byte("msgs").default(1)

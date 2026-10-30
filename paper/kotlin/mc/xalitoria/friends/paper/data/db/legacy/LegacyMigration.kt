@@ -31,7 +31,7 @@ import kotlin.uuid.toKotlinUuid
  *
  * What changes on the way: UUIDs go from text to 16 bytes; the times, which the original kept without a zone (UTC in
  * SQLite, the database server's own zone in MySQL), become UTC milliseconds; a friendship's two rows become one, each
- * side keeping their own favourite; the settings nothing here uses (`jump`, `showServer`, `partyInvites`) are left behind.
+ * side keeping their own favourite; the party setting (`partyInvites`), which nothing here uses, is left behind.
  * Rows that can't be carried (a UUID that isn't one, someone who is their own friend, a friend with no `player` row) are
  * counted and skipped.
  *
@@ -117,6 +117,8 @@ class LegacyMigration(
                 row[legacy.player.invites] ?: true, row[legacy.player.notifies] ?: true,
                 (SettingState.of(row[legacy.player.msgs]) ?: SettingState.FRIENDS_ONLY).id.toByte(),
                 row[legacy.player.showLastSeen] ?: true,
+                row[legacy.player.jump] ?: true,
+                row[legacy.player.showServer] ?: true,
                 row[legacy.player.lastSeen]?.let(::millis),
                 row[legacy.player.status]?.takeIf { it.isNotBlank() }?.take(64),
             )
@@ -131,6 +133,8 @@ class LegacyMigration(
                     this[PlayerTable.notifies] = player.notifies
                     this[PlayerTable.msgs] = player.msgs
                     this[PlayerTable.showLastSeen] = player.showLastSeen
+                    this[PlayerTable.jump] = player.jump
+                    this[PlayerTable.showServer] = player.showServer
                     this[PlayerTable.lastSeen] = player.lastSeen
                     this[PlayerTable.status] = player.status
                 }
@@ -215,7 +219,7 @@ class LegacyMigration(
 
     private class Player(
         val uuid: UUID, val name: String, val invites: Boolean, val notifies: Boolean, val msgs: Byte,
-        val showLastSeen: Boolean, val lastSeen: Long?, val status: String?,
+        val showLastSeen: Boolean, val jump: Boolean, val showServer: Boolean, val lastSeen: Long?, val status: String?,
     )
 
     private class Friend(val owner: UUID, val friend: UUID, val favourite: Boolean, val since: Long)

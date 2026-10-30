@@ -35,6 +35,7 @@ object FriendCommand : XCommand(XaliFriends.INSTANCE) {
         .then(withPlayer("add", online = true) { player, name -> plugin.service.add(player, name) })
         .then(withPlayer("remove", friends = true) { player, name -> plugin.service.remove(player, name) })
         .then(withPlayer("favourite", friends = true) { player, name -> plugin.service.favourite(player, name) })
+        .then(withPlayer("jump", friends = true) { player, name -> plugin.service.jump(player, name) })
         .then(withPlayer("accept", requests = true) { player, name ->
             if (name.equals("all", ignoreCase = true)) plugin.service.answerAll(player, accept = true) else plugin.service.accept(player, name)
         })
@@ -137,7 +138,7 @@ object FriendCommand : XCommand(XaliFriends.INSTANCE) {
             player send msg.listEntry(
                 if (entry.favourite) words.favouriteMarker else words.plainMarker,
                 entry.profile.name,
-                if (online) words.online else plugin.presentation.lastSeen(entry.profile),
+                if (online) plugin.presentation.online(entry.profile) else plugin.presentation.lastSeen(entry.profile),
             )
         }
         if (shown < pages) player send msg.pageFooter("friend list", shown + 1)

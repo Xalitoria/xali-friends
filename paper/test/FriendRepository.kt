@@ -131,6 +131,18 @@ class FriendRepository {
     }
 
     @Test
+    fun `the jump and server settings are stored, and start as the defaults say`() = run {
+        val first = PlayerRepository.join(UUID.randomUUID(), "Jumper${alice.toString().take(4)}", Settings(jump = false))
+        assertFalse(first.settings.jump)
+        assertTrue(first.settings.showServer)
+        PlayerRepository.set(first.uuid, SettingKey.JUMP, on = true)
+        PlayerRepository.set(first.uuid, SettingKey.SERVER, on = false)
+        val read = PlayerRepository.get(first.uuid)!!
+        assertTrue(read.settings.jump)
+        assertFalse(read.settings.showServer)
+    }
+
+    @Test
     fun `players are found by name in any case, or by uuid`() = run {
         PlayerRepository.join(bob, "BobTheBuilder", Settings())
         assertEquals(bob, PlayerRepository.find("bobthebuilder")?.uuid)
