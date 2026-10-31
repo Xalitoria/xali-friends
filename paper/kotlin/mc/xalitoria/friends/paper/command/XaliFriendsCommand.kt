@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
+import kotlinx.coroutines.launch
 import mc.xalitoria.friends.paper.XaliFriends
 import mc.xalitoria.friends.paper.XaliFriends.Companion.debug
 import mc.xalitoria.friends.paper.data.constants.Permissions
@@ -42,6 +43,24 @@ object XaliFriendsCommand : XCommand(XaliFriends.INSTANCE) {
                 }
                 Command.SINGLE_SUCCESS
             }
+        )
+        .then(Commands
+            .literal("pack")
+            .then(Commands
+                .literal("update")
+                .executes { ctx ->
+                    val sender = ctx.source.sender
+                    if (!sender.hasPermission(Permissions.PACK)) {
+                        debug("/xalifriends pack update denied for {0}: missing {1}", sender.name, Permissions.PACK)
+                        sender fail cmdMsg.noPermission
+                    } else {
+                        debug("{0} updates the packs", sender.name)
+                        // Downloads and unpacks, so not on a region thread.
+                        plugin.scope.launch { plugin.installPacks(sender) }
+                    }
+                    Command.SINGLE_SUCCESS
+                }
+            )
         )
         .also { root -> commands.forEach { command -> command.subcommands.forEach { root.then(command.subcommand(it)) } } }
 

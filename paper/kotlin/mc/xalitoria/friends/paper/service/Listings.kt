@@ -9,7 +9,7 @@ import java.util.UUID
 
 /** The friends and requests in the order the menus and `/friend list` show them, and the page a player is on. */
 class Listings(private val plugin: XaliFriends) {
-    /** Favourites first, then those online, then by name. */
+    /** Favorites first, then those online, then by name. */
     fun friends(viewer: Player?, snapshot: Snapshot): List<FriendEntry> =
         snapshot.friends.sortedWith(
             compareByDescending<FriendEntry> { it.favourite }

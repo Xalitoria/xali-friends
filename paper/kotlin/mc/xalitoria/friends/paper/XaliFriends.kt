@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import mc.xalitoria.friends.paper.command.XaliFriendsCommand
 import mc.xalitoria.friends.paper.data.config.MainConfig
 import mc.xalitoria.friends.paper.data.config.MessageConfig
@@ -16,13 +17,17 @@ import mc.xalitoria.friends.paper.external.ChatHook
 import mc.xalitoria.friends.paper.external.FriendsExpansion
 import mc.xalitoria.friends.paper.external.MenuHook
 import mc.xalitoria.friends.paper.listener.PlayerListener
+import mc.xalitoria.friends.paper.pack.HttpDownloader
+import mc.xalitoria.friends.paper.pack.PackInstaller
 import mc.xalitoria.friends.paper.proxy.ProxyLink
 import mc.xalitoria.friends.paper.service.FriendCache
 import mc.xalitoria.friends.paper.service.FriendService
 import mc.xalitoria.friends.paper.service.Listings
 import mc.xalitoria.friends.paper.service.Presentation
+import mc.xalitoria.friends.paper.util.verbatim
 import mc.xalitoria.util.config.YamlFile
 import mc.xalitoria.util.message.*
+import org.bukkit.command.CommandSender
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.plugin.java.JavaPlugin
@@ -132,6 +137,39 @@ class XaliFriends : JavaPlugin() {
         }
         pm.registerEvents(PlayerListener(this), this)
         debug("Enabled: chat={0}, menus={1}", chat != null, menu != null)
+        // The handler plugin has enabled by now (build.gradle.kts loads this after it); the download is off the main thread.
+        if (config.data.packs.handler != MainConfig.Packs.Handler.NONE) scope.launch { installPacks() }
+    }
+
+    /**
+     * Installs the packs that `packs` in the configuration asks for into the plugin that serves them, and tells the
+     * console and [sender] how it went. Does nothing, but say so to [sender], when no handler is set.
+     */
+    suspend fun installPacks(sender: CommandSender? = null) {
+        val packs = config.data.packs
+        val msg = messageConfig.data.commands.pack
+        fun pass(text: String) { logger pass text; sender?.pass(text) }
+        fun warn(text: String) { logger warn text; sender?.warn(text) }
+        fun fail(text: String) { logger fail text; sender?.fail(text) }
+
+        val handler = packs.handler
+        if (handler.folder == null) {
+            sender?.info(msg.disabled)
+            return
+        }
+        if (!packs.url.startsWith("https://")) return fail(msg.badUrl(packs.url.verbatim()))
+        if (server.pluginManager.getPlugin(handler.folder) == null) return warn(msg.notInstalled(handler.folder))
+
+        val installer = PackInstaller(HttpDownloader(), server.pluginsFolder.toPath(), dataPath.resolve("packs"))
+        val reload = if (handler == MainConfig.Packs.Handler.NEXO) "Nexo (/nexo reload)" else "ItemsAdder (/iazip)"
+        for (result in installer.install(handler, packs.url, packs.install)) {
+            when (result.status) {
+                PackInstaller.Status.INSTALLED -> pass(msg.installed(result.pack, result.detail, reload))
+                PackInstaller.Status.CURRENT -> sender?.info(msg.current(result.pack))
+                PackInstaller.Status.FAILED -> fail(msg.failed(result.pack, result.detail.verbatim()))
+            }
+            debug("Pack {0}: {1} ({2})", result.pack, result.status, result.detail)
+        }
     }
 
     private fun enableMenus() {

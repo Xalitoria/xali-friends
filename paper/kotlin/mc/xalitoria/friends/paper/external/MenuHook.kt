@@ -12,8 +12,8 @@ import kotlin.io.path.writeText
  * XaliMenu's own `player` action, which runs `/xfriend` subcommands. Only made when XaliMenu is installed, since it loads
  * XaliMenu's classes. Any `material` the menus use works, a Nexo item (`nexo:<id>`) included; that is XaliMenu's.
  *
- * Nothing is registered with XaliMenu. Every plugin gets its own copy of the Kotlin runtime, so an action or condition of
- * this plugin (a `KSerializer` of its own copy) could not be linked to XaliMenu's; strings and Java types cross freely.
+ * Nothing is registered with XaliMenu: the menus use only what it has built in. Its addon API (`registerAction` and
+ * `registerCondition`) takes plain classes and Java types, so this plugin could add actions of its own later.
  */
 class MenuHook(private val plugin: XaliFriends) {
     private val api = XaliMenuApi.get()

@@ -3,7 +3,7 @@ import java.security.MessageDigest
 // The GUI packs of the friend menus, one per place they can be installed: `vanilla` (a resource pack to host or set in
 // server.properties), `nexo` (the contents of plugins/Nexo) and `itemsadder` (the contents of plugins/ItemsAdder). The
 // folders are the sources; each is zipped, with its SHA-256 beside it, into build/libs/friends-packs, ready to be attached
-// to a release for XaliMenu's pack installer to download. The tests check them.
+// to a release for XaliFriends' pack installer to download. The tests check them.
 dependencies {
     testImplementation(libs.kotlinx.serialization)
     testImplementation(libs.kaml)

@@ -21,7 +21,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.uuid.toJavaUuid
-import kotlin.uuid.toKotlinUuid
 
 /** The move of the original FriendSystem's data into this plugin's tables, on SQLite databases made for each test. */
 class Migration {
@@ -74,7 +73,7 @@ class Migration {
     }
 
     @Test
-    fun `two rows become one friendship and each side keeps their own favourite`() {
+    fun `two rows become one friendship and each side keeps their own favorite`() {
         val setup = Setup()
         val report = setup.migration.run()!!
         val rows = friendships(setup.target.db).associateBy { it[0] to it[1] }

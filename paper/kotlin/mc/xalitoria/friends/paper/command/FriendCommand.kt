@@ -16,7 +16,6 @@ import mc.xalitoria.friends.paper.data.constants.Permissions
 import mc.xalitoria.friends.paper.data.db.repository.SettingKey
 import mc.xalitoria.friends.paper.modal.command.XCommand
 import mc.xalitoria.friends.paper.service.FriendService
-import mc.xalitoria.util.bukkit.runTask
 import mc.xalitoria.util.message.*
 import net.kyori.adventure.text.event.ClickEvent
 import org.bukkit.entity.Player

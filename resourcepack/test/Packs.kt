@@ -191,6 +191,33 @@ class Packs {
         assertEquals(glyphs().map { it.key() }.toSet(), ours.map { it.key() }.toSet())
     }
 
+    @Test
+    fun nexoHeadsHaveAnOverlayForTheClientsThatCallThemHead() {
+        // Nexo's pack covers clients down to 1.21.4 (format 46) when ViaBackwards is installed. Those up to format 62 (1.21.5)
+        // know the player head as `head` with kind `player`; `player_head` is from format 63 (1.21.6).
+        val dir = File(nexo, "pack/external_packs/friends-gui")
+        val entry = json(File(dir, "pack.mcmeta")).jsonObject.getValue("overlays").jsonObject.getValue("entries").jsonArray.single().jsonObject
+        assertEquals(listOf(46, 62), entry.getValue("formats").jsonArray.map { it.jsonPrimitive.int })
+        val overlay = json(File(dir, "${entry.getValue("directory").jsonPrimitive.content}/assets/minecraft/items/player_head.json")).jsonObject
+
+        fun models(root: JsonObject) = root.getValue("model").jsonObject.let { dispatch ->
+            dispatch.getValue("entries").jsonArray.associate {
+                it.jsonObject.getValue("threshold").jsonPrimitive.int to it.jsonObject.getValue("model").jsonObject
+            } + (-1 to dispatch.getValue("fallback").jsonObject)
+        }
+        val current = models(json(File(nexo, "pack/assets/minecraft/items/player_head.json")).jsonObject)
+        val old = models(overlay)
+        assertEquals(current.keys, old.keys)
+        for (key in current.keys) {
+            assertEquals(current.getValue(key).getValue("base"), old.getValue(key).getValue("base"), "base of $key")
+            assertEquals("minecraft:player_head", current.getValue(key).getValue("model").jsonObject.getValue("type").jsonPrimitive.content)
+            assertEquals(
+                mapOf("type" to "minecraft:head", "kind" to "player"),
+                old.getValue(key).getValue("model").jsonObject.mapValues { it.value.jsonPrimitive.content },
+            )
+        }
+    }
+
     // ---- itemsadder
 
     @Test

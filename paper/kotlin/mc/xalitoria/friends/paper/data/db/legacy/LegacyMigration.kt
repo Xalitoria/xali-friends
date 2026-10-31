@@ -31,7 +31,7 @@ import kotlin.uuid.toKotlinUuid
  *
  * What changes on the way: UUIDs go from text to 16 bytes; the times, which the original kept without a zone (UTC in
  * SQLite, the database server's own zone in MySQL), become UTC milliseconds; a friendship's two rows become one, each
- * side keeping their own favourite; the party setting (`partyInvites`), which nothing here uses, is left behind.
+ * side keeping their own favorite; the party setting (`partyInvites`), which nothing here uses, is left behind.
  * Rows that can't be carried (a UUID that isn't one, someone who is their own friend, a friend with no `player` row) are
  * counted and skipped.
  *
@@ -142,7 +142,7 @@ class LegacyMigration(
         }
         log("Moved ${rows.size} players")
 
-        // A friendship was two rows. The row of the low side makes it; the other one adds its own favourite.
+        // A friendship was two rows. The row of the low side makes it; the other one adds its own favorite.
         val legacyFriends = transaction(source) { legacy.friend.selectAll().toList() }
         val friends = ArrayList<Friend>(legacyFriends.size)
         for (row in legacyFriends) {

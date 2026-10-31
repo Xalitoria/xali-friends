@@ -1,94 +1,94 @@
-arrow_left:
+friend_arrow_left:
   itemname: 'arrow_left'
   material: PAPER
   Pack:
     texture: party/buttons/generated/arrow_left.png
-arrow_right:
+friend_arrow_right:
   itemname: 'arrow_right'
   material: PAPER
   Pack:
     texture: party/buttons/generated/arrow_right.png
-cancel:
+friend_cancel:
   itemname: 'cancel'
   material: PAPER
   Pack:
     texture: party/buttons/generated/cancel.png
-confirm:
+friend_confirm:
   itemname: 'confirm'
   material: PAPER
   Pack:
     texture: party/buttons/generated/confirm.png
-like:
+friend_like:
   itemname: 'like'
   material: PAPER
   Pack:
     texture: party/buttons/generated/like.png
-notify:
+friend_notify:
   itemname: 'notify'
   material: PAPER
   Pack:
     texture: party/buttons/generated/notify.png
-no_notify:
+friend_no_notify:
   itemname: 'no_notify'
   material: PAPER
   Pack:
     texture: party/buttons/generated/no_notify.png
-settings:
+friend_settings:
   itemname: 'settings'
   material: PAPER
   Pack:
     texture: party/buttons/generated/settings.png
-toggle_off:
+friend_toggle_off:
   itemname: 'toggle_off'
   material: PAPER
   Pack:
     texture: party/buttons/generated/toggle_off.png
-toggle_on:
+friend_toggle_on:
   itemname: 'toggle_on'
   material: PAPER
   Pack:
     texture: party/buttons/generated/toggle_on.png
-toggle_onlyfriends:
+friend_toggle_onlyfriends:
   itemname: 'toggle_onlyfriends'
   material: PAPER
   Pack:
     texture: party/buttons/generated/toggle_onlyfriends.png
-sort:
+friend_sort:
   itemname: 'sort'
   material: PAPER
   Pack:
     texture: party/buttons/generated/sort.png
-empty:
+friend_empty:
   itemname: 'empty'
   material: PAPER
   Pack:
     model: party/empty
-accept:
+friend_accept:
   itemname: 'accept'
   material: PAPER
   Pack:
     model: party/accept
-deny:
+friend_deny:
   itemname: 'deny'
   material: PAPER
   Pack:
     model: party/deny
-invite:
+friend_invite:
   itemname: 'invite'
   material: PAPER
   Pack:
     model: party/invite
-jump:
+friend_jump:
   itemname: 'jump'
   material: PAPER
   Pack:
     model: party/jump
-send:
+friend_send:
   itemname: 'send'
   material: PAPER
   Pack:
     model: party/send
-teleport:
+friend_teleport:
   itemname: 'teleport'
   material: PAPER
   Pack:

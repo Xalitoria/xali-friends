@@ -29,6 +29,9 @@ paper {
         register("PlaceholderAPI") { load = RelativeLoad.BEFORE; required = false }
         register("XaliMenu") { load = RelativeLoad.BEFORE; required = false }
         register("XaliChat") { load = RelativeLoad.BEFORE; required = false }
+        // The pack installer writes into whichever of these packs.handler names, so it has to have enabled.
+        register("Nexo") { load = RelativeLoad.BEFORE; required = false }
+        register("ItemsAdder") { load = RelativeLoad.BEFORE; required = false }
     }
 }
 

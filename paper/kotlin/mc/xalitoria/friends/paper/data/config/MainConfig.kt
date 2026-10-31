@@ -19,6 +19,8 @@ data class MainConfig(
     val notifications: Notifications = Notifications(),
     @YamlComment("The friend menus are XaliMenu menus; they need XaliMenu and PlaceholderAPI.")
     val gui: Gui = Gui(),
+    @YamlComment("The glyphs and button icons of the friend menus, for the plugin that serves your resource pack. Nothing is downloaded unless a handler is set.")
+    val packs: Packs = Packs(),
     @YamlComment(
         "Each player's friends and settings are kept in memory while they are online, which is what private messages are",
         "checked against. Changes made on another server show up after this many seconds.",
@@ -101,7 +103,7 @@ data class MainConfig(
         @YamlComment("The name of the main menu in XaliMenu. The others are friends-requests, friends-player and friends-settings.")
         val menu: String = "friends",
         @YamlComment(
-            "Writes the four menus into XaliMenu's menus folder when they are missing, so they can be edited there.",
+            "Writes the five menus into XaliMenu's menus folder when they are missing, so they can be edited there.",
             "Their friend and request slots hold this many players per page; if a menu is changed, change these to match.",
         )
         @SerialName("write-menus")
@@ -111,6 +113,30 @@ data class MainConfig(
         @SerialName("requests-per-page")
         val requestsPerPage: Int = 21,
     )
+
+    @Serializable
+    data class Packs(
+        @YamlComment(
+            "The plugin the packs are installed into: none, nexo or itemsadder. With none nothing is downloaded. Reload that plugin",
+            "(/nexo reload, /iazip) after the first install and after each update.",
+        )
+        val handler: Handler = Handler.NONE,
+        @YamlComment(
+            "Where the zipped packs are downloaded from (https), for example the assets of a GitHub release. Each pack is fetched as",
+            "<url>/<pack>-<handler>.zip and checked against <url>/<pack>-<handler>.zip.sha256, and only fetched again when that changes.",
+        )
+        val url: String = "https://github.com/audizian/xalicraft/releases/latest/download",
+        @YamlComment("The packs to install.")
+        val install: List<String> = ["friends-gui"],
+    ) {
+        /** [folder] is the plugin folder under plugins/ that the pack is unpacked into. */
+        @Serializable
+        enum class Handler(val id: String, val folder: String?) {
+            @SerialName("none") NONE("none", null),
+            @SerialName("nexo") NEXO("nexo", "Nexo"),
+            @SerialName("itemsadder") ITEMSADDER("itemsadder", "ItemsAdder"),
+        }
+    }
 
     @Serializable
     data class Proxy(

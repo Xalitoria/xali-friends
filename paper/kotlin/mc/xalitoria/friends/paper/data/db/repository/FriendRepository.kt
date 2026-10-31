@@ -27,7 +27,7 @@ object FriendRepository {
     suspend fun friends(owner: UUID): List<FriendEntry> =
         dbTransaction {
             val id = owner.toKotlinUuid()
-            // The owner is the low side: the friend is the high one, and the favourite the low side's.
+            // The owner is the low side: the friend is the high one, and the favorite the low side's.
             val asLow = FriendTable.join(PlayerTable, JoinType.INNER, FriendTable.high, PlayerTable.uuid)
                 .selectAll()
                 .where { FriendTable.low eq id }
@@ -87,7 +87,7 @@ object FriendRepository {
             } > 0
         }
 
-    /** Flips [friend] as one of [owner]'s favourites and says what it is now; null if they aren't friends. */
+    /** Flips [friend] as one of [owner]'s favorites and says what it is now; null if they aren't friends. */
     suspend fun toggleFavourite(owner: UUID, friend: UUID): Boolean? =
         dbTransaction {
             val low = Pairing.low(owner, friend).toKotlinUuid()

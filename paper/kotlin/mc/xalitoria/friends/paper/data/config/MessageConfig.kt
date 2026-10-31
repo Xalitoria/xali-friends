@@ -28,10 +28,30 @@ data class MessageConfig(
             &d/{0} &rstatus <text> &7- say what you are up to (&rremovestatus&7 clears it)
             &d/{0} &rjump <friend> &7- go to the server a friend is on
             &d/{0} &rtoggle <invites|notifies|msgs|lastseen|jump|server> &7- change a setting
+            &d/{0} &rpack update &7- install the menus' resource pack into Nexo or ItemsAdder
         """.trimIndent(),
         val reload: Reload = Reload(),
+        val pack: Pack = Pack(),
     ) {
         fun help(label: String): String = help.formatArgs(label)
+
+        @Serializable
+        data class Pack(
+            val disabled: String = "No pack handler is set (packs.handler in config.yml), so there is nothing to install.",
+            @SerialName("not-installed")
+            private val notInstalled: String = "The pack handler {0} is not installed.",
+            @SerialName("bad-url")
+            private val badUrl: String = "packs.url must start with https:// (it is {0}).",
+            private val installed: String = "Installed {0} ({1}). Reload {2} to use it.",
+            private val current: String = "{0} is up to date.",
+            private val failed: String = "Could not install {0}: {1}",
+        ) {
+            fun notInstalled(plugin: String): String = notInstalled.formatArgs(plugin)
+            fun badUrl(url: String): String = badUrl.formatArgs(url)
+            fun installed(file: String, detail: String, reload: String): String = installed.formatArgs(file, detail, reload)
+            fun current(file: String): String = current.formatArgs(file)
+            fun failed(file: String, reason: String): String = failed.formatArgs(file, reason)
+        }
 
         @Serializable
         data class Reload(
@@ -70,9 +90,9 @@ data class MessageConfig(
         @SerialName("not-friends")
         private val notFriends: String = "{0} is not your friend.",
         @SerialName("favourite-added")
-        private val favouriteAdded: String = "{0} is now a favourite.",
+        private val favouriteAdded: String = "{0} is now a favorite.",
         @SerialName("favourite-removed")
-        private val favouriteRemoved: String = "{0} is no longer a favourite.",
+        private val favouriteRemoved: String = "{0} is no longer a favorite.",
         @SerialName("toggle-invites")
         private val toggleInvites: String = "Friend requests: {0}",
         @SerialName("toggle-notifies")

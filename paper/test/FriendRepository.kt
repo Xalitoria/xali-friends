@@ -18,7 +18,6 @@ import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -87,7 +86,7 @@ class FriendRepository {
     }
 
     @Test
-    fun `a favourite is one side's choice, whichever side that is`() = run {
+    fun `a favorite is one side's choice, whichever side that is`() = run {
         players()
         FriendRepository.addRequest(alice, bob)
         FriendRepository.accept(bob, alice)

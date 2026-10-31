@@ -52,10 +52,10 @@ object TestDb {
         "INSERT INTO player VALUES ('$FRIEND', 'OldFriend', 2, 2, 1, 0, 2, 2, 1, '2024-09-05 00:00:00', NULL)",
         "INSERT INTO player VALUES ('$ASKER', 'OldAsker', 2, 0, 0, 2, 2, 0, 1, '2024-09-06 06:00:00', '')",
         "INSERT INTO player VALUES ('not-a-uuid', 'Broken', 2, 2, 1, 2, 2, 2, 1, '2024-09-01 00:00:00', NULL)",
-        // OLD and FRIEND: both rows, only OLD's side a favourite.
+        // OLD and FRIEND: both rows, only OLD's side a favorite.
         "INSERT INTO friend VALUES ('$OLD', '$FRIEND', 1, '2024-09-02 08:00:00')",
         "INSERT INTO friend VALUES ('$FRIEND', '$OLD', 0, '2024-09-02 08:00:00')",
-        // FRIEND and ASKER: both rows, only the higher side (ASKER) a favourite.
+        // FRIEND and ASKER: both rows, only the higher side (ASKER) a favorite.
         "INSERT INTO friend VALUES ('$FRIEND', '$ASKER', 0, '2024-09-03 10:00:00')",
         "INSERT INTO friend VALUES ('$ASKER', '$FRIEND', 1, '2024-09-03 10:00:00')",
         // ASKER and OLD: only the higher side's row exists.
