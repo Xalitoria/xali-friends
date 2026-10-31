@@ -41,7 +41,7 @@ Copy `build/libs/friends/xali-friends-<version>-paper.jar` into each server's `p
 the proxy's. `./gradlew :friends:paper:runServer` and `:friends:velocity:runProxy` start the shared dev server and proxy
 with this plugin installed (see the [root README](../README.md#dev-servers)).
 
-The descriptors come from the [Gradle plugin](../plugin/README.md); the `paper { }` and `velocity { }` blocks are in
+The descriptors come from the [Gradle plugin](../xali-gradle/README.md); the `paper { }` and `velocity { }` blocks are in
 `friends/build.gradle.kts`.
 
 > [!IMPORTANT]
@@ -305,4 +305,4 @@ commands in `commands`, the GUIs (`gui`, `config/GuiConfig`) in the Spigot jar, 
 - [XaliChat](../chat/README.md) — the gate API that limits private messages to friends
 - [XaliMenu](../menu/README.md) — the menus and their addon API
 - [Friend GUI packs](resourcepack/README.md) — the resource packs
-- [Gradle plugin](../plugin/README.md) — descriptors and library loading
+- [Gradle plugin](../xali-gradle/README.md) — descriptors and library loading
