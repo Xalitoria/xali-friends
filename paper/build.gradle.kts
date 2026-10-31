@@ -1,10 +1,11 @@
+import mc.xalitoria.gradle.sibling
 plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.shadow)
 }
 
 dependencies {
-    implementation(project(":friends:common"))
+    implementation(sibling("common"))
 
     // Libraries the server downloads when the plugin loads (see loader.json); nothing declared here is shaded.
     api(libs.xalicraft.util)
@@ -15,8 +16,8 @@ dependencies {
     compileOnly(libs.folia.api)
     compileOnly(libs.placeholderapi)
     // XaliMenu and XaliChat provide these at run time (their jars carry the API), when they are installed.
-    compileOnly(project(":menu:api"))
-    compileOnly(project(":chat:api"))
+    compileOnly(libs.xali.menu.api)
+    compileOnly(libs.xali.chat.api)
     testImplementation(libs.xalicraft.util)
     testImplementation(libs.folia.api)
     testImplementation(libs.bundles.database)
