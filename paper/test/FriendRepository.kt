@@ -157,7 +157,7 @@ class FriendRepository {
                 driverClassName = "org.sqlite.JDBC"
                 maximumPoolSize = 1
             }
-            DatabaseManager.attach(HikariDataSource(config), MainConfig.Database())
+            DatabaseManager.attach(HikariDataSource(config), MainConfig().database)
         }
     }
 }

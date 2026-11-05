@@ -124,7 +124,7 @@ class MysqlMigration {
                     maximumPoolSize = 2
                 })
                 // The plugin's own tables, made the way the plugin makes them, then the migration.
-                DatabaseManager.attach(pool, MainConfig.Database())
+                DatabaseManager.attach(pool, MainConfig().database)
                 REPORT = LegacyMigration(DatabaseManager.database, DatabaseManager.database, LegacyTables(""), ZoneId.systemDefault()).run()
             }
         }

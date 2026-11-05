@@ -5,6 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import mc.xalitoria.friends.paper.data.model.SettingState
 import mc.xalitoria.friends.paper.data.model.Settings
+import mc.xalitoria.util.config.DatabaseConfig
 
 @Serializable
 data class MainConfig(
@@ -26,7 +27,11 @@ data class MainConfig(
         "checked against. Changes made on another server show up after this many seconds.",
     )
     val cache: Cache = Cache(),
-    val database: Database = Database(),
+    val database: DatabaseConfig = DatabaseConfig(
+        tablePrefix = "xalifriends_",
+        sqlite = DatabaseConfig.Sqlite("xalifriends.db"),
+        mysql = DatabaseConfig.Mysql(database = "friends"),
+    ),
     @YamlComment(
         "The proxy plugin (XaliFriends on Velocity) tells the servers where players are. It needs Velocity's modern",
         "forwarding: the secret is read from Paper's config/paper-global.yml. Without it everything works for this server alone.",
@@ -179,34 +184,4 @@ data class MainConfig(
         @SerialName("batch-size")
         val batchSize: Int = 1000,
     )
-
-    @Serializable
-    data class Database(
-        @YamlComment("Database types: mariadb or mysql, sqlite")
-        val type: String = "sqlite",
-        @YamlComment("Prepended to every table name: letters, digits and underscores. Needs a restart; a new prefix means new, empty tables.")
-        @SerialName("table-prefix")
-        val tablePrefix: String = "xalifriends_",
-        val sqlite: Sqlite = Sqlite(),
-        @YamlComment("MySQL/MariaDB connection settings")
-        val mysql: Mysql = Mysql(),
-    ) {
-        @Serializable
-        data class Sqlite(
-            val filename: String = "xalifriends.db",
-        )
-
-        @Serializable
-        data class Mysql(
-            val host: String = "localhost",
-            val port: Int = 3306,
-            val database: String = "friends",
-            val username: String = "root",
-            val password: String = "",
-            @SerialName("use-ssl")
-            val useSsl: Boolean = false,
-            @SerialName("pool-size")
-            val poolSize: Int = 10,
-        )
-    }
 }
