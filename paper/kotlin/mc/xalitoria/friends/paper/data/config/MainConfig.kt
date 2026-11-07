@@ -1,11 +1,11 @@
 package mc.xalitoria.friends.paper.data.config
 
 import com.charleskorn.kaml.YamlComment
+import com.xalitoria.util.config.DatabaseConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import mc.xalitoria.friends.paper.data.model.SettingState
 import mc.xalitoria.friends.paper.data.model.Settings
-import mc.xalitoria.util.config.DatabaseConfig
 
 @Serializable
 data class MainConfig(

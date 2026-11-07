@@ -1,4 +1,4 @@
-package mc.xalitoria.friends.protocol
+package com.xalitoria.friends.protocol
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream

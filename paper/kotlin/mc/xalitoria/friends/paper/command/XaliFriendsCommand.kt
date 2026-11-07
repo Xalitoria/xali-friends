@@ -2,6 +2,7 @@ package mc.xalitoria.friends.paper.command
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.xalitoria.util.message.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import kotlinx.coroutines.launch
@@ -9,7 +10,6 @@ import mc.xalitoria.friends.paper.XaliFriends
 import mc.xalitoria.friends.paper.XaliFriends.Companion.debug
 import mc.xalitoria.friends.paper.data.constants.Permissions
 import mc.xalitoria.friends.paper.modal.command.XCommand
-import mc.xalitoria.util.message.*
 
 /** The root command. Every other command is registered on its own and also runs here under its names without the `x`. */
 object XaliFriendsCommand : XCommand(XaliFriends.INSTANCE) {

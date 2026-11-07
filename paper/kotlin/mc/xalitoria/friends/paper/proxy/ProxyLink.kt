@@ -2,15 +2,15 @@ package mc.xalitoria.friends.paper.proxy
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
+import com.xalitoria.friends.protocol.Located
+import com.xalitoria.friends.protocol.Message
+import com.xalitoria.friends.protocol.Protocol
+import com.xalitoria.util.message.fail
+import com.xalitoria.util.message.info
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mc.xalitoria.friends.paper.XaliFriends
 import mc.xalitoria.friends.paper.XaliFriends.Companion.debug
-import mc.xalitoria.friends.protocol.Located
-import mc.xalitoria.friends.protocol.Message
-import mc.xalitoria.friends.protocol.Protocol
-import mc.xalitoria.util.message.fail
-import mc.xalitoria.util.message.info
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 import java.util.UUID

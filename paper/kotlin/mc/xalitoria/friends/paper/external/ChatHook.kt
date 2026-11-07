@@ -1,9 +1,9 @@
 package mc.xalitoria.friends.paper.external
 
-import mc.xalitoria.chat.api.NetworkPlayers
-import mc.xalitoria.chat.api.PrivateMessageGate
 import mc.xalitoria.friends.paper.XaliFriends
 import mc.xalitoria.friends.paper.service.MessageRule
+import net.xalitoria.chat.NetworkPlayers
+import net.xalitoria.chat.PrivateMessageGate
 import org.bukkit.entity.Player
 import org.bukkit.plugin.ServicePriority
 

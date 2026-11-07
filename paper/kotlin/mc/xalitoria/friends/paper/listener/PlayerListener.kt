@@ -1,12 +1,12 @@
 package mc.xalitoria.friends.paper.listener
 
+import com.xalitoria.util.message.fail
+import com.xalitoria.util.message.send
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mc.xalitoria.friends.paper.XaliFriends
 import mc.xalitoria.friends.paper.XaliFriends.Companion.debug
 import mc.xalitoria.friends.paper.data.db.repository.PlayerRepository
-import mc.xalitoria.util.message.fail
-import mc.xalitoria.util.message.send
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

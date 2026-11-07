@@ -1,5 +1,7 @@
 package mc.xalitoria.friends.paper
 
+import com.xalitoria.util.config.YamlFile
+import com.xalitoria.util.message.*
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -25,8 +27,6 @@ import mc.xalitoria.friends.paper.service.FriendService
 import mc.xalitoria.friends.paper.service.Listings
 import mc.xalitoria.friends.paper.service.Presentation
 import mc.xalitoria.friends.paper.util.verbatim
-import mc.xalitoria.util.config.YamlFile
-import mc.xalitoria.util.message.*
 import org.bukkit.command.CommandSender
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault

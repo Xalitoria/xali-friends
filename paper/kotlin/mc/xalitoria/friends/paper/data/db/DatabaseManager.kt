@@ -1,5 +1,7 @@
 package mc.xalitoria.friends.paper.data.db
 
+import com.xalitoria.util.config.DatabaseConfig
+import com.xalitoria.util.config.databaseType
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
@@ -10,8 +12,6 @@ import mc.xalitoria.friends.paper.data.db.tables.FriendTable
 import mc.xalitoria.friends.paper.data.db.tables.MetaTable
 import mc.xalitoria.friends.paper.data.db.tables.PlayerTable
 import mc.xalitoria.friends.paper.data.db.tables.RequestTable
-import mc.xalitoria.util.config.DatabaseConfig
-import mc.xalitoria.util.config.databaseType
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction

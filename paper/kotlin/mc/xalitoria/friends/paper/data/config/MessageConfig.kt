@@ -1,8 +1,8 @@
 package mc.xalitoria.friends.paper.data.config
 
+import com.xalitoria.util.message.formatArgs
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import mc.xalitoria.util.message.formatArgs
 
 @Serializable
 data class MessageConfig(

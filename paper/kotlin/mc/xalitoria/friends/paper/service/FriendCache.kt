@@ -1,5 +1,6 @@
 package mc.xalitoria.friends.paper.service
 
+import com.xalitoria.util.message.fail
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mc.xalitoria.friends.paper.XaliFriends
@@ -8,7 +9,6 @@ import mc.xalitoria.friends.paper.data.db.repository.FriendRepository
 import mc.xalitoria.friends.paper.data.db.repository.PlayerRepository
 import mc.xalitoria.friends.paper.data.model.Profile
 import mc.xalitoria.friends.paper.data.model.Snapshot
-import mc.xalitoria.util.message.fail
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds

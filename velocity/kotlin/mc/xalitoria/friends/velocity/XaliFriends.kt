@@ -9,10 +9,10 @@ import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.ServerConnection
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier
 import com.velocitypowered.api.proxy.server.RegisteredServer
-import mc.xalitoria.friends.protocol.Located
-import mc.xalitoria.friends.protocol.Message
-import mc.xalitoria.friends.protocol.Message.*
-import mc.xalitoria.friends.protocol.Protocol
+import com.xalitoria.friends.protocol.Located
+import com.xalitoria.friends.protocol.Message
+import com.xalitoria.friends.protocol.Message.*
+import com.xalitoria.friends.protocol.Protocol
 import org.slf4j.Logger
 import java.nio.file.Path
 import java.util.UUID

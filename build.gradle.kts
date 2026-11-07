@@ -9,8 +9,15 @@ plugins {
 }
 
 subprojects {
-    group = "mc.xalitoria.friends"
-    version = "0.0.2"
+    // Named for the package of what the module holds, see the Packages section of the root README.
+    group = when (name) {
+        "common" -> "com.xalitoria.friends"
+        "paper" -> "mc.xalitoria.friends.paper"
+        "velocity" -> "mc.xalitoria.friends.velocity"
+        "resourcepack" -> "com.xalitoria.friends"
+        else -> error("No group for $path")
+    }
+    version = "0.1.0"
 }
 
 tasks.named("build") {

@@ -1,6 +1,6 @@
-import mc.xalitoria.friends.protocol.Located
-import mc.xalitoria.friends.protocol.Message
-import mc.xalitoria.friends.protocol.Protocol
+import com.xalitoria.friends.protocol.Located
+import com.xalitoria.friends.protocol.Message
+import com.xalitoria.friends.protocol.Protocol
 import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals

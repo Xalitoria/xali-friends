@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import com.xalitoria.util.message.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,6 @@ import mc.xalitoria.friends.paper.data.constants.Permissions
 import mc.xalitoria.friends.paper.data.db.repository.SettingKey
 import mc.xalitoria.friends.paper.modal.command.XCommand
 import mc.xalitoria.friends.paper.service.FriendService
-import mc.xalitoria.util.message.*
 import net.kyori.adventure.text.event.ClickEvent
 import org.bukkit.entity.Player
 

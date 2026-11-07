@@ -8,11 +8,11 @@ import mc.xalitoria.friends.paper.data.db.repository.SettingKey
 import mc.xalitoria.friends.paper.data.model.Profile
 import mc.xalitoria.friends.paper.data.model.Snapshot
 import mc.xalitoria.friends.paper.data.constants.Permissions
-import mc.xalitoria.friends.protocol.Message.Notify
-import mc.xalitoria.util.message.fail
-import mc.xalitoria.util.message.info
-import mc.xalitoria.util.message.pass
-import mc.xalitoria.util.message.send
+import com.xalitoria.friends.protocol.Message.Notify
+import com.xalitoria.util.message.fail
+import com.xalitoria.util.message.info
+import com.xalitoria.util.message.pass
+import com.xalitoria.util.message.send
 import org.bukkit.entity.Player
 import java.util.UUID
 

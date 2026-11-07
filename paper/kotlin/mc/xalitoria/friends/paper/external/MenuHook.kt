@@ -1,7 +1,7 @@
 package mc.xalitoria.friends.paper.external
 
 import mc.xalitoria.friends.paper.XaliFriends
-import mc.xalitoria.menu.api.XaliMenuApi
+import net.xalitoria.menu.XaliMenuApi
 import org.bukkit.entity.Player
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
