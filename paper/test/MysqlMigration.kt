@@ -8,13 +8,13 @@ import mc.xalitoria.friends.paper.data.db.legacy.LegacyTables
 import mc.xalitoria.friends.paper.data.db.repository.FriendRepository
 import mc.xalitoria.friends.paper.data.db.repository.PlayerRepository
 import mc.xalitoria.friends.paper.data.model.SettingState
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.TestMethodOrder
 import java.sql.DriverManager
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.UUID
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.TestMethodOrder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

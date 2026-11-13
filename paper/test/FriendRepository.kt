@@ -6,20 +6,20 @@ import mc.xalitoria.friends.paper.data.db.DatabaseManager
 import mc.xalitoria.friends.paper.data.db.repository.FriendRepository
 import mc.xalitoria.friends.paper.data.db.repository.PlayerRepository
 import mc.xalitoria.friends.paper.data.db.repository.SettingKey
+import mc.xalitoria.friends.paper.data.db.tables.FriendTable
 import mc.xalitoria.friends.paper.data.model.SettingState
 import mc.xalitoria.friends.paper.data.model.Settings
-import mc.xalitoria.friends.paper.data.db.tables.FriendTable
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.nio.file.Files
-import kotlin.uuid.toKotlinUuid
 import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.uuid.toKotlinUuid
 
 /** The friend rules against a real SQLite file. The tables read the prefix once, so one database serves every test. */
 class FriendRepository {

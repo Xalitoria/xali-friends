@@ -1,12 +1,11 @@
 package mc.xalitoria.friends.paper
 
+import com.xalitoria.util.bukkit.coroutineScope
 import com.xalitoria.util.config.YamlFile
 import com.xalitoria.util.message.*
+import com.xalitoria.util.message.verbatim
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mc.xalitoria.friends.paper.command.XaliFriendsCommand
@@ -26,7 +25,6 @@ import mc.xalitoria.friends.paper.service.FriendCache
 import mc.xalitoria.friends.paper.service.FriendService
 import mc.xalitoria.friends.paper.service.Listings
 import mc.xalitoria.friends.paper.service.Presentation
-import mc.xalitoria.friends.paper.util.verbatim
 import org.bukkit.command.CommandSender
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionDefault
@@ -70,11 +68,7 @@ class XaliFriends : JavaPlugin() {
 
     override fun onEnable() {
         INSTANCE = this
-        scope = CoroutineScope(
-            SupervisorJob() + Dispatchers.Default + CoroutineExceptionHandler { _, throwable ->
-                logger.fail("Unhandled coroutine failure", throwable)
-            }
-        )
+        scope = coroutineScope()
 
         config = YamlFile(dataPath.resolve("config.yml"), MainConfig.serializer(), ::MainConfig)
         messageConfig = YamlFile(

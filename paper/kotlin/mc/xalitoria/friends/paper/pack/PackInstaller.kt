@@ -1,5 +1,8 @@
 package mc.xalitoria.friends.paper.pack
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import mc.xalitoria.friends.paper.data.config.MainConfig.Packs.Handler
 import java.io.ByteArrayInputStream
 import java.net.URI
 import java.net.http.HttpClient
@@ -14,9 +17,6 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import mc.xalitoria.friends.paper.data.config.MainConfig.Packs.Handler
 
 /** Where a pack's bytes come from; the plugin's is HTTP, a test's is a map. */
 fun interface Downloader {

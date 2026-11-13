@@ -1,4 +1,10 @@
 import com.sun.net.httpserver.HttpServer
+import kotlinx.coroutines.runBlocking
+import mc.xalitoria.friends.paper.data.config.MainConfig.Packs.Handler
+import mc.xalitoria.friends.paper.pack.Downloader
+import mc.xalitoria.friends.paper.pack.HttpDownloader
+import mc.xalitoria.friends.paper.pack.PackInstaller
+import mc.xalitoria.friends.paper.pack.PackInstaller.Status
 import java.io.ByteArrayOutputStream
 import java.net.InetSocketAddress
 import java.nio.file.Path
@@ -14,12 +20,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.runBlocking
-import mc.xalitoria.friends.paper.data.config.MainConfig.Packs.Handler
-import mc.xalitoria.friends.paper.pack.Downloader
-import mc.xalitoria.friends.paper.pack.HttpDownloader
-import mc.xalitoria.friends.paper.pack.PackInstaller
-import mc.xalitoria.friends.paper.pack.PackInstaller.Status
 
 class PackInstall {
     private val dir: Path = createTempDirectory("packs")

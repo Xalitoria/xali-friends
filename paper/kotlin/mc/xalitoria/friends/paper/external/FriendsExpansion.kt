@@ -1,10 +1,10 @@
 package mc.xalitoria.friends.paper.external
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import mc.xalitoria.friends.paper.XaliFriends
 import mc.xalitoria.friends.paper.data.model.FriendEntry
 import mc.xalitoria.friends.paper.data.model.Profile
 import mc.xalitoria.friends.paper.data.model.RequestEntry
+import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
