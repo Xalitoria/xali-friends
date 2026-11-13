@@ -32,6 +32,7 @@ class LegacyPlayer(prefix: String) : Table(prefix + "player") {
 class LegacyFriend(prefix: String) : Table(prefix + "friend") {
     val owner = varchar("UUID", 40)
     val friend = varchar("friendUUID", 40)
+    // The original plugin's own column name, which has to be read as it is.
     val favorite = bool("isFavourite").nullable()
     val since = dateTime("friendshipStart").nullable()
 

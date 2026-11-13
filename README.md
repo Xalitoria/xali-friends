@@ -97,11 +97,6 @@ The descriptors come from the [Gradle plugin](../xali-gradle/README.md); the `pa
 | `/xalifriends reload` | `friends` | Reload the config and messages. Permission `xalifriends.reload`. |
 | `/xalifriends pack update` | | Install the menu resource pack into Nexo or ItemsAdder again, see [The resource pack](#the-resource-pack). Permission `xalifriends.pack`. |
 
-> [!NOTE]
-> The subcommand, the placeholder fields, the action and the message keys are spelled `favorite`. Earlier versions
-> spelled them `favourite`: a menu or language file written by one needs the word changed (or deleted, to be written
-> again). The database keeps its column names (`favourite_low`, `favourite_high`, and the original's `isFavourite`).
-
 Everyone may use the friend commands (`xalifriends.friend`, default on; `xalifriends.jump`, default on, for `jump`). A
 player is named by name or UUID and found by the last name they were seen under, so a request can go to someone who is
 offline.

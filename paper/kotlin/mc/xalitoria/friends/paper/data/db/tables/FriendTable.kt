@@ -12,8 +12,8 @@ import org.jetbrains.exposed.v1.core.Table
 object FriendTable : Table(DatabaseManager.tableName("friend")) {
     val low = reference("low", PlayerTable.uuid, onDelete = ReferenceOption.CASCADE)
     val high = reference("high", PlayerTable.uuid, onDelete = ReferenceOption.CASCADE)
-    val favoriteLow = bool("favourite_low").default(false)
-    val favoriteHigh = bool("favourite_high").default(false)
+    val favoriteLow = bool("favorite_low").default(false)
+    val favoriteHigh = bool("favorite_high").default(false)
     val since = long("since")
 
     override val primaryKey = PrimaryKey(low, high)
