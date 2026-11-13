@@ -77,7 +77,7 @@ object FriendCommand : XCommand(XaliFriends.INSTANCE) {
                     .executes { ctx ->
                         val list = StringArgumentType.getString(ctx, "list")
                         val move = StringArgumentType.getString(ctx, "move")
-                        guard(ctx)?.let { turnPage(it, list.equals("friends", ignoreCase = true), move.lowercase()) }
+                        guard(ctx)?.let { plugin.listings.turnPage(it.uniqueId, list.equals("friends", ignoreCase = true), move.lowercase()) }
                         Command.SINGLE_SUCCESS
                     })
         ))
@@ -88,24 +88,6 @@ object FriendCommand : XCommand(XaliFriends.INSTANCE) {
                 Command.SINGLE_SUCCESS
             }
         ))
-
-    private fun turnPage(player: Player, friends: Boolean, move: String) {
-        val snapshot = plugin.cache.get(player.uniqueId) ?: return
-        val state = plugin.cache.state(player.uniqueId)
-        val listings = plugin.listings
-        val size = if (friends) snapshot.friends.size else snapshot.requests.size
-        val perPage = if (friends) listings.friendsPerPage() else listings.requestsPerPage()
-        val current = listings.clamp(if (friends) state.friendsPage else state.requestsPage, size, perPage)
-        val next = listings.clamp(
-            when (move) {
-                "next" -> current + 1
-                "previous" -> current - 1
-                else -> 0
-            },
-            size, perPage,
-        )
-        if (friends) state.friendsPage = next else state.requestsPage = next
-    }
 
     /** Opens the menu when there is one, and prints the help otherwise. */
     private suspend fun openMenu(player: Player) {

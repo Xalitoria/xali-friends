@@ -93,7 +93,7 @@ The descriptors come from the [Gradle plugin](../xali-gradle/README.md); the `pa
 | `/xfriend status <text>`, `removestatus` | | Say what the player is up to (64 characters). |
 | `/xfriend jump <friend>` | | Go to the server a friend is on (behind Velocity). |
 | `/xfriend toggle <invites\|notifies\|msgs\|lastseen\|jump\|server>` | | Change a setting. |
-| `/xfriend menu`, `menu page <friends\|requests> <next\|previous\|first>`, `menu select <n>` | | What the menus run. They only set what the next draw shows. |
+| `/xfriend menu`, `menu page <friends\|requests> <next\|previous\|first>`, `menu select <n>` | | What menus written by an earlier version run. They only set what the next draw shows. |
 | `/xalifriends reload` | `friends` | Reload the config and messages. Permission `xalifriends.reload`. |
 | `/xalifriends pack update` | | Install the menu resource pack into Nexo or ItemsAdder again, see [The resource pack](#the-resource-pack). Permission `xalifriends.pack`. |
 
@@ -128,10 +128,29 @@ Nexo item (`nexo:<id>`) included**, or ItemsAdder's. `gui.friends-per-page` and 
 28 at most for the written files) say how many places the lists have; when the lists in a menu change, change these to
 match.
 
-The menus use only what XaliMenu has built in: placeholders for what to show, `text` conditions on them to leave a place
-empty, and its `player` action to run `/xfriend` commands. Nothing of this plugin is registered with XaliMenu. XaliMenu's
-addon API (`registerAction`, `registerCondition`) takes plain classes and Java types, so a friends-specific action is
-possible later.
+The menus draw from placeholders, leave a place empty with XaliMenu's `text` conditions on them, and do things with this
+plugin's own actions, registered with XaliMenu when it is installed. Each does what the `/xfriend` command of the same name
+does, in the background, and then draws the menu again, so a click needs no command and no wait.
+
+| Action | Keys |
+|---|---|
+| `xalifriends:accept`, `deny` | `player`: a UUID, a name or `all`. Placeholders are filled in. |
+| `xalifriends:remove`, `favourite`, `jump` | `player` |
+| `xalifriends:toggle` | `setting`: `invites`, `notifies`, `msgs`, `lastseen`, `jump` or `server`. |
+| `xalifriends:clear-status` | |
+| `xalifriends:select` | `place`: the friend at that place of the list becomes the one `friends-player` is about. |
+| `xalifriends:page` | `list`: `friends` or `requests`; `move`: `next` (the default), `previous` or `first`. |
+
+`after` says what happens once the work is done: `refresh` (the default; `close` for `jump`), `close`, `none` or
+`open:<menu>`. `select` and `page` only set what the next draw shows, so they run at once. A wrong key makes XaliMenu report
+the menu as broken. The action needs the viewer to have `xalifriends.friend`, like the commands. Menus written by an earlier
+version, which run `/xfriend` through the `player` action, keep working; they are only written when missing, so delete a
+file to get the new one.
+
+```
+click.left.actions = [{ type = "xalifriends:accept", player = "%xalifriends_request_1_uuid%" }]
+click.any.actions = [{ type = "xalifriends:remove", player = "%xalifriends_selected_uuid%", after = "open:friends" }]
+```
 
 #### Placeholders
 

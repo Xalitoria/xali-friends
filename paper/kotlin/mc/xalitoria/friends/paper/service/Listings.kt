@@ -24,6 +24,24 @@ class Listings(private val plugin: XaliFriends) {
     /** [page] (counted from 0) kept inside the pages there are. */
     fun clamp(page: Int, size: Int, perPage: Int): Int = page.coerceIn(0, pages(size, perPage) - 1)
 
+    /** Turns [uuid]'s friends or requests page: [move] is `next`, `previous` or anything else for the first page. */
+    fun turnPage(uuid: UUID, friends: Boolean, move: String) {
+        val snapshot = plugin.cache.get(uuid) ?: return
+        val state = plugin.cache.state(uuid)
+        val size = if (friends) snapshot.friends.size else snapshot.requests.size
+        val perPage = if (friends) friendsPerPage() else requestsPerPage()
+        val current = clamp(if (friends) state.friendsPage else state.requestsPage, size, perPage)
+        val next = clamp(
+            when (move) {
+                "next" -> current + 1
+                "previous" -> current - 1
+                else -> 0
+            },
+            size, perPage,
+        )
+        if (friends) state.friendsPage = next else state.requestsPage = next
+    }
+
     fun friendsPerPage(): Int = plugin.config.data.gui.friendsPerPage.coerceAtLeast(1)
 
     fun requestsPerPage(): Int = plugin.config.data.gui.requestsPerPage.coerceAtLeast(1)

@@ -9,14 +9,15 @@ import kotlin.io.path.writeText
 
 /**
  * XaliMenu's side of this plugin: the friend menus are XaliMenu menus, drawn from `%xalifriends_...%` and clicked through
- * XaliMenu's own `player` action, which runs `/xfriend` subcommands. Only made when XaliMenu is installed, since it loads
+ * the `xalifriends:...` actions that [FriendActions] adds. Only made when XaliMenu is installed, since it loads
  * XaliMenu's classes. Any `material` the menus use works, a Nexo item (`nexo:<id>`) included; that is XaliMenu's.
- *
- * Nothing is registered with XaliMenu: the menus use only what it has built in. Its addon API (`registerAction` and
- * `registerCondition`) takes plain classes and Java types, so this plugin could add actions of its own later.
  */
 class MenuHook(private val plugin: XaliFriends) {
     private val api = XaliMenuApi.get()
+
+    init {
+        FriendActions(plugin, api).register()
+    }
 
     /** Whether the main menu exists, which it doesn't until XaliMenu has read its folder. */
     fun hasMenu(): Boolean = plugin.config.data.gui.menu in api.menus

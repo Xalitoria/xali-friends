@@ -6,18 +6,14 @@ package mc.xalitoria.friends.paper.external
  * another item or for a custom one (`nexo:<id>`, `itemsadder:<id>`). They are made by code only because the lists are
  * one item per place, which would be a long file to write out by hand.
  *
- * They use nothing but what XaliMenu has: `%xalifriends_...%` for what to show, `text` conditions on those to leave a
- * place empty, and the `player` action to run `/xfriend` subcommands. Changes made in the background (an accept, a
- * toggle) are drawn a few ticks after the click.
+ * They use `%xalifriends_...%` for what to show, XaliMenu's `text` conditions on those to leave a place empty, and the
+ * `xalifriends:...` actions of [FriendActions] to do things; those draw the menu again when they are done.
  */
 object DefaultMenus {
     private const val PLAYER = "friends-player"
     private const val REQUESTS = "friends-requests"
     private const val SETTINGS = "friends-settings"
     private const val REMOVE = "friends-remove"
-
-    /** Ticks between a click that changes something in the background and drawing the menu again. */
-    private const val REDRAW = 6
 
     /** The columns 1 to 7 of rows 1 to 4: the places a list can use. */
     private val LIST_SLOTS = (1..4).flatMap { row -> (1..7).map { row * 9 + it } }
@@ -59,7 +55,7 @@ object DefaultMenus {
                     ),
                     update = true,
                     view = isTrue("%xalifriends_friend_${n}_present%"),
-                    click = "click.any.actions = [${command("xfriend menu select $n")}, ${open(PLAYER)}]",
+                    click = "click.any.actions = [${act("select", "place" to n)}, ${open(PLAYER)}]",
                 )
             )
         }
@@ -81,7 +77,7 @@ object DefaultMenus {
                 update = true,
                 click = """
                     click.left.actions = [{ type = "close" }, ${command("xfriend status")}]
-                    click.right.actions = [${command("xfriend removestatus")}, ${redraw()}]
+                    click.right.actions = [${act("clear-status")}]
                 """,
             )
         )
@@ -109,8 +105,8 @@ object DefaultMenus {
                     update = true,
                     view = isTrue("%xalifriends_request_${n}_present%"),
                     click = """
-                        click.left.actions = [${command("xfriend accept %xalifriends_request_${n}_uuid%")}, ${redraw()}]
-                        click.right.actions = [${command("xfriend deny %xalifriends_request_${n}_uuid%")}, ${redraw()}]
+                        click.left.actions = [${act("accept", "player" to "%xalifriends_request_${n}_uuid%")}]
+                        click.right.actions = [${act("deny", "player" to "%xalifriends_request_${n}_uuid%")}]
                     """,
                 )
             )
@@ -138,7 +134,7 @@ object DefaultMenus {
                 "favourite_off", "gray_dye", 11, "&eMake a favorite", listOf("&7Favorites are listed first"),
                 update = true,
                 view = isTrue("%xalifriends_selected_favourite%", expected = "false"),
-                click = "click.any.actions = [${command("xfriend favourite %xalifriends_selected_uuid%")}, ${redraw()}]",
+                click = "click.any.actions = [${act("favourite", "player" to "%xalifriends_selected_uuid%")}]",
             )
         )
         appendLine(
@@ -146,7 +142,7 @@ object DefaultMenus {
                 "favourite_on", "yellow_dye", 11, "&6Favorite", listOf("&7Click to take them off your favorites"),
                 update = true,
                 view = isTrue("%xalifriends_selected_favourite%"),
-                click = "click.any.actions = [${command("xfriend favourite %xalifriends_selected_uuid%")}, ${redraw()}]",
+                click = "click.any.actions = [${act("favourite", "player" to "%xalifriends_selected_uuid%")}]",
             )
         )
         appendLine(
@@ -160,7 +156,7 @@ object DefaultMenus {
                 "jump", "ender_pearl", 22, "&bJump to %xalifriends_selected_name%", listOf("&7%xalifriends_selected_seen%", "", "&eClick to go to their server"),
                 update = true,
                 view = isTrue("%xalifriends_selected_jumpable%"),
-                click = "click.any.actions = [{ type = \"close\" }, ${command("xfriend jump %xalifriends_selected_uuid%")}]",
+                click = "click.any.actions = [${act("jump", "player" to "%xalifriends_selected_uuid%")}]",
             )
         )
         appendLine(back(18, main))
@@ -180,7 +176,7 @@ object DefaultMenus {
         appendLine(
             item(
                 "confirm", "lime_concrete", 11, "&aRemove", listOf("&7End the friendship with %xalifriends_selected_name%"),
-                click = "click.any.actions = [${command("xfriend remove %xalifriends_selected_uuid%")}, { type = \"delay\", ticks = $REDRAW, action = ${open(main)} }]",
+                click = "click.any.actions = [${act("remove", "player" to "%xalifriends_selected_uuid%", "after" to "open:$main")}]",
             )
         )
         appendLine(
@@ -210,7 +206,7 @@ object DefaultMenus {
                     toggle.key, toggle.material, toggle.slot, "&e${toggle.label}",
                     listOf("&7Now: &f%xalifriends_setting_${toggle.key}%", "", "&eClick to change"),
                     update = true,
-                    click = "click.any.actions = [${command("xfriend toggle ${toggle.key}")}, ${redraw()}]",
+                    click = "click.any.actions = [${act("toggle", "setting" to toggle.key)}]",
                 )
             )
         }
@@ -224,7 +220,9 @@ object DefaultMenus {
 
     private fun open(menu: String) = """{ type = "open", menu = "$menu" }"""
 
-    private fun redraw() = """{ type = "delay", ticks = $REDRAW, action = { type = "refresh" } }"""
+    /** One of this plugin's actions: [kind] is the part after `xalifriends:`, [settings] the keys next to `type`. */
+    private fun act(kind: String, vararg settings: Pair<String, Any>): String =
+        "{ type = \"xalifriends:$kind\"" + settings.joinToString("") { setting -> ", ${setting.first} = " + setting.second.let { if (it is Int) "$it" else "\"$it\"" } } + " }"
 
     private fun isTrue(placeholder: String, expected: String = "true") =
         """{ condition { type = "text", input = "$placeholder", op = "EQUALS", value = "$expected" } }"""
@@ -247,7 +245,7 @@ object DefaultMenus {
         key, "arrow", slot, name, emptyList(),
         update = true,
         view = isTrue("%xalifriends_has_${move}_$list%"),
-        click = "click.any.actions = [${command("xfriend menu page $list $move")}, { type = \"refresh\" }]",
+        click = "click.any.actions = [${act("page", "list" to list, "move" to move)}]",
     )
 
     /** One item of a menu file; [view] is the gate that decides whether it is shown. */
