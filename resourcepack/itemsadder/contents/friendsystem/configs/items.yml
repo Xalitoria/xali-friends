@@ -4,103 +4,103 @@ info:
 font_images:
   friends:
     show_in_gui: true
-    path: party/ui/friends.png
+    path: friends/ui/friends.png
     symbol: ᛧ
     scale_ratio: 256
     y_position: 37
 
   friends_no_party:
     show_in_gui: true
-    path: party/ui/friends_no_party.png
+    path: friends/ui/friends_no_party.png
     symbol: ᛳ
     scale_ratio: 256
     y_position: 37
 
   anvil:
     show_in_gui: true
-    path: party/ui/anvil.png
+    path: friends/ui/anvil.png
     symbol: ᛨ
     scale_ratio: 256
     y_position: 40
 
   member:
     show_in_gui: true
-    path: party/ui/member.png
+    path: friends/ui/member.png
     symbol: ᛩ
     scale_ratio: 256
     y_position: 37
 
   party:
     show_in_gui: true
-    path: party/ui/party.png
+    path: friends/ui/party.png
     symbol: ᛪ
     scale_ratio: 256
     y_position: 37
 
   profile:
     show_in_gui: true
-    path: party/ui/profile.png
+    path: friends/ui/profile.png
     symbol: ᛫
     scale_ratio: 256
     y_position: 37
 
   requests:
     show_in_gui: true
-    path: party/ui/requests.png
+    path: friends/ui/requests.png
     symbol: ᛬
     scale_ratio: 256
     y_position: 37
 
   settings:
     show_in_gui: true
-    path: party/ui/settings.png
+    path: friends/ui/settings.png
     symbol: ᛭
     scale_ratio: 256
     y_position: 37
 
   settings_teleport:
     show_in_gui: true
-    path: party/ui/settings_teleport.png
+    path: friends/ui/settings_teleport.png
     symbol: ᛴ
     scale_ratio: 256
     y_position: 37
     
   settings2:
     show_in_gui: true
-    path: party/ui/settings2.png
+    path: friends/ui/settings2.png
     symbol: ᛸ
     scale_ratio: 256
     y_position: 37
 
   settings2_no_party:
     show_in_gui: true
-    path: party/ui/settings2_no_party.png
+    path: friends/ui/settings2_no_party.png
     symbol: ᛷ
     scale_ratio: 256
     y_position: 37
 
-  party_neg_shift_16:
+  friends_neg_shift_16:
     show_in_gui: true
     path: required/null.png
     symbol: ᛮ
     scale_ratio: -18
     y_position: -32768
 
-  party_neg_shift_2:
+  friends_neg_shift_2:
     show_in_gui: true
     path: required/null.png
     symbol: ᛯ
     scale_ratio: -4
     y_position: -32768
 
-  party_neg_shift_64:
+  friends_neg_shift_64:
     show_in_gui: true
     path: required/null.png
     symbol: ᛰ
     scale_ratio: -66
     y_position: -32768
 
-  party_neg_shift_4:
+  friends_neg_shift_4:
     show_in_gui: true
     path: required/null.png
     symbol: ᛱ
@@ -115,7 +115,7 @@ items:
       model_id: 3701
       generate: true
       textures:
-      - party/buttons/generated/arrow_left.png
+      - friends/buttons/generated/arrow_left.png
 
   arrow_right:
     display_name: 'arrow_right'
@@ -124,7 +124,7 @@ items:
       model_id: 3702
       generate: true
       textures:
-      - party/buttons/generated/arrow_right.png
+      - friends/buttons/generated/arrow_right.png
 
   cancel:
     display_name: 'cancel'
@@ -133,7 +133,7 @@ items:
       model_id: 3703
       generate: true
       textures:
-      - party/buttons/generated/cancel.png
+      - friends/buttons/generated/cancel.png
 
   confirm:
     display_name: 'confirm'
@@ -142,7 +142,7 @@ items:
       model_id: 3704
       generate: true
       textures:
-      - party/buttons/generated/confirm.png
+      - friends/buttons/generated/confirm.png
 
   like:
     display_name: 'like'
@@ -151,7 +151,7 @@ items:
       model_id: 3705
       generate: true
       textures:
-      - party/buttons/generated/like.png
+      - friends/buttons/generated/like.png
 
   notify:
     display_name: 'notify'
@@ -160,7 +160,7 @@ items:
       model_id: 3706
       generate: true
       textures:
-      - party/buttons/generated/notify.png
+      - friends/buttons/generated/notify.png
 
   no_notify:
     display_name: 'no_notify'
@@ -169,7 +169,7 @@ items:
       model_id: 3715
       generate: true
       textures:
-      - party/buttons/generated/no_notify.png
+      - friends/buttons/generated/no_notify.png
 
 
   settings:
@@ -179,7 +179,7 @@ items:
       model_id: 3707
       generate: true
       textures:
-      - party/buttons/generated/settings.png
+      - friends/buttons/generated/settings.png
 
   toggle_off:
     display_name: 'toggle_off'
@@ -188,7 +188,7 @@ items:
       model_id: 3708
       generate: true
       textures:
-      - party/buttons/generated/toggle_off.png
+      - friends/buttons/generated/toggle_off.png
 
   toggle_on:
     display_name: 'toggle_on'
@@ -197,7 +197,7 @@ items:
       model_id: 3709
       generate: true
       textures:
-      - party/buttons/generated/toggle_on.png
+      - friends/buttons/generated/toggle_on.png
 
   toggle_onlyfriends:
     display_name: 'toggle_onlyfriends'
@@ -206,7 +206,7 @@ items:
       model_id: 3718
       generate: true
       textures:
-      - party/buttons/generated/toggle_onlyfriends.png
+      - friends/buttons/generated/toggle_onlyfriends.png
       
   sort:
     display_name: 'sort'
@@ -215,7 +215,7 @@ items:
       model_id: 3716
       generate: true
       textures:
-      - party/buttons/generated/sort.png
+      - friends/buttons/generated/sort.png
 
   accept:
     display_name: 'accept'
@@ -223,7 +223,7 @@ items:
       material: PAPER
       model_id: 3710
       generate: false
-      model_path: party/accept.json
+      model_path: friends/accept.json
 
   deny:
     display_name: 'deny'
@@ -231,7 +231,7 @@ items:
       material: PAPER
       model_id: 3711
       generate: false
-      model_path: party/deny.json
+      model_path: friends/deny.json
       
   invite:
     display_name: 'invite'
@@ -239,7 +239,7 @@ items:
       material: PAPER
       model_id: 3712
       generate: false
-      model_path: party/invite.json
+      model_path: friends/invite.json
 
   jump:
     display_name: 'jump'
@@ -247,7 +247,7 @@ items:
       material: PAPER
       model_id: 3713
       generate: false
-      model_path: party/jump.json
+      model_path: friends/jump.json
 
   send:
     display_name: 'send'
@@ -255,7 +255,7 @@ items:
       material: PAPER
       model_id: 3714
       generate: false
-      model_path: party/send.json
+      model_path: friends/send.json
 
   empty:
     display_name: 'empty'
@@ -287,4 +287,4 @@ items:
       material: PAPER
       model_id: 3717
       generate: false
-      model_path: party/teleport.json
+      model_path: friends/teleport.json

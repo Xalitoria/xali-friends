@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "friendsystem:party/buttons/items/invite",
-		"particle": "friendsystem:party/buttons/items/invite"
+		"0": "friends/buttons/items/invite",
+		"particle": "friends/buttons/items/invite"
 	},
 	"elements": [
 		{

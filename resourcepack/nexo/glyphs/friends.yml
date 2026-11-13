@@ -1,74 +1,74 @@
 friends:
-  texture: party/ui/friends.png
+  texture: friends/ui/friends.png
   ascent: 37
   height: 256
   char: ᛧ
 friends_no_party:
-  texture: party/ui/friends_no_party.png
+  texture: friends/ui/friends_no_party.png
   ascent: 37
   height: 256
   char: ᛳ
 anvil:
-  texture: party/ui/anvil.png
+  texture: friends/ui/anvil.png
   ascent: 40
   height: 256
   char: ᛨ
 member:
-  texture: party/ui/member.png
+  texture: friends/ui/member.png
   ascent: 37
   height: 256
   char: ᛩ
 party:
-  texture: party/ui/party.png
+  texture: friends/ui/party.png
   ascent: 37
   height: 256
   char: ᛪ
 profile:
-  texture: party/ui/profile.png
+  texture: friends/ui/profile.png
   ascent: 37
   height: 256
   char: ᛫
 requests:
-  texture: party/ui/requests.png
+  texture: friends/ui/requests.png
   ascent: 37
   height: 256
   char: ᛬
 settings:
-  texture: party/ui/settings.png
+  texture: friends/ui/settings.png
   ascent: 37
   height: 256
   char: ᛭
 settings_teleport:
-  texture: party/ui/settings_teleport.png
+  texture: friends/ui/settings_teleport.png
   ascent: 37
   height: 256
   char: ᛴ
 settings2:
-  texture: party/ui/settings2.png
+  texture: friends/ui/settings2.png
   ascent: 37
   height: 256
   char: ᛸ
 settings2_no_party:
-  texture: party/ui/settings2_no_party.png
+  texture: friends/ui/settings2_no_party.png
   ascent: 37
   height: 256
   char: ᛷ
-party_neg_shift_16:
+friends_neg_shift_16:
   texture: required/null.png
   ascent: -32768
   height: -18
   char: ᛮ
-party_neg_shift_2:
+friends_neg_shift_2:
   texture: required/null.png
   ascent: -32768
   height: -4
   char: ᛯ
-party_neg_shift_64:
+friends_neg_shift_64:
   texture: required/null.png
   ascent: -32768
   height: -66
   char: ᛰ
-party_neg_shift_4:
+friends_neg_shift_4:
   texture: required/null.png
   ascent: -32768
   height: -6

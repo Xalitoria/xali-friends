@@ -4,7 +4,7 @@
       "chars": [
         "ᛧ"
       ],
-      "file": "party/ui/friends.png",
+      "file": "friends/ui/friends.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -13,7 +13,7 @@
       "chars": [
         "ᛳ"
       ],
-      "file": "party/ui/friends_no_party.png",
+      "file": "friends/ui/friends_no_party.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -22,7 +22,7 @@
       "chars": [
         "ᛨ"
       ],
-      "file": "party/ui/anvil.png",
+      "file": "friends/ui/anvil.png",
       "ascent": 40,
       "height": 256,
       "type": "bitmap"
@@ -31,7 +31,7 @@
       "chars": [
         "ᛩ"
       ],
-      "file": "party/ui/member.png",
+      "file": "friends/ui/member.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -40,7 +40,7 @@
       "chars": [
         "ᛪ"
       ],
-      "file": "party/ui/party.png",
+      "file": "friends/ui/party.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -49,7 +49,7 @@
       "chars": [
         "᛫"
       ],
-      "file": "party/ui/profile.png",
+      "file": "friends/ui/profile.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -58,7 +58,7 @@
       "chars": [
         "᛬"
       ],
-      "file": "party/ui/requests.png",
+      "file": "friends/ui/requests.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -67,7 +67,7 @@
       "chars": [
         "᛭"
       ],
-      "file": "party/ui/settings.png",
+      "file": "friends/ui/settings.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -76,7 +76,7 @@
       "chars": [
         "ᛴ"
       ],
-      "file": "party/ui/settings_teleport.png",
+      "file": "friends/ui/settings_teleport.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -85,7 +85,7 @@
       "chars": [
         "ᛸ"
       ],
-      "file": "party/ui/settings2.png",
+      "file": "friends/ui/settings2.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
@@ -94,7 +94,7 @@
       "chars": [
         "ᛷ"
       ],
-      "file": "party/ui/settings2_no_party.png",
+      "file": "friends/ui/settings2_no_party.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"

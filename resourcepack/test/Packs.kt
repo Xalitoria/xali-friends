@@ -114,7 +114,7 @@ class Packs {
         for (source in directories) assertTrue(File(vanilla, "assets/minecraft/textures/${source.dir}").isDirectory, "atlas directory ${source.dir}")
         for (single in singles) assertTrue(File(vanilla, "assets/minecraft/textures/$single.png").isFile, "atlas texture $single")
 
-        for (file in jsonFiles(File(vanilla, "assets/minecraft/models")) + jsonFiles(File(vanilla, "assets/party/models"))) {
+        for (file in jsonFiles(File(vanilla, "assets/minecraft/models")) + jsonFiles(File(vanilla, "assets/friends/models"))) {
             val model = json(file).jsonObject
             model["parent"]?.jsonPrimitive?.content?.let { parent ->
                 assertTrue(name(parent) in vanillaModels || vanillaModelFile(parent).isFile, "${file.name}: parent $parent")

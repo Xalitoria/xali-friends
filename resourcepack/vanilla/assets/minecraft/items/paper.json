@@ -67,49 +67,49 @@
         "threshold": 3708,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/toggle_off"
+          "model": "minecraft:friends/toggle_off"
         }
       },
       {
         "threshold": 3709,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/toggle_on"
+          "model": "minecraft:friends/toggle_on"
         }
       },
       {
         "threshold": 3710,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/accept"
+          "model": "minecraft:friends/accept"
         }
       },
       {
         "threshold": 3711,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/deny"
+          "model": "minecraft:friends/deny"
         }
       },
       {
         "threshold": 3712,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/invite"
+          "model": "minecraft:friends/invite"
         }
       },
       {
         "threshold": 3713,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/jump"
+          "model": "minecraft:friends/jump"
         }
       },
       {
         "threshold": 3714,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/send"
+          "model": "minecraft:friends/send"
         }
       },
       {
@@ -130,14 +130,14 @@
         "threshold": 3717,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/teleport"
+          "model": "minecraft:friends/teleport"
         }
       },
       {
         "threshold": 3718,
         "model": {
           "type": "minecraft:model",
-          "model": "minecraft:party/toggle_onlyfriends"
+          "model": "minecraft:friends/toggle_onlyfriends"
         }
       }
     ]

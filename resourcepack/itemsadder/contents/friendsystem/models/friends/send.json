@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "party/buttons/items/send",
-		"particle": "party/buttons/items/send"
+		"0": "friendsystem:friends/buttons/items/send",
+		"particle": "friendsystem:friends/buttons/items/send"
 	},
 	"elements": [
 		{

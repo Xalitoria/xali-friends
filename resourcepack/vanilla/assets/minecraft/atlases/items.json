@@ -2,8 +2,8 @@
   "sources": [
     {
       "type": "minecraft:directory",
-      "prefix": "party/buttons/",
-      "source": "party/buttons"
+      "prefix": "friends/buttons/",
+      "source": "friends/buttons"
     },
     {
       "type": "minecraft:single",

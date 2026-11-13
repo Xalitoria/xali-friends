@@ -38,7 +38,7 @@
         "threshold": 5000,
         "model": {
           "type": "minecraft:special",
-          "base": "party:item/little_head",
+          "base": "friends:item/little_head",
           "model": {
             "type": "minecraft:player_head"
           },
@@ -72,7 +72,7 @@
         "threshold": 10050,
         "model": {
           "type": "minecraft:special",
-          "base": "party:item/big_head",
+          "base": "friends:item/big_head",
           "model": {
             "type": "minecraft:player_head"
           },

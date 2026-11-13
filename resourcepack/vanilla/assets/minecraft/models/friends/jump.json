@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "party/buttons/items/deny",
-		"particle": "party/buttons/items/deny"
+		"0": "friends/buttons/items/jump",
+		"particle": "friends/buttons/items/jump"
 	},
 	"elements": [
 		{

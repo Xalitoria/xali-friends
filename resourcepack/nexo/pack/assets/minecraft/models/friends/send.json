@@ -1,13 +1,13 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "party/buttons/items/teleport",
-		"particle": "party/buttons/items/teleport"
+		"0": "friends/buttons/items/send",
+		"particle": "friends/buttons/items/send"
 	},
 	"elements": [
 		{
-			"from": [0, 0, 0],
-			"to": [26, 8, 0],
+			"from": [-9, 0, 0],
+			"to": [32, 8, 0],
 			"faces": {
 				"north": {"uv": [0, 0, 16, 8], "texture": "#missing"},
 				"east": {"uv": [0, 0, 0, 8], "texture": "#missing"},
@@ -21,7 +21,7 @@
 	"gui_light": "front",
 	"display": {
 		"gui": {
-			"translation": [8, 8, 0],
+			"translation": [26, 8, 0],
 			"scale": [2, 2, 2]
 		}
 	}
