@@ -32,7 +32,7 @@ class LegacyPlayer(prefix: String) : Table(prefix + "player") {
 class LegacyFriend(prefix: String) : Table(prefix + "friend") {
     val owner = varchar("UUID", 40)
     val friend = varchar("friendUUID", 40)
-    val favourite = bool("isFavourite").nullable()
+    val favorite = bool("isFavourite").nullable()
     val since = dateTime("friendshipStart").nullable()
 
     override val primaryKey = PrimaryKey(owner, friend)

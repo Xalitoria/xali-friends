@@ -38,7 +38,7 @@ data class Profile(
     val status: String?,
 )
 
-data class FriendEntry(val profile: Profile, val favourite: Boolean, val since: Instant)
+data class FriendEntry(val profile: Profile, val favorite: Boolean, val since: Instant)
 
 data class RequestEntry(val profile: Profile, val date: Instant)
 

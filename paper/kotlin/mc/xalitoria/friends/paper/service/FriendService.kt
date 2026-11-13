@@ -83,11 +83,11 @@ class FriendService(private val plugin: XaliFriends) {
         }
     }
 
-    suspend fun favourite(actor: Player, target: String) = withTarget(actor, target) { _, other ->
-        when (FriendRepository.toggleFavourite(actor.uniqueId, other.uuid)) {
+    suspend fun favorite(actor: Player, target: String) = withTarget(actor, target) { _, other ->
+        when (FriendRepository.toggleFavorite(actor.uniqueId, other.uuid)) {
             null -> actor.fail(msg.notFriends(other.name))
-            true -> { reload(actor.uniqueId); actor.pass(msg.favouriteAdded(other.name)) }
-            false -> { reload(actor.uniqueId); actor.pass(msg.favouriteRemoved(other.name)) }
+            true -> { reload(actor.uniqueId); actor.pass(msg.favoriteAdded(other.name)) }
+            false -> { reload(actor.uniqueId); actor.pass(msg.favoriteRemoved(other.name)) }
         }
     }
 

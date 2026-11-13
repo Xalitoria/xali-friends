@@ -31,11 +31,11 @@ object FriendRepository {
             val asLow = FriendTable.join(PlayerTable, JoinType.INNER, FriendTable.high, PlayerTable.uuid)
                 .selectAll()
                 .where { FriendTable.low eq id }
-                .map { FriendEntry(it.toProfile(), it[FriendTable.favouriteLow], Instant.ofEpochMilli(it[FriendTable.since])) }
+                .map { FriendEntry(it.toProfile(), it[FriendTable.favoriteLow], Instant.ofEpochMilli(it[FriendTable.since])) }
             val asHigh = FriendTable.join(PlayerTable, JoinType.INNER, FriendTable.low, PlayerTable.uuid)
                 .selectAll()
                 .where { FriendTable.high eq id }
-                .map { FriendEntry(it.toProfile(), it[FriendTable.favouriteHigh], Instant.ofEpochMilli(it[FriendTable.since])) }
+                .map { FriendEntry(it.toProfile(), it[FriendTable.favoriteHigh], Instant.ofEpochMilli(it[FriendTable.since])) }
             asLow + asHigh
         }
 
@@ -88,16 +88,16 @@ object FriendRepository {
         }
 
     /** Flips [friend] as one of [owner]'s favorites and says what it is now; null if they aren't friends. */
-    suspend fun toggleFavourite(owner: UUID, friend: UUID): Boolean? =
+    suspend fun toggleFavorite(owner: UUID, friend: UUID): Boolean? =
         dbTransaction {
             val low = Pairing.low(owner, friend).toKotlinUuid()
             val high = Pairing.high(owner, friend).toKotlinUuid()
             val row = FriendTable.selectAll().where { (FriendTable.low eq low) and (FriendTable.high eq high) }.singleOrNull()
                 ?: return@dbTransaction null
             val ownerIsLow = Pairing.isLow(owner, friend)
-            val now = !(if (ownerIsLow) row[FriendTable.favouriteLow] else row[FriendTable.favouriteHigh])
+            val now = !(if (ownerIsLow) row[FriendTable.favoriteLow] else row[FriendTable.favoriteHigh])
             FriendTable.update({ (FriendTable.low eq low) and (FriendTable.high eq high) }) {
-                if (ownerIsLow) it[favouriteLow] = now else it[favouriteHigh] = now
+                if (ownerIsLow) it[favoriteLow] = now else it[favoriteHigh] = now
             }
             now
         }

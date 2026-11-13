@@ -41,7 +41,7 @@ object FriendActionKinds {
         "accept" to After.Refresh,
         "deny" to After.Refresh,
         "remove" to After.Refresh,
-        "favourite" to After.Refresh,
+        "favorite" to After.Refresh,
         "jump" to After.Close,
     )
 
@@ -70,7 +70,7 @@ object FriendActionKinds {
  * | Action | Keys |
  * |---|---|
  * | `xalifriends:accept`, `deny` | `player`: a UUID, a name or `all`; placeholders are filled in |
- * | `xalifriends:remove`, `favourite`, `jump` | `player` |
+ * | `xalifriends:remove`, `favorite`, `jump` | `player` |
  * | `xalifriends:toggle` | `setting`: `invites`, `notifies`, `msgs`, `lastseen`, `jump` or `server` |
  * | `xalifriends:clear-status` | |
  * | `xalifriends:select` | `place`: the friend at that place of the list is the one their menu is about |
@@ -97,7 +97,7 @@ class FriendActions(private val plugin: XaliFriends, private val api: XaliMenuAp
                         if (target.equals("all", ignoreCase = true)) plugin.service.answerAll(actor, accept = false) else plugin.service.deny(actor, target)
                     }
                     "remove" -> background(after) { actor, ctx -> plugin.service.remove(actor, ctx.parse(player)) }
-                    "favourite" -> background(after) { actor, ctx -> plugin.service.favourite(actor, ctx.parse(player)) }
+                    "favorite" -> background(after) { actor, ctx -> plugin.service.favorite(actor, ctx.parse(player)) }
                     else -> background(after) { actor, ctx -> plugin.service.jump(actor, ctx.parse(player)) }
                 }
             })

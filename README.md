@@ -88,7 +88,7 @@ The descriptors come from the [Gradle plugin](../xali-gradle/README.md); the `pa
 | `/xfriend` | `friend`, `f` | Open the friend menu (the help, when there is no menu). |
 | `/xfriend add <player>` | | Ask a player to be friends. They need friend requests switched on. |
 | `/xfriend accept <player\|all>`, `deny <player\|all>` | | Answer a request. |
-| `/xfriend remove <player>`, `favourite <player>` | | End a friendship; flip a favorite (favorites are listed first). |
+| `/xfriend remove <player>`, `favorite <player>` | | End a friendship; flip a favorite (favorites are listed first). |
 | `/xfriend list [page]`, `requests [page]` | | The friends, and the requests waiting. |
 | `/xfriend status <text>`, `removestatus` | | Say what the player is up to (64 characters). |
 | `/xfriend jump <friend>` | | Go to the server a friend is on (behind Velocity). |
@@ -98,8 +98,9 @@ The descriptors come from the [Gradle plugin](../xali-gradle/README.md); the `pa
 | `/xalifriends pack update` | | Install the menu resource pack into Nexo or ItemsAdder again, see [The resource pack](#the-resource-pack). Permission `xalifriends.pack`. |
 
 > [!NOTE]
-> The subcommand, the placeholder fields and the messages keep the original plugin's spelling, `favourite`. Renaming
-> them would break existing menus and language files.
+> The subcommand, the placeholder fields, the action and the message keys are spelled `favorite`. Earlier versions
+> spelled them `favourite`: a menu or language file written by one needs the word changed (or deleted, to be written
+> again). The database keeps its column names (`favourite_low`, `favourite_high`, and the original's `isFavourite`).
 
 Everyone may use the friend commands (`xalifriends.friend`, default on; `xalifriends.jump`, default on, for `jump`). A
 player is named by name or UUID and found by the last name they were seen under, so a request can go to someone who is
@@ -135,7 +136,7 @@ does, in the background, and then draws the menu again, so a click needs no comm
 | Action | Keys |
 |---|---|
 | `xalifriends:accept`, `deny` | `player`: a UUID, a name or `all`. Placeholders are filled in. |
-| `xalifriends:remove`, `favourite`, `jump` | `player` |
+| `xalifriends:remove`, `favorite`, `jump` | `player` |
 | `xalifriends:toggle` | `setting`: `invites`, `notifies`, `msgs`, `lastseen`, `jump` or `server`. |
 | `xalifriends:clear-status` | |
 | `xalifriends:select` | `place`: the friend at that place of the list becomes the one `friends-player` is about. |
@@ -162,7 +163,7 @@ click.any.actions = [{ type = "xalifriends:remove", player = "%xalifriends_selec
 | `page_friends`, `pages_friends`, `page_requests`, `pages_requests` | The page the menu is on, and how many there are. |
 | `has_next_friends`, `has_previous_friends`, `has_next_requests`, `has_previous_requests` | `true` or `false`. |
 | `setting_invites`, `setting_notifies`, `setting_msgs`, `setting_lastseen`, `setting_jump`, `setting_server` | A setting as a word (from `words` in the language file). |
-| `friend_<n>_<field>` | Place *n* (from 1) of the friends on the current page. Fields: `present`, `name`, `uuid`, `status`, `online`, `state`, `seen` (online, and on which server when that is known and shown), `server` (empty when unknown or hidden), `jumpable` (`true` when the viewer may jump to them now), `since`, `favourite`, `marker`. |
+| `friend_<n>_<field>` | Place *n* (from 1) of the friends on the current page. Fields: `present`, `name`, `uuid`, `status`, `online`, `state`, `seen` (online, and on which server when that is known and shown), `server` (empty when unknown or hidden), `jumpable` (`true` when the viewer may jump to them now), `since`, `favorite`, `marker`. |
 | `request_<n>_<field>` | The same for requests: `present`, `name`, `uuid`, `date`. |
 | `selected_<field>` | The friend picked in the menu, with a friend's fields. |
 

@@ -55,9 +55,9 @@ class MysqlMigration {
             LocalDateTime.of(2024, 9, 1, 12, 30, 15).atZone(ZoneId.systemDefault()).toInstant(),
             oldTimer.lastSeen,
         )
-        assertEquals(true, FriendRepository.friends(old).single { it.profile.uuid == friend }.favourite)
-        assertEquals(false, FriendRepository.friends(friend).single { it.profile.uuid == old }.favourite)
-        assertEquals(true, FriendRepository.friends(asker).single { it.profile.uuid == friend }.favourite)
+        assertEquals(true, FriendRepository.friends(old).single { it.profile.uuid == friend }.favorite)
+        assertEquals(false, FriendRepository.friends(friend).single { it.profile.uuid == old }.favorite)
+        assertEquals(true, FriendRepository.friends(asker).single { it.profile.uuid == friend }.favorite)
         assertEquals(listOf(asker), FriendRepository.requests(old, null).map { it.profile.uuid })
     }
 

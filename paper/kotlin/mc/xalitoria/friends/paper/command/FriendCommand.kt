@@ -33,7 +33,7 @@ object FriendCommand : XCommand(XaliFriends.INSTANCE) {
         .then(Commands.literal("help").executes { ctx -> ctx.source.sender send cmdMsg.help(mainCommand); Command.SINGLE_SUCCESS })
         .then(withPlayer("add", online = true) { player, name -> plugin.service.add(player, name) })
         .then(withPlayer("remove", friends = true) { player, name -> plugin.service.remove(player, name) })
-        .then(withPlayer("favourite", friends = true) { player, name -> plugin.service.favourite(player, name) })
+        .then(withPlayer("favorite", friends = true) { player, name -> plugin.service.favorite(player, name) })
         .then(withPlayer("jump", friends = true) { player, name -> plugin.service.jump(player, name) })
         .then(withPlayer("accept", requests = true) { player, name ->
             if (name.equals("all", ignoreCase = true)) plugin.service.answerAll(player, accept = true) else plugin.service.accept(player, name)
@@ -117,7 +117,7 @@ object FriendCommand : XCommand(XaliFriends.INSTANCE) {
         friends.drop((shown - 1) * perPage).take(perPage).forEach { entry ->
             val online = plugin.presentation.isOnline(player, entry.profile)
             player send msg.listEntry(
-                if (entry.favourite) words.favouriteMarker else words.plainMarker,
+                if (entry.favorite) words.favoriteMarker else words.plainMarker,
                 entry.profile.name,
                 if (online) plugin.presentation.online(entry.profile) else plugin.presentation.lastSeen(entry.profile),
             )

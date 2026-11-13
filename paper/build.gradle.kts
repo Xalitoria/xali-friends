@@ -12,7 +12,7 @@ dependencies {
     api(libs.bundles.database)
     api(libs.bundles.exposed)
 
-    // Folia's API is Paper's plus the regionised scheduler, so it covers both platforms.
+    // Folia's API is Paper's plus the regionized scheduler, so it covers both platforms.
     compileOnly(libs.folia.api)
     compileOnly(libs.placeholderapi)
     // XaliMenu and XaliChat provide these at run time (their jars carry the API), when they are installed.

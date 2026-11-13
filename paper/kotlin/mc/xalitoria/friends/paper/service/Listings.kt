@@ -12,7 +12,7 @@ class Listings(private val plugin: XaliFriends) {
     /** Favorites first, then those online, then by name. */
     fun friends(viewer: Player?, snapshot: Snapshot): List<FriendEntry> =
         snapshot.friends.sortedWith(
-            compareByDescending<FriendEntry> { it.favourite }
+            compareByDescending<FriendEntry> { it.favorite }
                 .thenByDescending { plugin.presentation.isOnline(viewer, it.profile) }
                 .thenBy { it.profile.name.lowercase() }
         )

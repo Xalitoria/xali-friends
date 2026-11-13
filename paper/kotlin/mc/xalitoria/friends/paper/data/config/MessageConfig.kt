@@ -22,7 +22,7 @@ data class MessageConfig(
         private val help: String = """
             {#a0a>}&lXALI{#fff<}&f&lFRIENDS &7> &dHELP
             &d/{0} &r- open the friend menu
-            &d/{0} &radd|remove|accept|deny|favourite <player> &7- accept and deny take 'all' too
+            &d/{0} &radd|remove|accept|deny|favorite <player> &7- accept and deny take 'all' too
             &d/{0} &rlist [page] &7- your friends
             &d/{0} &rrequests [page] &7- requests waiting for you
             &d/{0} &rstatus <text> &7- say what you are up to (&rremovestatus&7 clears it)
@@ -89,10 +89,10 @@ data class MessageConfig(
         private val removedOther: String = "{0} ended your friendship.",
         @SerialName("not-friends")
         private val notFriends: String = "{0} is not your friend.",
-        @SerialName("favourite-added")
-        private val favouriteAdded: String = "{0} is now a favorite.",
-        @SerialName("favourite-removed")
-        private val favouriteRemoved: String = "{0} is no longer a favorite.",
+        @SerialName("favorite-added")
+        private val favoriteAdded: String = "{0} is now a favorite.",
+        @SerialName("favorite-removed")
+        private val favoriteRemoved: String = "{0} is no longer a favorite.",
         @SerialName("toggle-invites")
         private val toggleInvites: String = "Friend requests: {0}",
         @SerialName("toggle-notifies")
@@ -155,8 +155,8 @@ data class MessageConfig(
         fun removed(name: String) = removed.formatArgs(name)
         fun removedOther(name: String) = removedOther.formatArgs(name)
         fun notFriends(name: String) = notFriends.formatArgs(name)
-        fun favouriteAdded(name: String) = favouriteAdded.formatArgs(name)
-        fun favouriteRemoved(name: String) = favouriteRemoved.formatArgs(name)
+        fun favoriteAdded(name: String) = favoriteAdded.formatArgs(name)
+        fun favoriteRemoved(name: String) = favoriteRemoved.formatArgs(name)
         fun toggleInvites(state: String) = toggleInvites.formatArgs(state)
         fun toggleNotifies(state: String) = toggleNotifies.formatArgs(state)
         fun toggleMsgs(state: String) = toggleMsgs.formatArgs(state)
@@ -212,8 +212,8 @@ data class MessageConfig(
         val never: String = "never",
         @SerialName("no-status")
         val noStatus: String = "-",
-        @SerialName("favourite-marker")
-        val favouriteMarker: String = "&6★",
+        @SerialName("favorite-marker")
+        val favoriteMarker: String = "&6★",
         @SerialName("plain-marker")
         val plainMarker: String = "&7-",
     ) {

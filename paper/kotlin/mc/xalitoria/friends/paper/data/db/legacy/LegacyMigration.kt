@@ -149,7 +149,7 @@ class LegacyMigration(
             val owner = parse(row[legacy.friend.owner])
             val friend = parse(row[legacy.friend.friend])
             if (owner == null || friend == null || owner == friend || owner !in known || friend !in known) { skipped++; continue }
-            friends += Friend(owner, friend, row[legacy.friend.favourite] ?: false, row[legacy.friend.since]?.let(::millis) ?: fallback)
+            friends += Friend(owner, friend, row[legacy.friend.favorite] ?: false, row[legacy.friend.since]?.let(::millis) ?: fallback)
         }
         val sides = friends.partition { Pairing.isLow(it.owner, it.friend) }
         val lows = sides.first
@@ -159,7 +159,7 @@ class LegacyMigration(
                 for (friend in chunk) FriendTable.insertIgnore {
                     it[low] = friend.owner.toKotlinUuid()
                     it[high] = friend.friend.toKotlinUuid()
-                    it[favouriteLow] = friend.favourite
+                    it[favoriteLow] = friend.favorite
                     it[since] = friend.since
                 }
             }
@@ -169,12 +169,12 @@ class LegacyMigration(
                 for (friend in chunk) {
                     val low = friend.friend.toKotlinUuid()
                     val high = friend.owner.toKotlinUuid()
-                    val updated = FriendTable.update({ (FriendTable.low eq low) and (FriendTable.high eq high) }) { it[favouriteHigh] = friend.favourite }
+                    val updated = FriendTable.update({ (FriendTable.low eq low) and (FriendTable.high eq high) }) { it[favoriteHigh] = friend.favorite }
                     // Only this side was in the original's table.
                     if (updated == 0) FriendTable.insertIgnore {
                         it[FriendTable.low] = low
                         it[FriendTable.high] = high
-                        it[favouriteHigh] = friend.favourite
+                        it[favoriteHigh] = friend.favorite
                         it[since] = friend.since
                     }
                 }
@@ -222,7 +222,7 @@ class LegacyMigration(
         val showLastSeen: Boolean, val jump: Boolean, val showServer: Boolean, val lastSeen: Long?, val status: String?,
     )
 
-    private class Friend(val owner: UUID, val friend: UUID, val favourite: Boolean, val since: Long)
+    private class Friend(val owner: UUID, val friend: UUID, val favorite: Boolean, val since: Long)
 
     private class Request(val target: UUID, val requester: UUID, val sentAt: Long)
 

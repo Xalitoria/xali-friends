@@ -94,13 +94,13 @@ class FriendRepository {
         for (side in listOf(alice to bob, bob to alice)) {
             val owner = side.first
             val other = side.second
-            assertEquals(true, FriendRepository.toggleFavourite(owner, other))
-            assertTrue(FriendRepository.friends(owner).single().favourite)
-            assertFalse(FriendRepository.friends(other).single().favourite)
-            assertEquals(false, FriendRepository.toggleFavourite(owner, other))
-            assertFalse(FriendRepository.friends(owner).single().favourite)
+            assertEquals(true, FriendRepository.toggleFavorite(owner, other))
+            assertTrue(FriendRepository.friends(owner).single().favorite)
+            assertFalse(FriendRepository.friends(other).single().favorite)
+            assertEquals(false, FriendRepository.toggleFavorite(owner, other))
+            assertFalse(FriendRepository.friends(owner).single().favorite)
         }
-        assertNull(FriendRepository.toggleFavourite(alice, carol), "they aren't friends")
+        assertNull(FriendRepository.toggleFavorite(alice, carol), "they aren't friends")
     }
 
     @Test

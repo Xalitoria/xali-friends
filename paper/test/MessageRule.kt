@@ -18,7 +18,7 @@ class MessageRule {
         Profile(uuid, "p", Settings(msgs = msgs), null, null)
 
     private fun snapshot(msgs: SettingState) =
-        Snapshot(profile(receiver, msgs), listOf(FriendEntry(profile(friend), favourite = false, since = java.time.Instant.EPOCH)), emptyList())
+        Snapshot(profile(receiver, msgs), listOf(FriendEntry(profile(friend), favorite = false, since = java.time.Instant.EPOCH)), emptyList())
 
     @Test
     fun `friends only lets friends through and keeps strangers out`() {

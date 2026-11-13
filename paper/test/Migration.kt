@@ -37,10 +37,10 @@ class Migration {
 
     private fun players(db: Database) = transaction(db) { PlayerTable.selectAll().associateBy { it[PlayerTable.uuid].toJavaUuid() } }
 
-    /** The friendships as (low, high, favouriteLow, favouriteHigh, since). */
+    /** The friendships as (low, high, favoriteLow, favoriteHigh, since). */
     private fun friendships(db: Database) = transaction(db) {
         FriendTable.selectAll().map {
-            listOf(it[FriendTable.low].toJavaUuid(), it[FriendTable.high].toJavaUuid(), it[FriendTable.favouriteLow], it[FriendTable.favouriteHigh], it[FriendTable.since])
+            listOf(it[FriendTable.low].toJavaUuid(), it[FriendTable.high].toJavaUuid(), it[FriendTable.favoriteLow], it[FriendTable.favoriteHigh], it[FriendTable.since])
         }
     }
 
@@ -79,13 +79,13 @@ class Migration {
         val rows = friendships(setup.target.db).associateBy { it[0] to it[1] }
         assertEquals(3, rows.size)
 
-        // OLD (low) favours FRIEND; FRIEND doesn't favour OLD.
+        // OLD (low) favors FRIEND; FRIEND doesn't favor OLD.
         val first = rows.getValue(old to friend)
         assertEquals(listOf(true, false), first.subList(2, 4))
         assertEquals(Instant.parse("2024-09-02T08:00:00Z").toEpochMilli(), first[4])
-        // ASKER (the high side, whose row came second) favours FRIEND.
+        // ASKER (the high side, whose row came second) favors FRIEND.
         assertEquals(listOf(false, true), rows.getValue(friend to asker).subList(2, 4))
-        // Only ASKER's row existed: OLD doesn't favour them, ASKER favours OLD, and the time is theirs.
+        // Only ASKER's row existed: OLD doesn't favor them, ASKER favors OLD, and the time is theirs.
         val third = rows.getValue(old to asker)
         assertEquals(listOf(false, true), third.subList(2, 4))
         assertEquals(Instant.parse("2024-09-04T12:00:00Z").toEpochMilli(), third[4])

@@ -131,18 +131,18 @@ object DefaultMenus {
         )
         appendLine(
             item(
-                "favourite_off", "gray_dye", 11, "&eMake a favorite", listOf("&7Favorites are listed first"),
+                "favorite_off", "gray_dye", 11, "&eMake a favorite", listOf("&7Favorites are listed first"),
                 update = true,
-                view = isTrue("%xalifriends_selected_favourite%", expected = "false"),
-                click = "click.any.actions = [${act("favourite", "player" to "%xalifriends_selected_uuid%")}]",
+                view = isTrue("%xalifriends_selected_favorite%", expected = "false"),
+                click = "click.any.actions = [${act("favorite", "player" to "%xalifriends_selected_uuid%")}]",
             )
         )
         appendLine(
             item(
-                "favourite_on", "yellow_dye", 11, "&6Favorite", listOf("&7Click to take them off your favorites"),
+                "favorite_on", "yellow_dye", 11, "&6Favorite", listOf("&7Click to take them off your favorites"),
                 update = true,
-                view = isTrue("%xalifriends_selected_favourite%"),
-                click = "click.any.actions = [${act("favourite", "player" to "%xalifriends_selected_uuid%")}]",
+                view = isTrue("%xalifriends_selected_favorite%"),
+                click = "click.any.actions = [${act("favorite", "player" to "%xalifriends_selected_uuid%")}]",
             )
         )
         appendLine(

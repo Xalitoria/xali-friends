@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
  * - `friend_<n>_<field>`: place n (from 1) of the friends page the player's menu is on. Fields: `present` (true/false),
  *   `name`, `uuid`, `status`, `online` (true/false), `state` (the online/offline word), `seen` (online, and on which
  *   server when it is known and shown, or when they were last seen), `server` (empty when unknown), `jumpable`
- *   (true/false: the viewer may jump to them now), `since`, `favourite` (true/false), `marker`.
+ *   (true/false: the viewer may jump to them now), `since`, `favorite` (true/false), `marker`.
  * - `request_<n>_<field>`: the same for requests, with `present`, `name`, `uuid`, `date`.
  * - `selected_<field>`: the friend picked in the menu, with the fields of a friend.
  *
@@ -113,8 +113,8 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
             "server" -> view.server(friend)
             "jumpable" -> plugin.service.canJump(viewer, friend).toString()
             "since" -> view.date(entry.since)
-            "favourite" -> entry.favourite.toString()
-            "marker" -> if (entry.favourite) words.favouriteMarker else words.plainMarker
+            "favorite" -> entry.favorite.toString()
+            "marker" -> if (entry.favorite) words.favoriteMarker else words.plainMarker
             else -> null
         }
     }
