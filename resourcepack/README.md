@@ -4,6 +4,15 @@
 draw the menu backgrounds), ported from `friends/ref/Resourcepack` to Minecraft 26.x. They are the resource packs behind
 the menus of [XaliFriends](../README.md). The packs are built as zips and are not bundled in any plugin jar.
 
+## Contents
+
+- [Installation](#installation): [Packs](#packs), [Building](#building), [Publishing](#publishing)
+- [Configuration](#configuration): [Pack formats](#pack-formats), [Nexo and ViaVersion](#nexo-and-viaversion)
+- [What changed from the original](#what-changed-from-the-original)
+- [Troubleshooting](#troubleshooting)
+- [Development](#development)
+- [See also](#see-also)
+
 ## Installation
 
 ### Packs
@@ -102,10 +111,10 @@ differs by format: `range_dispatch` on `custom_model_data` and the `items` atlas
   it with a `range_dispatch` on `minecraft:custom_model_data` (the same thresholds: 3700-3716 for the buttons, 5000 and
   10050 for the heads). The vanilla definition is the fallback. The legacy `models/item` and `models/block` files are
   gone.
-- **Heads**: the two head variants are `special` models on the base models `party:item/little_head` and `big_head`,
+- **Heads**: the two head variants are `special` models on the base models `friends:item/little_head` and `big_head`,
   which now hold only their `display` transform. The original also had an override for `skeleton_skull` (5050) pointing
   at a model that was never in the pack, so it was not carried over.
-- **Atlas**: the textures sit outside `textures/item`, so `atlases/items.json` adds them (`party/buttons` and
+- **Atlas**: the textures sit outside `textures/item`, so `atlases/items.json` adds them (`friends/buttons` and
   `required/particle`). The old `blocks.json` also listed twelve textures the pack never had.
 - **Nexo**: the Oraxen folder became Nexo's own layout. Items use `itemname` and `Pack: texture:` or `model:` (no
   `custom_model_data`, since Nexo gives every item its own `item_model`). The textures and models are under
@@ -156,3 +165,9 @@ The folders are the sources: edit them, rebuild the zips and attach the new zips
 
 - [XaliFriends](../README.md) — the plugin that uses the packs and installs them
 - [XaliMenu](../../menu/README.md) — the menus that draw with the glyphs
+- [Root README](../../README.md) — the workspace
+
+## External resources
+
+- [Resource pack format](https://minecraft.wiki/w/Resource_pack#Contents) — the pack formats per Minecraft version
+- [Nexo](https://docs.nexomc.com/) and [ItemsAdder](https://itemsadder.devs.beer/) — the plugins that serve the packs

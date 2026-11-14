@@ -9,6 +9,19 @@ It provides friend requests, favorites, a status line, per-player settings, a fr
 someone came or went, shows which server a friend is on, lets a player jump to a friend and passes requests and answers
 on to players on other servers (see [Behind Velocity](#behind-velocity)).
 
+## Contents
+
+- [Installation](#installation): [Requirements](#requirements), [Modules](#modules),
+  [Building and installing](#building-and-installing), [Removal](#removal)
+- [Configuration](#configuration): [Files](#files), [config.yml](#configyml)
+- [Usage](#usage): [Commands](#commands), [Friends-only messages](#friends-only-messages), [The menus](#the-menus),
+  [The resource pack](#the-resource-pack)
+- [Behind Velocity](#behind-velocity)
+- [The database](#the-database)
+- [Troubleshooting](#troubleshooting)
+- [Development](#development)
+- [See also](#see-also)
+
 ## Installation
 
 ### Requirements
@@ -47,6 +60,13 @@ The descriptors come from the [Gradle plugin](../xali-gradle/README.md); the `pa
 > [!IMPORTANT]
 > On the first start that finds the original FriendSystem's tables, the data is moved and the old tables are dropped.
 > Back up the database first, see [Moving the original's data in](#moving-the-originals-data-in).
+
+### Removal
+
+Delete the jars. `plugins/XaliFriends/`, the menu files `plugins/XaliMenu/menus/friends*.conf` and the tables
+`<prefix>player`, `<prefix>friend`, `<prefix>request` and `<prefix>meta` stay. The menus name this plugin's actions, so
+delete them too or XaliMenu reports them as broken. The original FriendSystem's tables are gone after the first start,
+see [Moving the original's data in](#moving-the-originals-data-in).
 
 ## Configuration
 
@@ -283,10 +303,27 @@ The default `packs.url` points at a private repository. Point it at where the zi
 Sources are under `friends/<submodule>/kotlin`, tests under `friends/<submodule>/test` (see the
 [root README](../README.md#source-layout)).
 
+### Source layout
+
+| Where | Holds |
+|---|---|
+| `friends/common` (`com.xalitoria.friends.protocol`) | `Message.kt` and `Protocol.kt`: the channel name, the message encodings and the signing. No platform API; targets Java 17. |
+| `friends/velocity` | `XaliFriends.kt`: tracks who is where and relays requests, answers and jumps. No configuration. |
+| `friends/paper` `XaliFriends.kt` | The composition root: wires everything in `onEnable`. |
+| `command`, `modal/command/XCommand.kt` | `FriendCommand` (`/xfriend`), `XaliFriendsCommand` (`/xalifriends`), and the base that registers aliases. |
+| `service` | `FriendService` (what the commands and menu actions do, off the main thread), `FriendCache` (each online player's friends and settings, in memory), `Listings` (the order and pages), `Presentation` (dates, who is online, words for a setting) and `MessageRule` (who a player takes private messages from; the gate XaliChat asks). |
+| `data/db` | The tables, the repositories (`Pairing.kt` orders the two UUIDs of a friendship) and `legacy/`, the one-time import of the original's tables. |
+| `external` | Everything that names another plugin: `MenuHook` and `FriendActions` (XaliMenu's actions), `DefaultMenus` (the written menu files), `ChatHook` (XaliChat's gate) and `FriendsExpansion` (PlaceholderAPI). |
+| `proxy/ProxyLink.kt` | The server end of the proxy channel. |
+| `pack/PackInstaller.kt` | The resource pack installer for Nexo and ItemsAdder. |
+
+### Testing
+
 | Test | Covers |
 |---|---|
 | `friends/common` `Protocol` | The proxy messages and their signing. |
 | `friends/paper` `FriendRepository`, `MessageRule`, `Upgrade` | Storage, the friends-only message rule and columns added to older databases. |
+| `friends/paper` `MenuActions` | The menu actions' `after` forms, the keys checked when a menu is read, and the written menus clicking through registered actions. |
 | `friends/paper` `Migration` | The import on SQLite: favorites on either side, one-sided friendships, rows that cannot be carried, time zones, doing it twice, a stopped lock, and the original's tables dropped only after a good copy. |
 | `friends/paper` `MysqlMigration` | The same on MariaDB, plus the column types and the cascades. Runs only when `XALI_TEST_MYSQL` is set. |
 | `friends/paper` `PackInstall` | The pack installer: checksum files, unpacking into the handler's folder, refused names and mismatches, and the downloader's redirects and size limit. |
@@ -299,6 +336,20 @@ user $ XALI_TEST_MYSQL='jdbc:mariadb://127.0.0.1:3307/?user=root&password=pw' ./
 
 The relay was tested with two Folia servers behind Velocity and mineflayer bots: arrivals, leaving, switching server,
 jumping (allowed, refused, already there), and requests, acceptances, refusals and removals between servers.
+
+**Adding a menu action**
+
+1. Add the action to `external/FriendActions.kt` and register it in `MenuHook`. It does what the `/xfriend` command of the
+   same name does, in the background, then draws again (`after`).
+2. Check the viewer has `xalifriends.friend`, like the commands.
+3. Use it in `DefaultMenus` if a written menu needs it, and add a case to `MenuActions`. Menus are written only when missing,
+   so a changed default reaches existing servers only when the file is deleted.
+4. Add a row to the table under [The menus](#the-menus).
+
+**Adding a column or table**
+
+1. Add it to the table object, and make an older database gain it: `Upgrade` tests a column added to an existing table.
+2. Keep UUIDs as 16 bytes and times as epoch milliseconds in UTC, like the rest, see [The database](#the-database).
 
 ### The reference jars
 
@@ -321,3 +372,8 @@ commands in `commands`, the GUIs (`gui`, `config/GuiConfig`) in the Spigot jar, 
 - [XaliMenu](../menu/README.md) — the menus and their addon API
 - [Friend GUI packs](resourcepack/README.md) — the resource packs
 - [Gradle plugin](../xali-gradle/README.md) — descriptors and library loading
+- [Root README](../README.md) — the workspace
+
+## External resources
+
+- [PlaceholderAPI](https://wiki.placeholderapi.com/) — the placeholders

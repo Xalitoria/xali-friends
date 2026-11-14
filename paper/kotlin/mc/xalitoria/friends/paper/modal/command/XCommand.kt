@@ -7,7 +7,7 @@ import mc.xalitoria.friends.paper.XaliFriends
 import org.bukkit.command.PluginIdentifiableCommand
 
 /**
- * A command whose [mainCommand] starts with `x`. Every alias is registered with and without the `x`, and the command
+ * A command whose [mainCommand] starts with `x`. Every alias is registered with and without the `x` (a one-letter alias such as `r` only without it), and the command
  * is also a subcommand of `/xalifriends` under each of those names without it (`/xalifriends friend` for `/xfriend`).
  */
 abstract class XCommand(val plugin: XaliFriends) {
@@ -20,7 +20,7 @@ abstract class XCommand(val plugin: XaliFriends) {
     val subcommands: List<String> get() = (aliases + mainCommand).map { it.removePrefix("x") }.distinct()
 
     fun register(registrar: Commands) {
-        val labels = aliases.flatMap { [it.removePrefix("x"), "x" + it.removePrefix("x")] }
+        val labels = aliases.flatMap { alias -> alias.removePrefix("x").let { if (it.length > 1) [it, "x$it"] else [it] } }
         val aliasLabels = (labels - mainCommand).distinct()
         claim(listOf(mainCommand) + aliasLabels)
         val registered = registrar.register(builder().build(), description, aliasLabels)

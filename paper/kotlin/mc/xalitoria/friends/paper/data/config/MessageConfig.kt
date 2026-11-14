@@ -1,8 +1,12 @@
 package mc.xalitoria.friends.paper.data.config
 
 import com.xalitoria.util.message.formatArgs
+import com.charleskorn.kaml.YamlComment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+/** What every heading starts with: the same colors in every Xali plugin. */
+private const val HEAD = "{#a0a>}&lXALI{#fff<}&f&lFRIENDS &7>"
 
 @Serializable
 data class MessageConfig(
@@ -14,13 +18,13 @@ data class MessageConfig(
     @Serializable
     data class Commands(
         @SerialName("no-permission")
-        val noPermission: String = "No permission.",
+        val noPermission: String = "You don't have permission to use this command.",
         @SerialName("player-only")
         val playerCommandOnly: String = "You must be a player to use this command.",
         @SerialName("unexpected-error")
         val unexpectedError: String = "An unexpected error occurred. Please try again.",
         private val help: String = """
-            {#a0a>}&lXALI{#fff<}&f&lFRIENDS &7> &dHELP
+            $HEAD &dHELP
             &d/{0} &r- open the friend menu
             &d/{0} &radd|remove|accept|deny|favorite <player> &7- accept and deny take 'all' too
             &d/{0} &rlist [page] &7- your friends
@@ -62,7 +66,7 @@ data class MessageConfig(
     @Serializable
     data class Friend(
         @SerialName("target-invalid")
-        private val targetInvalid: String = "Player '{0}' not found!",
+        private val targetInvalid: String = "No player called {0} has joined.",
         val self: String = "You can't do that with yourself!",
         private val sent: String = "Friend request sent to {0}.",
         private val received: String = "{0} wants to be your friend. &d/friend accept {0}&r or &d/friend deny {0}",
@@ -118,6 +122,9 @@ data class MessageConfig(
         private val jumpFailed: String = "Could not send you to {0}'s server.",
         @SerialName("status-updated")
         private val statusUpdated: String = "Your status is now '{0}'.",
+        @YamlComment("{0} is the longest a status can be. It suggests the command when clicked.")
+        @SerialName("status-hint")
+        private val statusHint: String = "Type your status after /friend status, up to {0} characters. &d[Click here to start]",
         @SerialName("status-removed")
         val statusRemoved: String = "Your status was removed.",
         @SerialName("status-too-long")
@@ -170,6 +177,7 @@ data class MessageConfig(
         fun jumpFailed(name: String) = jumpFailed.formatArgs(name)
         fun statusUpdated(status: String) = statusUpdated.formatArgs(status)
         fun statusTooLong(max: Int) = statusTooLong.formatArgs(max)
+        fun statusHint(max: Int) = statusHint.formatArgs(max)
         fun listHeader(page: Int, pages: Int) = listHeader.formatArgs(page, pages)
         fun listEntry(marker: String, name: String, detail: String) = listEntry.formatArgs(marker, name, detail)
         fun requestsHeader(page: Int, pages: Int) = requestsHeader.formatArgs(page, pages)

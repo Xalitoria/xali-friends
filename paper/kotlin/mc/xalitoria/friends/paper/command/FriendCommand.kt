@@ -99,7 +99,7 @@ object FriendCommand : XCommand(XaliFriends.INSTANCE) {
 
     private fun statusHint(player: Player) {
         player.sendMessage(
-            (INFO_COLOR + "Type your status after /friend status, up to ${FriendService.MAX_STATUS} characters. [Click here to start]").toComponent()
+            (INFO_COLOR + msg.statusHint(FriendService.MAX_STATUS)).toComponent()
                 .clickEvent(ClickEvent.suggestCommand("/friend status "))
         )
     }
