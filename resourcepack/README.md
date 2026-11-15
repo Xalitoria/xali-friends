@@ -121,6 +121,8 @@ differs by format: `range_dispatch` on `custom_model_data` and the `items` atlas
   `pack/assets/minecraft/` rather than Oraxen's `pack/textures` and `pack/models`, which Nexo converts only from an actual
   Oraxen folder. Item ids are the original's with a `friend_` prefix (`friend_like`, `friend_empty`, ...), so they do not
   clash with other Nexo items.
+- **No party**: the original's party screens (the `party` and `member` glyphs) are gone, and so are the two backgrounds with a
+  party button or a party setting. `friends` and `settings2` are the original's `friends_no_party` and `settings2_no_party`.
 - **Glyphs**: the original packs disagreed about `anvil`: 40 in the vanilla font, 37 in Oraxen's and ItemsAdder's. All
   three use 40 now. In the vanilla pack the glyphs are in `minecraft:default`. **Nexo puts them in its `nexo:default`
   font**, so text that uses them needs `"font": "nexo:default"` there. ItemsAdder puts them in its own font as well.

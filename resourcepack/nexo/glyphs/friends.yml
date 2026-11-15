@@ -3,26 +3,11 @@ friends:
   ascent: 37
   height: 256
   char: ᛧ
-friends_no_party:
-  texture: friends/ui/friends_no_party.png
-  ascent: 37
-  height: 256
-  char: ᛳ
 anvil:
   texture: friends/ui/anvil.png
   ascent: 40
   height: 256
   char: ᛨ
-member:
-  texture: friends/ui/member.png
-  ascent: 37
-  height: 256
-  char: ᛩ
-party:
-  texture: friends/ui/party.png
-  ascent: 37
-  height: 256
-  char: ᛪ
 profile:
   texture: friends/ui/profile.png
   ascent: 37
@@ -48,11 +33,6 @@ settings2:
   ascent: 37
   height: 256
   char: ᛸ
-settings2_no_party:
-  texture: friends/ui/settings2_no_party.png
-  ascent: 37
-  height: 256
-  char: ᛷ
 friends_neg_shift_16:
   texture: required/null.png
   ascent: -32768

@@ -9,33 +9,12 @@ font_images:
     scale_ratio: 256
     y_position: 37
 
-  friends_no_party:
-    show_in_gui: true
-    path: friends/ui/friends_no_party.png
-    symbol: ᛳ
-    scale_ratio: 256
-    y_position: 37
-
   anvil:
     show_in_gui: true
     path: friends/ui/anvil.png
     symbol: ᛨ
     scale_ratio: 256
     y_position: 40
-
-  member:
-    show_in_gui: true
-    path: friends/ui/member.png
-    symbol: ᛩ
-    scale_ratio: 256
-    y_position: 37
-
-  party:
-    show_in_gui: true
-    path: friends/ui/party.png
-    symbol: ᛪ
-    scale_ratio: 256
-    y_position: 37
 
   profile:
     show_in_gui: true
@@ -69,13 +48,6 @@ font_images:
     show_in_gui: true
     path: friends/ui/settings2.png
     symbol: ᛸ
-    scale_ratio: 256
-    y_position: 37
-
-  settings2_no_party:
-    show_in_gui: true
-    path: friends/ui/settings2_no_party.png
-    symbol: ᛷ
     scale_ratio: 256
     y_position: 37
 

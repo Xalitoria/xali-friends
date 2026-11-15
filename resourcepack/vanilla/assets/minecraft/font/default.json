@@ -11,37 +11,10 @@
     },
     {
       "chars": [
-        "ᛳ"
-      ],
-      "file": "friends/ui/friends_no_party.png",
-      "ascent": 37,
-      "height": 256,
-      "type": "bitmap"
-    },	
-    {
-      "chars": [
         "ᛨ"
       ],
       "file": "friends/ui/anvil.png",
       "ascent": 40,
-      "height": 256,
-      "type": "bitmap"
-    },
-    {
-      "chars": [
-        "ᛩ"
-      ],
-      "file": "friends/ui/member.png",
-      "ascent": 37,
-      "height": 256,
-      "type": "bitmap"
-    },
-    {
-      "chars": [
-        "ᛪ"
-      ],
-      "file": "friends/ui/party.png",
-      "ascent": 37,
       "height": 256,
       "type": "bitmap"
     },
@@ -86,15 +59,6 @@
         "ᛸ"
       ],
       "file": "friends/ui/settings2.png",
-      "ascent": 37,
-      "height": 256,
-      "type": "bitmap"
-    },
-    {
-      "chars": [
-        "ᛷ"
-      ],
-      "file": "friends/ui/settings2_no_party.png",
       "ascent": 37,
       "height": 256,
       "type": "bitmap"
