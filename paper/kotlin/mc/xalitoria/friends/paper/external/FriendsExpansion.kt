@@ -4,12 +4,17 @@ import mc.xalitoria.friends.paper.XaliFriends
 import mc.xalitoria.friends.paper.data.model.FriendEntry
 import mc.xalitoria.friends.paper.data.model.Profile
 import mc.xalitoria.friends.paper.data.model.RequestEntry
+import mc.xalitoria.friends.paper.data.model.Snapshot
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 /**
  * `%xalifriends_...%`, which is what the friend menus are drawn from.
+ *
+ * `friends`, `online`, `requests`, `status` and the `setting_` ones answer for any player: for one who is not online here from what
+ * the database held of them when it was last read in the background (empty until the first read is done). The others are about
+ * the menu a player has open, and are empty for a player who is not online here.
  *
  * - `friends`, `online`, `requests`: counts. `status`: the player's own status.
  * - `page_friends`, `pages_friends`, `page_requests`, `pages_requests`: the page the player's menu is on, and how many there are.
@@ -31,11 +36,11 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
     override fun persist() = true
 
     override fun onRequest(player: OfflinePlayer?, params: String): String? {
-        val viewer = player?.player ?: return ""
-        val snapshot = plugin.cache.get(viewer.uniqueId) ?: return ""
-        val listings = plugin.listings
+        val uuid = player?.uniqueId ?: return ""
+        // What the database held of a player who is not online here, as it was last read in the background; empty until that is done.
+        val snapshot = plugin.cache.peek(uuid) ?: return ""
         val view = plugin.presentation
-        val state = plugin.cache.state(viewer.uniqueId)
+        val viewer = player.player
         val key = params.lowercase()
 
         return when {
@@ -43,11 +48,6 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
             key == "online" -> snapshot.friends.count { view.isOnline(viewer, it.profile) }.toString()
             key == "requests" -> snapshot.requests.size.toString()
             key == "status" -> view.status(snapshot.profile)
-            key == "page_friends" -> (listings.clamp(state.friendsPage, snapshot.friends.size, listings.friendsPerPage()) + 1).toString()
-            key == "pages_friends" -> listings.pages(snapshot.friends.size, listings.friendsPerPage()).toString()
-            key == "page_requests" -> (listings.clamp(state.requestsPage, snapshot.requests.size, listings.requestsPerPage()) + 1).toString()
-            key == "pages_requests" -> listings.pages(snapshot.requests.size, listings.requestsPerPage()).toString()
-            key.startsWith("has_") -> hasPage(key.removePrefix("has_"), viewer, snapshot.friends.size, snapshot.requests.size)
             key.startsWith("setting_") -> when (key.removePrefix("setting_")) {
                 "invites" -> view.toggle(snapshot.settings.invites)
                 "notifies" -> view.toggle(snapshot.settings.notifies)
@@ -57,6 +57,23 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
                 "server" -> view.toggle(snapshot.settings.showServer)
                 else -> null
             }
+            // The rest is about the menu a player has open, and a player who is not online here has none.
+            isMenu(key) -> if (viewer == null) "" else menu(viewer, snapshot, key)
+            else -> null
+        }
+    }
+
+    private fun isMenu(key: String): Boolean = MENU_KEYS.any { key.startsWith(it) }
+
+    private fun menu(viewer: Player, snapshot: Snapshot, key: String): String? {
+        val listings = plugin.listings
+        val state = plugin.cache.state(viewer.uniqueId)
+        return when {
+            key == "page_friends" -> (listings.clamp(state.friendsPage, snapshot.friends.size, listings.friendsPerPage()) + 1).toString()
+            key == "pages_friends" -> listings.pages(snapshot.friends.size, listings.friendsPerPage()).toString()
+            key == "page_requests" -> (listings.clamp(state.requestsPage, snapshot.requests.size, listings.requestsPerPage()) + 1).toString()
+            key == "pages_requests" -> listings.pages(snapshot.requests.size, listings.requestsPerPage()).toString()
+            key.startsWith("has_") -> hasPage(key.removePrefix("has_"), viewer, snapshot.friends.size, snapshot.requests.size)
             key.startsWith("friend_") -> place(key.removePrefix("friend_"))?.let {
                 friendField(viewer, listings.friendAt(viewer, it.index), it.field)
             }
@@ -87,6 +104,10 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
             "previous" -> (page > 0).toString()
             else -> null
         }
+    }
+
+    private companion object {
+        val MENU_KEYS = listOf("page_", "pages_", "has_", "friend_", "request_", "selected_")
     }
 
     private class Place(val index: Int, val field: String)

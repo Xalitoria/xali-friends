@@ -170,7 +170,11 @@ click.any.actions = [{ type = "xalifriends:remove", player = "%xalifriends_selec
 
 #### Placeholders
 
-`%xalifriends_...%`, for the player the text is for:
+`%xalifriends_...%`, for the player the text is for. `friends`, `online`, `requests`, `status` and the `setting_` ones also work for a
+player who is not online here (another player's profile, a player on another server): the first request reads them from the
+database in the background and answers with nothing until that is done, and after that they come from memory, are read again
+when 30 seconds old while they keep being asked for, and are dropped when nobody has asked for ten minutes. The ones about the
+menu (`page_`, `pages_`, `has_`, `friend_`, `request_` and `selected_`) are empty for a player who has no menu open on this server.
 
 | Placeholder | Meaning |
 |---|---|
@@ -323,6 +327,7 @@ Sources are under `friends/<submodule>/kotlin`, tests under `friends/<submodule>
 |---|---|
 | `friends/common` `Protocol` | The proxy messages and their signing. |
 | `friends/paper` `FriendRepository`, `MessageRule`, `Upgrade` | Storage, the friends-only message rule and columns added to older databases. |
+| `friends/paper` `OfflineReads` | What the placeholders keep of a player who is not online: empty until the first read, a player with no row, a read again when it is old or invalid, a read that fails, and a player who is forgotten. |
 | `friends/paper` `MenuActions` | The menu actions' `after` forms, the keys checked when a menu is read, and the written menus clicking through registered actions. |
 | `friends/paper` `Migration` | The import on SQLite: favorites on either side, one-sided friendships, rows that cannot be carried, time zones, doing it twice, a stopped lock, and the original's tables dropped only after a good copy. |
 | `friends/paper` `MysqlMigration` | The same on MariaDB, plus the column types and the cascades. Runs only when `XALI_TEST_MYSQL` is set. |
