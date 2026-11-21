@@ -1,7 +1,7 @@
 # XaliFriends
 
-**XaliFriends** is a friend system for Paper and Folia with an optional Velocity plugin. It replaces FriendSystem 4.9.8
-by sk8ingDuck, moves that plugin's data into its own tables and drops the old ones. Parties are not part of it.
+**XaliFriends** is a friend system for Paper and Folia with an optional Velocity plugin. It replaces FriendSystem 4.9.8,
+moves that plugin's data into its own tables and drops the old ones. Parties are not part of it.
 
 It provides friend requests, favorites, a status line, per-player settings, a friend menu (with
 [XaliMenu](../menu/README.md)) and private messages that can be limited to friends (with
@@ -360,7 +360,7 @@ jumping (allowed, refused, already there), and requests, acceptances, refusals a
 
 `friends/ref` holds the original plugin's jars, their decompiled sources and its resource packs. The folder is ignored
 by git, so a fresh clone does not have it. The sources are the Spigot and Velocity jars decompiled with Vineflower,
-trimmed to the plugin's own packages (`me.sk8ingduck`) and its resources. To redo them:
+trimmed to the plugin's own packages and its resources. To redo them:
 
 ```console
 user $ vineflower friends/ref/FriendSystem-Spigot-4.9.8.jar   friends/ref/decompiled/paper
