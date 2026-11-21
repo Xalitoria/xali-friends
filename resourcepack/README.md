@@ -39,8 +39,11 @@ checksum changes only when a pack does.
 
 ### Publishing
 
-Attach the zips and their `.sha256` files to a release. XaliFriends downloads them from there when `packs.handler` in its
-`config.yml` is `nexo` or `itemsadder` (the default is `none`, which downloads nothing).
+Attach the zips and their `.sha256` files to a release of the public repository
+[Xalitoria/xali-friends-resourcepack](https://github.com/Xalitoria/xali-friends-resourcepack) (the plugin's own repository is
+private, and a server downloads without signing in). XaliFriends downloads them from the latest release when `packs.handler`
+in its `config.yml` is `nexo` or `itemsadder` (the default is `none`, which downloads nothing); `packs.url` is
+`https://github.com/Xalitoria/xali-friends-resourcepack/releases/latest/download`.
 
 ## Configuration
 

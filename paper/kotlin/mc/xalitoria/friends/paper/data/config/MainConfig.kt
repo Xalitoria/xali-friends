@@ -130,7 +130,7 @@ data class MainConfig(
             "Where the zipped packs are downloaded from (https), for example the assets of a GitHub release. Each pack is fetched as",
             "<url>/<pack>-<handler>.zip and checked against <url>/<pack>-<handler>.zip.sha256, and only fetched again when that changes.",
         )
-        val url: String = "https://github.com/audizian/xalicraft/releases/latest/download",
+        val url: String = "https://github.com/Xalitoria/xali-friends-resourcepack/releases/latest/download",
         @YamlComment("The packs to install.")
         val install: List<String> = ["friends-gui"],
     ) {

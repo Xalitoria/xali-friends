@@ -199,7 +199,7 @@ the resource pack. Nothing is downloaded unless a handler is set.
 ```yaml
 packs:
   handler: none       # none (the default), nexo or itemsadder
-  url: https://github.com/audizian/xalicraft/releases/latest/download
+  url: https://github.com/Xalitoria/xali-friends-resourcepack/releases/latest/download
   install: [friends-gui]
 ```
 
