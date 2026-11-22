@@ -8,6 +8,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -92,7 +93,9 @@ class Packs {
         val definitions = File(vanilla, "assets/minecraft/items").listFiles { f -> f.extension == "json" }.orEmpty()
         assertEquals(setOf("paper.json", "player_head.json"), definitions.map { it.name }.toSet())
         for (file in definitions) {
-            val model = json(file).jsonObject.getValue("model").jsonObject
+            val root = json(file).jsonObject
+            assertTrue(root["oversized_in_gui"]?.jsonPrimitive?.boolean == true, "${file.name} should allow oversized GUI models")
+            val model = root.getValue("model").jsonObject
             if (model.getValue("type").jsonPrimitive.content == "minecraft:range_dispatch") {
                 assertEquals("minecraft:custom_model_data", model.getValue("property").jsonPrimitive.content)
                 val thresholds = model.getValue("entries").jsonArray.map { it.jsonObject.getValue("threshold").jsonPrimitive.int }
@@ -161,12 +164,18 @@ class Packs {
     fun nexoItemsHaveTheirFiles() {
         val items = yaml(File(nexo, "items/friends.yml"))
         assertEquals(19, items.entries.size)
+        val wideButtons = setOf("friend_accept", "friend_deny", "friend_invite", "friend_jump", "friend_send", "friend_teleport")
         for ((key, value) in items.entries) {
             val pack = (value as YamlMap).map("Pack") ?: error("${key.content} has no Pack")
             pack.text("texture")?.let { assertTrue(File(nexo, "pack/assets/minecraft/textures/$it").isFile, "${key.content}: texture $it") }
             pack.text("model")?.let { assertTrue(File(nexo, "pack/assets/minecraft/models/$it.json").isFile, "${key.content}: model $it") }
             assertTrue(pack.text("texture") != null || pack.text("model") != null, "${key.content} names a texture or a model")
+            if (key.content in wideButtons) {
+                assertEquals("true", pack.text("oversized_in_gui"), "${key.content} should set Pack.oversized_in_gui: true")
+            }
         }
+        val nexoHead = json(File(nexo, "pack/assets/minecraft/items/player_head.json")).jsonObject
+        assertTrue(nexoHead["oversized_in_gui"]?.jsonPrimitive?.boolean == true, "nexo player_head.json should set oversized_in_gui: true")
     }
 
     @Test

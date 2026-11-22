@@ -63,7 +63,7 @@ The descriptors come from the [Gradle plugin](../xali-gradle/README.md); the `pa
 
 ### Removal
 
-Delete the jars. `plugins/XaliFriends/`, the menu files `plugins/XaliMenu/menus/friends*.conf` and the tables
+Delete the jars. `plugins/XaliFriends/`, the menu files `plugins/XaliMenu/menus/friend*.conf` and the tables
 `<prefix>player`, `<prefix>friend`, `<prefix>request` and `<prefix>meta` stay. The menus name this plugin's actions, so
 delete them too or XaliMenu reports them as broken. The original FriendSystem's tables are gone after the first start,
 see [Moving the original's data in](#moving-the-originals-data-in).
@@ -77,7 +77,7 @@ see [Moving the original's data in](#moving-the-originals-data-in).
 | `plugins/XaliFriends/config.yml` | Settings, see [below](#configyml). |
 | `plugins/XaliFriends/language/<language>.yml` | Every message, written with the defaults on the first start. |
 | `plugins/XaliFriends/packs/` | Marker of the installed resource pack. |
-| `plugins/XaliMenu/menus/friends*.conf` | The [menus](#the-menus), written on the first start. |
+| `plugins/XaliMenu/menus/friend*.conf` | The [menus](#the-menus), written on the first start. |
 
 `/xalifriends reload` reads the configuration and the messages again.
 
@@ -139,8 +139,8 @@ messages to them are let through rather than blocked.
 ### The menus
 
 With XaliMenu and PlaceholderAPI, the default friend menus are written into `plugins/XaliMenu/menus` when missing:
-`friends`, `friends-requests`, `friends-player`, `friends-settings`, `friends-remove` (confirms a removal) and, in the
-`nexo` style, `friends-settings2` (the second settings page matching the resource pack). `/friend` opens the first.
+`friends`, `friends-requests`, `friend-profile`, `friends-remove` (confirms a removal), `friends-settings-1` and, in the
+`nexo` style, `friends-settings-2` (the second settings page matching the resource pack). `/friend` opens the first.
 `gui.style` picks the written look: `vanilla` (plain items), `nexo` (the friend GUI pack's backgrounds, `nexo:friend_*`
 buttons and scaled heads, with clean `bedrock` titles/forms) or `auto` (the default: `nexo` when `packs.handler` is
 `nexo`, otherwise `vanilla`). Run `/xalifriends menus reset [vanilla|nexo]` followed by `/xmenu reload` to rewrite
@@ -163,7 +163,7 @@ dialogs on Java 1.21.6+, anvils on older Java clients and forms on Bedrock).
 |---|---|---|
 | `xalifriends:setting` | `setting` (`invites`, `notifies`, `msgs`, `lastseen`, `jump` or `server`), `value` (`on`/`off`, or `everyone`/`friends`/`nobody` for `msgs`). | The viewer's setting matches `value`. |
 | `xalifriends:has-requests` | | The viewer has at least one pending friend request. |
-| `xalifriends:selected` | `check`: `present`, `favorite`, `jumpable` or `online`. | The friend picked for `friends-player` satisfies `check`. |
+| `xalifriends:selected` | `check`: `present`, `favorite`, `jumpable` or `online`. | The friend picked for `friend-profile` satisfies `check`. |
 
 **Actions** (each runs off-thread and then updates the menu according to `after`):
 

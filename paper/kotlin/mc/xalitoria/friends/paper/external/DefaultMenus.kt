@@ -14,11 +14,14 @@ import mc.xalitoria.friends.paper.data.config.MainConfig.Gui.Style
  * custom button items (`nexo:friend_*`) and `player_head` custom model data (`5000` little head, `10050` 2x2 big head).
  */
 object DefaultMenus {
-    private const val PLAYER = "friends-player"
+    private const val PROFILE = "friend-profile"
     private const val REQUESTS = "friends-requests"
-    private const val SETTINGS = "friends-settings"
-    private const val SETTINGS2 = "friends-settings2"
+    private const val SETTINGS_1 = "friends-settings-1"
+    private const val SETTINGS_2 = "friends-settings-2"
     private const val REMOVE = "friends-remove"
+
+    /** Old or style-specific menu names removed on `/xalifriends menus reset` when not part of the written style. */
+    val RETIRED_NAMES: Set<String> = setOf("friends-player", "friends-settings", "friends-settings2", SETTINGS_2)
 
     /** Nexo glyph characters from `friends/resourcepack/nexo/glyphs/friends.yml`, shifted onto the chest background. */
     private const val NEXO_SHIFT = "ᛮᛯ"
@@ -35,21 +38,26 @@ object DefaultMenus {
         Style.NEXO -> linkedMapOf(
             main to nexoFriends(main),
             REQUESTS to nexoRequests(main),
-            PLAYER to nexoPlayer(main),
+            PROFILE to nexoProfile(main),
             REMOVE to nexoRemove(main),
-            SETTINGS to nexoSettings(main),
-            SETTINGS2 to nexoSettings2(main),
+            SETTINGS_1 to nexoSettings1(main),
+            SETTINGS_2 to nexoSettings2(main),
         )
         else -> linkedMapOf(
             main to vanillaFriends(main),
             REQUESTS to vanillaRequests(main),
-            PLAYER to vanillaPlayer(main),
+            PROFILE to vanillaProfile(main),
             REMOVE to vanillaRemove(main),
-            SETTINGS to vanillaSettings(main),
+            SETTINGS_1 to vanillaSettings1(main),
         )
     }
 
     private fun nexoTitle(glyph: String): String = "<white><font:nexo:default>$NEXO_SHIFT$glyph</font></white>"
+
+    private fun indent(text: String, spaces: Int): String {
+        val pad = " ".repeat(spaces)
+        return text.lines().joinToString("\n") { if (it.isEmpty()) it else pad + it }
+    }
 
     private fun header(comment: String, title: String, size: Int, bedrockTitle: String? = null): String = buildString {
         appendLine("# $comment")
@@ -63,7 +71,8 @@ object DefaultMenus {
         }
     }
 
-    private fun addFriendInput(returnMenu: String): String = """
+    private fun addFriendInput(returnMenu: String, spaces: Int): String = indent(
+        """
         {
           type = "input"
           title = "Add friend"
@@ -75,9 +84,12 @@ object DefaultMenus {
           then = [{ type = "xalifriends:add", player = "{input}", after = "open:$returnMenu" }]
           on-cancel = [{ type = "open", menu = "$returnMenu" }]
         }
-    """.trimIndent()
+        """.trimIndent(),
+        spaces,
+    )
 
-    private fun statusInput(returnMenu: String): String = """
+    private fun statusInput(returnMenu: String, spaces: Int): String = indent(
+        """
         {
           type = "input"
           title = "Change status"
@@ -88,155 +100,160 @@ object DefaultMenus {
           then = [{ type = "xalifriends:status", text = "{input}", after = "open:$returnMenu" }]
           on-cancel = [{ type = "open", menu = "$returnMenu" }]
         }
-    """.trimIndent()
+        """.trimIndent(),
+        spaces,
+    )
 
     // ---- Nexo style
 
     private fun nexoFriends(main: String): String = buildString {
         append(header("The friend list (Nexo pack), opened by /friend.", nexoTitle(GLYPH_FRIENDS), 54, "&8Friends &7(%xalifriends_friends%)"))
+        appendLine("pages {")
+        appendLine("""  catalog { type = "xalifriends:friends" }""")
+        appendLine("  layout = [")
+        appendLine("""    "         """")
+        appendLine("""    "         """")
+        appendLine("""    "         """")
+        appendLine("""    " xxxxxxx """")
+        appendLine("""    " xxxxxxx """")
+        appendLine("""    " xxxxxxx """")
+        appendLine("  ]")
+        appendLine("  item {")
+        appendLine("""    material = "player_head"""")
+        appendLine("""    skull = "{name}"""")
+        appendLine("    model = $LITTLE_HEAD_MODEL")
+        appendLine("""    name = "&6{star}&f{name}"""")
+        appendLine("    lore = [")
+        appendLine("""      "&7{seen}"""")
+        appendLine("""      "&7Status: &f{status}"""")
+        appendLine("""      "&7Friends since &f{since}"""")
+        appendLine("""      """"")
+        appendLine("""      "&eClick for options"""")
+        appendLine("    ]")
+        appendLine("    click.any.actions = [")
+        appendLine("""      { type = "xalifriends:select", player = "{uuid}" }""")
+        appendLine("""      { type = "open", menu = "$PROFILE" }""")
+        appendLine("    ]")
+        appendLine("  }")
+        appendLine("  empty {")
+        appendLine("""    material = "barrier"""")
+        appendLine("""    name = "&7No friends yet"""")
+        appendLine("""    lore = ["&eClick to add a friend"]""")
+        appendLine("    click.any.actions = [")
+        appendLine(addFriendInput(main, 6))
+        appendLine("    ]")
+        appendLine("  }")
+        appendLine("}")
+        appendLine("items {")
+        appendLine(nexoProfileItem("profile", "player_head", "slot = 10", main, hidden = false, includeModel = true))
+        appendLine(nexoProfileItem("profile_hitbox", "nexo:friend_empty", "slots = [0, 1, 9]", main, hidden = true, includeModel = false))
         appendLine(
-            """
-            pages {
-              catalog { type = "xalifriends:friends" }
-              layout = [
-                "         "
-                "         "
-                "         "
-                " xxxxxxx "
-                " xxxxxxx "
-                " xxxxxxx "
-              ]
-              item {
-                material = "player_head"
-                skull = "{name}"
-                model = $LITTLE_HEAD_MODEL
-                name = "&6{star}&f{name}"
-                lore = [
-                  "&7{seen}"
-                  "&7Status: &f{status}"
-                  "&7Friends since &f{since}"
-                  ""
-                  "&eClick for options"
-                ]
-                click.any.actions = [
-                  { type = "xalifriends:select", player = "{uuid}" }
-                  { type = "open", menu = "$PLAYER" }
-                ]
-              }
-              empty {
-                material = "barrier"
-                name = "&7No friends yet"
-                lore = ["&eClick to add a friend"]
-                click.any.actions = [
-            ${addFriendInput(main).prependIndent("      ")}
-                ]
-              }
-            }
-            items {
-              profile {
-                material = "player_head"
-                skull = "%xalifriends_name%"
-                model = $BIG_HEAD_MODEL
-                slot = 10
-                name = "&e%xalifriends_name%"
-                lore = [
-                  "&7Friends: &f%xalifriends_online%&7/&f%xalifriends_friends% online"
-                  "&7Status: &f%xalifriends_status%"
-                  ""
-                  "&7Left-click to change status"
-                  "&7Right-click to clear status"
-                ]
-                update = true
-                bedrock { left-label = "&eChange status", right-label = "&cClear status" }
-                click.left.actions = [
-            ${statusInput(main).prependIndent("      ")}
-                ]
-                click.right.actions = [{ type = "xalifriends:clear-status" }]
-              }
-              profile_hitbox {
-                material = "nexo:friend_empty"
-                slots = [0, 1, 9]
-                name = "&e%xalifriends_name%"
-                lore = [
-                  "&7Friends: &f%xalifriends_online%&7/&f%xalifriends_friends% online"
-                  "&7Status: &f%xalifriends_status%"
-                  ""
-                  "&7Left-click to change status"
-                  "&7Right-click to clear status"
-                ]
-                update = true
-                bedrock.hidden = true
-                click.left.actions = [
-            ${statusInput(main).prependIndent("      ")}
-                ]
-                click.right.actions = [{ type = "xalifriends:clear-status" }]
-              }
-              settings {
-                material = "nexo:friend_settings"
-                slot = 2
-                name = "&eSettings"
-                lore = ["&7Requests, notifications, messages, status"]
-                click.any.actions = [{ type = "open", menu = "$SETTINGS" }]
-              }
-              requests {
-                material = "nexo:friend_notify"
-                slot = 11
-                priority = 0
-                name = "&eRequests &7(%xalifriends_requests%)"
-                lore = ["&7Players who asked to be your friend"]
-                update = true
-                view.require = [{ condition { type = "xalifriends:has-requests" } }]
-                click.any.actions = [{ type = "open", menu = "$REQUESTS" }]
-              }
-              no_requests {
-                material = "nexo:friend_no_notify"
-                slot = 11
-                priority = 10
-                name = "&eRequests &7(0)"
-                lore = ["&7No friend requests waiting"]
-                update = true
-                click.any.actions = [{ type = "open", menu = "$REQUESTS" }]
-              }
-              add {
-                material = "nexo:friend_invite"
-                slot = 5
-                name = "&aAdd friend"
-                lore = ["&7Send a friend request by player name"]
-                click.any.actions = [
-            ${addFriendInput(main).prependIndent("      ")}
-                ]
-              }
-              add_hitbox {
-                material = "nexo:friend_empty"
-                slots = [6, 7]
-                name = "&aAdd friend"
-                lore = ["&7Send a friend request by player name"]
-                bedrock.hidden = true
-                click.any.actions = [
-            ${addFriendInput(main).prependIndent("      ")}
-                ]
-              }
-              prev {
-                material = "nexo:friend_arrow_left"
-                slot = 36
-                name = "&ePrevious page"
-                lore = ["&7Page {page_prev} of {pages}"]
-                bedrock.hidden = true
-                view.require = [{ condition { type = "compare", left = "{page}", op = "GT", right = "1" } }]
-                click.any.actions = [{ type = "page", by = -1 }]
-              }
-              next {
-                material = "nexo:friend_arrow_right"
-                slot = 44
-                name = "&eNext page"
-                lore = ["&7Page {page_next} of {pages}"]
-                bedrock.hidden = true
-                view.require = [{ condition { type = "compare", left = "{page}", op = "LT", right = "{pages}" } }]
-                click.any.actions = [{ type = "page", by = 1 }]
-              }
-            }
-            """.trimIndent()
+            indent(
+                """
+                settings {
+                  material = "nexo:friend_settings"
+                  slot = 2
+                  name = "&eSettings"
+                  lore = ["&7Requests, notifications, messages, status"]
+                  click.any.actions = [{ type = "open", menu = "$SETTINGS_1" }]
+                }
+                requests {
+                  material = "nexo:friend_notify"
+                  slot = 11
+                  priority = 0
+                  name = "&eRequests &7(%xalifriends_requests%)"
+                  lore = ["&7Players who asked to be your friend"]
+                  update = true
+                  view.require = [{ condition { type = "xalifriends:has-requests" } }]
+                  click.any.actions = [{ type = "open", menu = "$REQUESTS" }]
+                }
+                no_requests {
+                  material = "nexo:friend_no_notify"
+                  slot = 11
+                  priority = 10
+                  name = "&eRequests &7(0)"
+                  lore = ["&7No friend requests waiting"]
+                  update = true
+                  click.any.actions = [{ type = "open", menu = "$REQUESTS" }]
+                }
+                """.trimIndent(),
+                2,
+            )
         )
+        appendLine(nexoAddItem("add", "nexo:friend_invite", "slot = 5", main, hidden = false))
+        appendLine(nexoAddItem("add_hitbox", "nexo:friend_empty", "slots = [6, 7]", main, hidden = true))
+        appendLine(
+            indent(
+                """
+                prev {
+                  material = "nexo:friend_arrow_left"
+                  slot = 36
+                  name = "&ePrevious page"
+                  lore = ["&7Page {page_prev} of {pages}"]
+                  bedrock.hidden = true
+                  view.require = [{ condition { type = "compare", left = "{page}", op = "GT", right = "1" } }]
+                  click.any.actions = [{ type = "page", by = -1 }]
+                }
+                next {
+                  material = "nexo:friend_arrow_right"
+                  slot = 44
+                  name = "&eNext page"
+                  lore = ["&7Page {page_next} of {pages}"]
+                  bedrock.hidden = true
+                  view.require = [{ condition { type = "compare", left = "{page}", op = "LT", right = "{pages}" } }]
+                  click.any.actions = [{ type = "page", by = 1 }]
+                }
+                """.trimIndent(),
+                2,
+            )
+        )
+        appendLine("}")
+    }
+
+    private fun nexoProfileItem(
+        key: String,
+        material: String,
+        placement: String,
+        returnMenu: String,
+        hidden: Boolean,
+        includeModel: Boolean,
+    ): String = buildString {
+        appendLine("  $key {")
+        appendLine("""    material = "$material"""")
+        if (includeModel) {
+            appendLine("""    skull = "%xalifriends_name%"""")
+            appendLine("    model = $BIG_HEAD_MODEL")
+        }
+        appendLine("    $placement")
+        appendLine("""    name = "&e%xalifriends_name%"""")
+        appendLine("    lore = [")
+        appendLine("""      "&7Friends: &f%xalifriends_online%&7/&f%xalifriends_friends% online"""")
+        appendLine("""      "&7Status: &f%xalifriends_status%"""")
+        appendLine("""      """"")
+        appendLine("""      "&7Left-click to change status"""")
+        appendLine("""      "&7Right-click to clear status"""")
+        appendLine("    ]")
+        appendLine("    update = true")
+        if (hidden) appendLine("    bedrock.hidden = true")
+        else appendLine("""    bedrock { left-label = "&eChange status", right-label = "&cClear status" }""")
+        appendLine("    click.left.actions = [")
+        appendLine(statusInput(returnMenu, 6))
+        appendLine("    ]")
+        appendLine("""    click.right.actions = [{ type = "xalifriends:clear-status" }]""")
+        append("  }")
+    }
+
+    private fun nexoAddItem(key: String, material: String, placement: String, returnMenu: String, hidden: Boolean): String = buildString {
+        appendLine("  $key {")
+        appendLine("""    material = "$material"""")
+        appendLine("    $placement")
+        appendLine("""    name = "&aAdd friend"""")
+        appendLine("""    lore = ["&7Send a friend request by player name"]""")
+        if (hidden) appendLine("    bedrock.hidden = true")
+        appendLine("    click.any.actions = [")
+        appendLine(addFriendInput(returnMenu, 6))
+        appendLine("    ]")
+        append("  }")
     }
 
     private fun nexoRequests(main: String): String = buildString {
@@ -330,7 +347,7 @@ object DefaultMenus {
         )
     }
 
-    private fun nexoPlayer(main: String): String = buildString {
+    private fun nexoProfile(main: String): String = buildString {
         append(header("A friend's profile menu (Nexo pack): opened by clicking them in the list.", nexoTitle(GLYPH_PROFILE), 54, "&8%xalifriends_selected_name%"))
         appendLine(
             """
@@ -342,7 +359,7 @@ object DefaultMenus {
                 slot = 10
                 name = "%xalifriends_selected_marker% &f%xalifriends_selected_name%"
                 lore = [
-                  "%xalifriends_selected_seen%"
+                  "&7%xalifriends_selected_seen%"
                   "&7Status: &f%xalifriends_selected_status%"
                   "&7Friends since &f%xalifriends_selected_since%"
                 ]
@@ -353,7 +370,7 @@ object DefaultMenus {
                 slots = [0, 1, 9]
                 name = "%xalifriends_selected_marker% &f%xalifriends_selected_name%"
                 lore = [
-                  "%xalifriends_selected_seen%"
+                  "&7%xalifriends_selected_seen%"
                   "&7Status: &f%xalifriends_selected_status%"
                   "&7Friends since &f%xalifriends_selected_since%"
                 ]
@@ -431,7 +448,7 @@ object DefaultMenus {
               }
               cancel {
                 text = "&cKeep"
-                actions = [{ type = "open", menu = "$PLAYER" }]
+                actions = [{ type = "open", menu = "$PROFILE" }]
               }
             }
             items {
@@ -462,84 +479,90 @@ object DefaultMenus {
                 slot = 23
                 name = "&cKeep"
                 lore = ["&7Go back"]
-                click.any.actions = [{ type = "open", menu = "$PLAYER" }]
+                click.any.actions = [{ type = "open", menu = "$PROFILE" }]
               }
               back {
                 material = "nexo:friend_empty"
                 slots = [48, 49, 50]
                 name = "&eBack"
-                click.any.actions = [{ type = "open", menu = "$PLAYER" }]
+                click.any.actions = [{ type = "open", menu = "$PROFILE" }]
               }
             }
             """.trimIndent()
         )
     }
 
-    private fun nexoSettings(main: String): String = buildString {
+    private fun nexoSettings1(main: String): String = buildString {
         append(header("Friend settings page 1 (Nexo pack): requests, notifications, private messages, jumping and status.", nexoTitle(GLYPH_SETTINGS), 54, "&8Friend settings (1/2)"))
         appendLine("items {")
-        appendLine(nexoStatusButton(SETTINGS))
+        appendLine(nexoStatusButton(SETTINGS_1))
         appendLine(nexoBooleanToggle("invites", 10, [11, 12, 13, 14, 15], "Friend requests"))
         appendLine(nexoBooleanToggle("notifies", 19, [20, 21, 22, 23, 24], "Notifications"))
         appendLine(
-            """
-              msgs_everyone {
-                material = "nexo:friend_toggle_on"
-                slot = 28
-                priority = 0
-                name = "&ePrivate messages"
-                lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
-                update = true
-                view.require = [{ condition { type = "xalifriends:setting", setting = "msgs", value = "everyone" } }]
-                click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
-              }
-              msgs_friends {
-                material = "nexo:friend_toggle_onlyfriends"
-                slot = 28
-                priority = 5
-                name = "&ePrivate messages"
-                lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
-                update = true
-                view.require = [{ condition { type = "xalifriends:setting", setting = "msgs", value = "friends" } }]
-                click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
-              }
-              msgs_nobody {
-                material = "nexo:friend_toggle_off"
-                slot = 28
-                priority = 10
-                name = "&ePrivate messages"
-                lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
-                update = true
-                click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
-              }
-              msgs_label {
-                material = "nexo:friend_empty"
-                slots = [29, 30, 31, 32, 33]
-                name = "&ePrivate messages"
-                lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
-                update = true
-                bedrock.hidden = true
-                click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
-              }
-            """.trimIndent().prependIndent("  ")
+            indent(
+                """
+                msgs_everyone {
+                  material = "nexo:friend_toggle_on"
+                  slot = 28
+                  priority = 0
+                  name = "&ePrivate messages"
+                  lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
+                  update = true
+                  view.require = [{ condition { type = "xalifriends:setting", setting = "msgs", value = "everyone" } }]
+                  click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
+                }
+                msgs_friends {
+                  material = "nexo:friend_toggle_onlyfriends"
+                  slot = 28
+                  priority = 5
+                  name = "&ePrivate messages"
+                  lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
+                  update = true
+                  view.require = [{ condition { type = "xalifriends:setting", setting = "msgs", value = "friends" } }]
+                  click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
+                }
+                msgs_nobody {
+                  material = "nexo:friend_toggle_off"
+                  slot = 28
+                  priority = 10
+                  name = "&ePrivate messages"
+                  lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
+                  update = true
+                  click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
+                }
+                msgs_label {
+                  material = "nexo:friend_empty"
+                  slots = [29, 30, 31, 32, 33]
+                  name = "&ePrivate messages"
+                  lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
+                  update = true
+                  bedrock.hidden = true
+                  click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
+                }
+                """.trimIndent(),
+                2,
+            )
         )
         appendLine(nexoBooleanToggle("jump", 37, [38, 39, 40], "Jumping"))
         appendLine(
-            """
-              next_page {
-                material = "nexo:friend_empty"
-                slot = 35
-                name = "&eMore settings"
-                lore = ["&7Last seen, server visibility"]
-                click.any.actions = [{ type = "open", menu = "$SETTINGS2" }]
-              }
-              back {
-                material = "nexo:friend_empty"
-                slots = [48, 49, 50]
-                name = "&eBack"
-                click.any.actions = [{ type = "open", menu = "$main" }]
-              }
-            """.trimIndent().prependIndent("  ")
+            indent(
+                """
+                next_page {
+                  material = "nexo:friend_empty"
+                  slot = 35
+                  name = "&eMore settings"
+                  lore = ["&7Last seen, server visibility"]
+                  click.any.actions = [{ type = "open", menu = "$SETTINGS_2" }]
+                }
+                back {
+                  material = "nexo:friend_empty"
+                  slots = [48, 49, 50]
+                  name = "&eBack"
+                  click.any.actions = [{ type = "open", menu = "$main" }]
+                }
+                """.trimIndent(),
+                2,
+            )
         )
         appendLine("}")
     }
@@ -547,45 +570,49 @@ object DefaultMenus {
     private fun nexoSettings2(main: String): String = buildString {
         append(header("Friend settings page 2 (Nexo pack): last seen, server visibility and status.", nexoTitle(GLYPH_SETTINGS2), 54, "&8Friend settings (2/2)"))
         appendLine("items {")
-        appendLine(nexoStatusButton(SETTINGS2))
+        appendLine(nexoStatusButton(SETTINGS_2))
         appendLine(nexoBooleanToggle("lastseen", 10, [11, 12, 13, 14, 15], "Show when you were last online"))
         appendLine(nexoBooleanToggle("server", 19, [20, 21, 22, 23], "Friends see which server you are on"))
         appendLine(
-            """
-              prev_page {
-                material = "nexo:friend_empty"
-                slot = 27
-                name = "&ePrevious settings"
-                lore = ["&7Requests, notifications, messages, jumping"]
-                click.any.actions = [{ type = "open", menu = "$SETTINGS" }]
-              }
-              back {
-                material = "nexo:friend_empty"
-                slots = [48, 49, 50]
-                name = "&eBack"
-                click.any.actions = [{ type = "open", menu = "$main" }]
-              }
-            """.trimIndent().prependIndent("  ")
+            indent(
+                """
+                prev_page {
+                  material = "nexo:friend_empty"
+                  slot = 27
+                  name = "&ePrevious settings"
+                  lore = ["&7Requests, notifications, messages, jumping"]
+                  click.any.actions = [{ type = "open", menu = "$SETTINGS_1" }]
+                }
+                back {
+                  material = "nexo:friend_empty"
+                  slots = [48, 49, 50]
+                  name = "&eBack"
+                  click.any.actions = [{ type = "open", menu = "$main" }]
+                }
+                """.trimIndent(),
+                2,
+            )
         )
         appendLine("}")
     }
 
-    private fun nexoStatusButton(returnMenu: String): String = """
-        status {
-          material = "nexo:friend_empty"
-          slots = [2, 3, 4, 5, 6]
-          name = "&eChange status"
-          lore = ["&7Current: &f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]
-          update = true
-          bedrock { left-label = "&eChange status", right-label = "&cClear status" }
-          click.left.actions = [
-        ${statusInput(returnMenu).prependIndent("    ")}
-          ]
-          click.right.actions = [{ type = "xalifriends:clear-status" }]
-        }
-    """.trimIndent().prependIndent("  ")
+    private fun nexoStatusButton(returnMenu: String): String = buildString {
+        appendLine("  status {")
+        appendLine("""    material = "nexo:friend_empty"""")
+        appendLine("    slots = [2, 3, 4, 5, 6]")
+        appendLine("""    name = "&eChange status"""")
+        appendLine("""    lore = ["&7Current: &f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]""")
+        appendLine("    update = true")
+        appendLine("""    bedrock { left-label = "&eChange status", right-label = "&cClear status" }""")
+        appendLine("    click.left.actions = [")
+        appendLine(statusInput(returnMenu, 6))
+        appendLine("    ]")
+        appendLine("""    click.right.actions = [{ type = "xalifriends:clear-status" }]""")
+        append("  }")
+    }
 
-    private fun nexoBooleanToggle(key: String, slot: Int, labelSlots: List<Int>, label: String): String = """
+    private fun nexoBooleanToggle(key: String, slot: Int, labelSlots: List<Int>, label: String): String = indent(
+        """
         ${key}_on {
           material = "nexo:friend_toggle_on"
           slot = $slot
@@ -614,7 +641,9 @@ object DefaultMenus {
           bedrock.hidden = true
           click.any.actions = [{ type = "xalifriends:toggle", setting = "$key" }]
         }
-    """.trimIndent().prependIndent("  ")
+        """.trimIndent(),
+        2,
+    )
 
     // ---- Vanilla style
 
@@ -633,106 +662,120 @@ object DefaultMenus {
               ]
               map { "#" = border }
             }
-            pages {
-              catalog { type = "xalifriends:friends" }
-              layout = [
-                "         "
-                " xxxxxxx "
-                " xxxxxxx "
-                " xxxxxxx "
-                " xxxxxxx "
-                "         "
-              ]
-              item {
-                material = "player_head"
-                skull = "{name}"
-                name = "&6{star}&f{name}"
-                lore = [
-                  "&7{seen}"
-                  "&7Status: &f{status}"
-                  "&7Friends since &f{since}"
-                  ""
-                  "&eClick for options"
-                ]
-                click.any.actions = [
-                  { type = "xalifriends:select", player = "{uuid}" }
-                  { type = "open", menu = "$PLAYER" }
-                ]
-              }
-              empty {
-                material = "barrier"
-                name = "&7No friends yet"
-                lore = ["&eClick to add a friend"]
-                click.any.actions = [
-            ${addFriendInput(main).prependIndent("      ")}
-                ]
-              }
-            }
-            items {
-              border { material = "gray_stained_glass_pane", priority = 100, name = " " }
-              prev {
-                material = "arrow"
-                slot = 45
-                name = "&ePrevious page"
-                lore = ["&7Page {page_prev} of {pages}"]
-                bedrock.hidden = true
-                view.require = [{ condition { type = "compare", left = "{page}", op = "GT", right = "1" } }]
-                click.any.actions = [{ type = "page", by = -1 }]
-              }
-              page {
-                material = "book"
-                slot = 46
-                name = "&7Page &f{page}&7/&f{pages}"
-                bedrock.hidden = true
-              }
-              requests {
-                material = "paper"
-                slot = 47
-                name = "&eRequests &7(%xalifriends_requests%)"
-                lore = ["&7Players who asked to be your friend"]
-                update = true
-                click.any.actions = [{ type = "open", menu = "$REQUESTS" }]
-              }
-              add {
-                material = "emerald"
-                slot = 48
-                name = "&aAdd friend"
-                lore = ["&7Send a friend request by player name"]
-                click.any.actions = [
-            ${addFriendInput(main).prependIndent("      ")}
-                ]
-              }
-              status {
-                material = "name_tag"
-                slot = 49
-                name = "&eYour status"
-                lore = ["&f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]
-                update = true
-                bedrock { left-label = "&eChange status", right-label = "&cClear status" }
-                click.left.actions = [
-            ${statusInput(main).prependIndent("      ")}
-                ]
-                click.right.actions = [{ type = "xalifriends:clear-status" }]
-              }
-              settings {
-                material = "comparator"
-                slot = 51
-                name = "&eSettings"
-                lore = ["&7Requests, notifications, messages"]
-                click.any.actions = [{ type = "open", menu = "$SETTINGS" }]
-              }
-              next {
-                material = "arrow"
-                slot = 53
-                name = "&eNext page"
-                lore = ["&7Page {page_next} of {pages}"]
-                bedrock.hidden = true
-                view.require = [{ condition { type = "compare", left = "{page}", op = "LT", right = "{pages}" } }]
-                click.any.actions = [{ type = "page", by = 1 }]
-              }
-            }
             """.trimIndent()
         )
+        appendLine("pages {")
+        appendLine("""  catalog { type = "xalifriends:friends" }""")
+        appendLine("  layout = [")
+        appendLine("""    "         """")
+        appendLine("""    " xxxxxxx """")
+        appendLine("""    " xxxxxxx """")
+        appendLine("""    " xxxxxxx """")
+        appendLine("""    " xxxxxxx """")
+        appendLine("""    "         """")
+        appendLine("  ]")
+        appendLine("  item {")
+        appendLine("""    material = "player_head"""")
+        appendLine("""    skull = "{name}"""")
+        appendLine("""    name = "&6{star}&f{name}"""")
+        appendLine("    lore = [")
+        appendLine("""      "&7{seen}"""")
+        appendLine("""      "&7Status: &f{status}"""")
+        appendLine("""      "&7Friends since &f{since}"""")
+        appendLine("""      """"")
+        appendLine("""      "&eClick for options"""")
+        appendLine("    ]")
+        appendLine("    click.any.actions = [")
+        appendLine("""      { type = "xalifriends:select", player = "{uuid}" }""")
+        appendLine("""      { type = "open", menu = "$PROFILE" }""")
+        appendLine("    ]")
+        appendLine("  }")
+        appendLine("  empty {")
+        appendLine("""    material = "barrier"""")
+        appendLine("""    name = "&7No friends yet"""")
+        appendLine("""    lore = ["&eClick to add a friend"]""")
+        appendLine("    click.any.actions = [")
+        appendLine(addFriendInput(main, 6))
+        appendLine("    ]")
+        appendLine("  }")
+        appendLine("}")
+        appendLine("items {")
+        appendLine(
+            indent(
+                """
+                border { material = "gray_stained_glass_pane", priority = 100, name = " " }
+                prev {
+                  material = "arrow"
+                  slot = 45
+                  name = "&ePrevious page"
+                  lore = ["&7Page {page_prev} of {pages}"]
+                  bedrock.hidden = true
+                  view.require = [{ condition { type = "compare", left = "{page}", op = "GT", right = "1" } }]
+                  click.any.actions = [{ type = "page", by = -1 }]
+                }
+                page {
+                  material = "book"
+                  slot = 46
+                  name = "&7Page &f{page}&7/&f{pages}"
+                  bedrock.hidden = true
+                }
+                requests {
+                  material = "paper"
+                  slot = 47
+                  name = "&eRequests &7(%xalifriends_requests%)"
+                  lore = ["&7Players who asked to be your friend"]
+                  update = true
+                  click.any.actions = [{ type = "open", menu = "$REQUESTS" }]
+                }
+                """.trimIndent(),
+                2,
+            )
+        )
+        appendLine("  add {")
+        appendLine("""    material = "emerald"""")
+        appendLine("    slot = 48")
+        appendLine("""    name = "&aAdd friend"""")
+        appendLine("""    lore = ["&7Send a friend request by player name"]""")
+        appendLine("    click.any.actions = [")
+        appendLine(addFriendInput(main, 6))
+        appendLine("    ]")
+        appendLine("  }")
+        appendLine("  status {")
+        appendLine("""    material = "name_tag"""")
+        appendLine("    slot = 49")
+        appendLine("""    name = "&eYour status"""")
+        appendLine("""    lore = ["&f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]""")
+        appendLine("    update = true")
+        appendLine("""    bedrock { left-label = "&eChange status", right-label = "&cClear status" }""")
+        appendLine("    click.left.actions = [")
+        appendLine(statusInput(main, 6))
+        appendLine("    ]")
+        appendLine("""    click.right.actions = [{ type = "xalifriends:clear-status" }]""")
+        appendLine("  }")
+        appendLine(
+            indent(
+                """
+                settings {
+                  material = "comparator"
+                  slot = 51
+                  name = "&eSettings"
+                  lore = ["&7Requests, notifications, messages"]
+                  click.any.actions = [{ type = "open", menu = "$SETTINGS_1" }]
+                }
+                next {
+                  material = "arrow"
+                  slot = 53
+                  name = "&eNext page"
+                  lore = ["&7Page {page_next} of {pages}"]
+                  bedrock.hidden = true
+                  view.require = [{ condition { type = "compare", left = "{page}", op = "LT", right = "{pages}" } }]
+                  click.any.actions = [{ type = "page", by = 1 }]
+                }
+                """.trimIndent(),
+                2,
+            )
+        )
+        appendLine("}")
     }
 
     private fun vanillaRequests(main: String): String = buildString {
@@ -812,8 +855,8 @@ object DefaultMenus {
         )
     }
 
-    private fun vanillaPlayer(main: String): String = buildString {
-        append(header("A friend's own menu: opened by clicking them in the list.", "&8%xalifriends_selected_name%", 27))
+    private fun vanillaProfile(main: String): String = buildString {
+        append(header("A friend's profile menu: opened by clicking them in the list.", "&8%xalifriends_selected_name%", 27))
         appendLine(
             """
             items {
@@ -824,7 +867,7 @@ object DefaultMenus {
                 slot = 13
                 name = "%xalifriends_selected_marker% &f%xalifriends_selected_name%"
                 lore = [
-                  "%xalifriends_selected_seen%"
+                  "&7%xalifriends_selected_seen%"
                   "&7Status: &f%xalifriends_selected_status%"
                   "&7Friends since &f%xalifriends_selected_since%"
                 ]
@@ -890,7 +933,7 @@ object DefaultMenus {
               }
               cancel {
                 text = "&cKeep"
-                actions = [{ type = "open", menu = "$PLAYER" }]
+                actions = [{ type = "open", menu = "$PROFILE" }]
               }
             }
             items {
@@ -914,14 +957,14 @@ object DefaultMenus {
                 slot = 15
                 name = "&cKeep"
                 lore = ["&7Go back"]
-                click.any.actions = [{ type = "open", menu = "$PLAYER" }]
+                click.any.actions = [{ type = "open", menu = "$PROFILE" }]
               }
             }
             """.trimIndent()
         )
     }
 
-    private fun vanillaSettings(main: String): String = buildString {
+    private fun vanillaSettings1(main: String): String = buildString {
         append(header("Settings: each item flips one.", "&8Friend settings", 36))
         appendLine("items {")
         appendLine("  filler { material = \"gray_stained_glass_pane\", slots = [${(0 until 36).joinToString()}], priority = 100, name = \" \" }")
@@ -935,39 +978,45 @@ object DefaultMenus {
         )
         for (toggle in toggles) {
             appendLine(
-                """
-                  ${toggle.key} {
-                    material = "${toggle.material}"
-                    slot = ${toggle.slot}
-                    name = "&e${toggle.label}"
-                    lore = ["&7Now: &f%xalifriends_setting_${toggle.key}%", "", "&eClick to change"]
-                    update = true
-                    click.any.actions = [{ type = "xalifriends:toggle", setting = "${toggle.key}" }]
-                  }
-                """.trimIndent().prependIndent("  ")
+                indent(
+                    """
+                    ${toggle.key} {
+                      material = "${toggle.material}"
+                      slot = ${toggle.slot}
+                      name = "&e${toggle.label}"
+                      lore = ["&7Now: &f%xalifriends_setting_${toggle.key}%", "", "&eClick to change"]
+                      update = true
+                      click.any.actions = [{ type = "xalifriends:toggle", setting = "${toggle.key}" }]
+                    }
+                    """.trimIndent(),
+                    2,
+                )
             )
         }
+        appendLine("  status {")
+        appendLine("""    material = "name_tag"""")
+        appendLine("    slot = 22")
+        appendLine("""    name = "&eYour status"""")
+        appendLine("""    lore = ["&f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]""")
+        appendLine("    update = true")
+        appendLine("""    bedrock { left-label = "&eChange status", right-label = "&cClear status" }""")
+        appendLine("    click.left.actions = [")
+        appendLine(statusInput(SETTINGS_1, 6))
+        appendLine("    ]")
+        appendLine("""    click.right.actions = [{ type = "xalifriends:clear-status" }]""")
+        appendLine("  }")
         appendLine(
-            """
-              status {
-                material = "name_tag"
-                slot = 22
-                name = "&eYour status"
-                lore = ["&f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]
-                update = true
-                bedrock { left-label = "&eChange status", right-label = "&cClear status" }
-                click.left.actions = [
-            ${statusInput(SETTINGS).prependIndent("      ")}
-                ]
-                click.right.actions = [{ type = "xalifriends:clear-status" }]
-              }
-              back {
-                material = "arrow"
-                slot = 31
-                name = "&eBack"
-                click.any.actions = [{ type = "open", menu = "$main" }]
-              }
-            """.trimIndent().prependIndent("  ")
+            indent(
+                """
+                back {
+                  material = "arrow"
+                  slot = 31
+                  name = "&eBack"
+                  click.any.actions = [{ type = "open", menu = "$main" }]
+                }
+                """.trimIndent(),
+                2,
+            )
         )
         appendLine("}")
     }

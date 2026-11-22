@@ -117,7 +117,7 @@ data class MainConfig(
     @Serializable
     data class Gui(
         val enabled: Boolean = true,
-        @YamlComment("The name of the main menu in XaliMenu. The others are friends-requests, friends-player, friends-remove and friends-settings (and friends-settings2 in the nexo style).")
+        @YamlComment("The name of the main menu in XaliMenu. The others are friends-requests, friend-profile, friends-remove, friends-settings-1 (and friends-settings-2 in the nexo style).")
         val menu: String = "friends",
         @YamlComment(
             "How the written menus look: vanilla (plain items), nexo (the friend GUI pack's backgrounds and buttons, which needs the",

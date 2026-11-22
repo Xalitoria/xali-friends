@@ -123,7 +123,7 @@ class MenuActions {
     fun `nexo menus reference only items and glyphs shipped in the nexo resource pack`() {
         val menus = DefaultMenus.all("friends", MainConfig.Gui.Style.NEXO)
         assertEquals(
-            setOf("friends", "friends-requests", "friends-player", "friends-remove", "friends-settings", "friends-settings2"),
+            setOf("friends", "friends-requests", "friend-profile", "friends-remove", "friends-settings-1", "friends-settings-2"),
             menus.keys,
         )
 
@@ -150,6 +150,31 @@ class MenuActions {
                 ?: error("$name title has no glyph run: $title")
             assertTrue(glyphRun.all { it in packGlyphChars }, "$name uses unknown glyph chars in '$glyphRun'")
             assertTrue("bedrock {" in text, "$name should configure a Bedrock title/mode")
+        }
+    }
+
+    @Test
+    fun `written menus are formatted with consistent two-space indentation`() {
+        for (style in listOf(MainConfig.Gui.Style.VANILLA, MainConfig.Gui.Style.NEXO)) {
+            for ([name, text] in DefaultMenus.all("friends", style)) {
+                var depth = 0
+                for ([index, raw] in text.lines().withIndex()) {
+                    if (raw.isEmpty()) continue
+                    assertEquals(raw, raw.trimEnd(), "$style/$name line ${index + 1} has trailing spaces")
+                    val trimmed = raw.trimStart()
+                    val leading = raw.length - trimmed.length
+                    if (trimmed.startsWith("}") || trimmed.startsWith("]")) depth--
+                    assertEquals(depth * 2, leading, "$style/$name line ${index + 1} expected ${depth * 2} spaces, got $leading: '$raw'")
+                    val opened = trimmed.count { it == '{' || it == '[' }
+                    val closed = trimmed.count { it == '}' || it == ']' }
+                    if (trimmed.startsWith("}") || trimmed.startsWith("]")) {
+                        depth += opened - (closed - 1)
+                    } else {
+                        depth += opened - closed
+                    }
+                }
+                assertEquals(0, depth, "$style/$name unbalanced braces/brackets")
+            }
         }
     }
 }

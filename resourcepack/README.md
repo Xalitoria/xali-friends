@@ -112,8 +112,9 @@ differs by format: `range_dispatch` on `custom_model_data` and the `items` atlas
 - **Item models**: `models/item/paper.json` and `models/item/player_head.json` picked a model by `overrides` on
   `custom_model_data`, which the game has ignored since 1.21.4. `items/paper.json` and `items/player_head.json` now do
   it with a `range_dispatch` on `minecraft:custom_model_data` (the same thresholds: 3700-3716 for the buttons, 5000 and
-  10050 for the heads). The vanilla definition is the fallback. The legacy `models/item` and `models/block` files are
-  gone.
+  10050 for the heads) and set `oversized_in_gui: true` so the 2x2 big head and multi-slot buttons are not clipped to a
+  16x16 slot in Minecraft 1.21.6+/26.x. The vanilla definition is the fallback. The legacy `models/item` and
+  `models/block` files are gone.
 - **Heads**: the two head variants are `special` models on the base models `friends:item/little_head` and `big_head`,
   which now hold only their `display` transform. The original also had an override for `skeleton_skull` (5050) pointing
   at a model that was never in the pack, so it was not carried over.

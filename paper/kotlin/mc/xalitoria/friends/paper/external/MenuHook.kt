@@ -5,6 +5,7 @@ import mc.xalitoria.friends.paper.data.config.MainConfig
 import net.xalitoria.menu.XaliMenuApi
 import org.bukkit.entity.Player
 import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.writeText
 
@@ -37,12 +38,18 @@ class MenuHook(private val plugin: XaliFriends) {
         val directory = plugin.server.pluginManager.getPlugin("XaliMenu")?.dataPath?.resolve("menus") ?: return null
         directory.createDirectories()
         val main = plugin.config.data.gui.menu
+        val menus = DefaultMenus.all(main, style)
         val written = mutableListOf<String>()
-        for (menu in DefaultMenus.all(main, style)) {
+        for (menu in menus) {
             val file = directory.resolve("${menu.key}.conf")
             if (overwrite || !file.exists()) {
                 file.writeText(menu.value)
                 written.add(menu.key)
+            }
+        }
+        if (overwrite) {
+            for (retired in DefaultMenus.RETIRED_NAMES) {
+                if (retired !in menus) directory.resolve("$retired.conf").deleteIfExists()
             }
         }
         return written
