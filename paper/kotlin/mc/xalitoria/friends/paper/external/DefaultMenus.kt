@@ -10,7 +10,7 @@ import mc.xalitoria.friends.paper.data.config.MainConfig.Gui.Style
  * (`xalifriends:setting`, `xalifriends:has-requests`, `xalifriends:selected`), addon actions (`xalifriends:*`), native
  * `input` prompts (for adding a friend and changing status), `skull` heads and Bedrock-friendly metadata.
  *
- * The `nexo` style draws the resource pack's GUI backgrounds (`<white><font:nexo:shift>\ue105\ue102</font><font:nexo:default><glyph></font></white>`),
+ * The `nexo` style draws the resource pack's GUI backgrounds (`<white><shift:-18><glyph:id></white>`, Nexo's own tags),
  * custom button items (`nexo:friend_*`) and `player_head` custom model data (`5000` little head, `10050` 2x2 big head).
  */
 object DefaultMenus {
@@ -23,13 +23,12 @@ object DefaultMenus {
     /** Old or style-specific menu names removed on `/xalifriends menus reset` when not part of the written style. */
     val RETIRED_NAMES: Set<String> = setOf("friends-player", "friends-settings", "friends-settings2", SETTINGS_2)
 
-    /** Nexo glyph characters from `friends/resourcepack/nexo/glyphs/friends.yml`, shifted 18 pixels left (Nexo's `nexo:shift` font: -16 and -2) onto the chest background. */
-    private const val NEXO_SHIFT = "<font:nexo:shift>\\ue105\\ue102</font>"
-    private const val GLYPH_FRIENDS = "ᛧ"
-    private const val GLYPH_PROFILE = "᛫"
-    private const val GLYPH_REQUESTS = "᛬"
-    private const val GLYPH_SETTINGS = "᛭"
-    private const val GLYPH_SETTINGS2 = "ᛸ"
+    /** The ids of the glyphs in `friends/resourcepack/nexo/glyphs/friends.yml`; `<shift:-18>` moves one onto the chest background. */
+    private const val GLYPH_FRIENDS = "friends"
+    private const val GLYPH_PROFILE = "profile"
+    private const val GLYPH_REQUESTS = "requests"
+    private const val GLYPH_SETTINGS = "settings"
+    private const val GLYPH_SETTINGS2 = "settings2"
 
     private const val BIG_HEAD_MODEL = 10050
     private const val LITTLE_HEAD_MODEL = 5000
@@ -52,7 +51,7 @@ object DefaultMenus {
         )
     }
 
-    private fun nexoTitle(glyph: String): String = "<white>$NEXO_SHIFT<font:nexo:default>$glyph</font></white>"
+    private fun nexoTitle(glyph: String): String = "<white><shift:-18><glyph:$glyph></white>"
 
     private fun indent(text: String, spaces: Int): String {
         val pad = " ".repeat(spaces)

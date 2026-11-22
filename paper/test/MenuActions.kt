@@ -131,11 +131,7 @@ class MenuActions {
         val itemsYaml = Yaml.default.parseToYamlNode(File(packDir, "items/friends.yml").readText()) as YamlMap
         val packItems = itemsYaml.entries.keys.map { it.content }.toSet()
         val glyphsYaml = Yaml.default.parseToYamlNode(File(packDir, "glyphs/friends.yml").readText()) as YamlMap
-        val packGlyphChars = glyphsYaml.entries.values
-            .mapNotNull { ((it as? YamlMap)?.get<YamlNode>("char") as? YamlScalar)?.content }
-            .flatMap { it.toList() }
-            .toSet()
-
+        val packGlyphIds = glyphsYaml.entries.keys.map { it.content }.toSet()
         val allText = menus.values.joinToString("\n")
         val usedItems = Regex("""material\s*=\s*"nexo:([^"]+)"""").findAll(allText).map { it.groupValues[1] }.toSet()
         assertTrue(usedItems.isNotEmpty(), "nexo menus should use nexo items")
@@ -145,10 +141,9 @@ class MenuActions {
             val titleMatch = Regex("""^title\s*=\s*"([^"]+)"""", RegexOption.MULTILINE).find(text)
                 ?: error("$name has no title")
             val title = titleMatch.groupValues[1]
-            assertTrue("<font:nexo:default>" in title, "$name title should set nexo:default font: $title")
-            val glyphRun = Regex("""<font:nexo:default>([^<]+)</font>""").find(title)?.groupValues?.get(1)
-                ?: error("$name title has no glyph run: $title")
-            assertTrue(glyphRun.all { it in packGlyphChars }, "$name uses unknown glyph chars in '$glyphRun'")
+            val glyph = Regex("""<white><shift:-18><glyph:([a-z0-9_]+)></white>""").matchEntire(title)?.groupValues?.get(1)
+                ?: error("$name title should be Nexo's shift and glyph tags: $title")
+            assertTrue(glyph in packGlyphIds, "$name uses a glyph the pack does not have: $glyph")
             assertTrue("bedrock {" in text, "$name should configure a Bedrock title/mode")
         }
     }
