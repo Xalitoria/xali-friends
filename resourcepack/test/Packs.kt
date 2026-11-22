@@ -172,6 +172,8 @@ class Packs {
             assertTrue(pack.text("texture") != null || pack.text("model") != null, "${key.content} names a texture or a model")
             if (key.content in wideButtons) {
                 assertEquals("true", pack.text("oversized_in_gui"), "${key.content} should set Pack.oversized_in_gui: true")
+                val components = value.map("Components") ?: error("${key.content} has no Components")
+                assertEquals("nexo:${key.content}", components.text("item_model"), "${key.content} should set Components.item_model")
             }
         }
         val nexoHead = json(File(nexo, "pack/assets/minecraft/items/player_head.json")).jsonObject
@@ -189,6 +191,9 @@ class Packs {
         }
     }
 
+    /** GUI background glyphs only; the vanilla pack also carries negative-shift glyphs that Nexo and ItemsAdder provide themselves. */
+    private fun uiGlyphs(): List<Glyph> = glyphs().filter { it.file != "required/null.png" }
+
     @Test
     fun nexoGlyphsAreTheVanillaOnes() {
         val ours = yaml(File(nexo, "glyphs/friends.yml")).entries.values.map {
@@ -197,7 +202,7 @@ class Packs {
         }
         for (glyph in ours) assertTrue(File(nexo, "pack/assets/minecraft/textures/${glyph.file}").isFile, "glyph texture ${glyph.file}")
         fun Glyph.key() = "$char $ascent $height ${file.removeSuffix(".png")}"
-        assertEquals(glyphs().map { it.key() }.toSet(), ours.map { it.key() }.toSet())
+        assertEquals(uiGlyphs().map { it.key() }.toSet(), ours.map { it.key() }.toSet())
     }
 
     @Test
@@ -234,12 +239,12 @@ class Packs {
         val config = yaml(File(itemsAdder, "contents/friendsystem/configs/items.yml"))
         val textures = File(itemsAdder, "contents/friendsystem/textures")
         val images = config.map("font_images")!!.entries.values.map { it as YamlMap }
-        // The shift characters are blank and only here and in Oraxen; the rest are the vanilla glyphs.
+        // ItemsAdder provides its own shift offsets; the font_images here are the vanilla GUI glyphs.
         for (image in images) assertTrue(File(textures, image.text("path")!!).isFile, "font image ${image.text("path")}")
         // y_position is the glyph's ascent and scale_ratio its height.
         val ours = images.map { Glyph(it.text("symbol")!!, it.text("path")!!, it.text("y_position")!!.toInt(), it.text("scale_ratio")!!.toInt()) }
         fun Glyph.key() = "$char $ascent $height ${file.removeSuffix(".png")}"
-        assertEquals(glyphs().map { it.key() }.toSet(), ours.map { it.key() }.toSet())
+        assertEquals(uiGlyphs().map { it.key() }.toSet(), ours.map { it.key() }.toSet())
         for ((key, value) in config.map("items")!!.entries) {
             val resource = (value as YamlMap).map("resource") ?: error("${key.content} has no resource")
             resource.list("textures").forEach { assertTrue(File(textures, it).isFile, "${key.content}: texture $it") }

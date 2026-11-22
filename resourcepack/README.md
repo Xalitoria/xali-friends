@@ -120,8 +120,11 @@ differs by format: `range_dispatch` on `custom_model_data` and the `items` atlas
   at a model that was never in the pack, so it was not carried over.
 - **Atlas**: the textures sit outside `textures/item`, so `atlases/items.json` adds them (`friends/buttons` and
   `required/particle`). The old `blocks.json` also listed twelve textures the pack never had.
-- **Nexo**: the Oraxen folder became Nexo's own layout. Items use `itemname` and `Pack: texture:` or `model:` (no
-  `custom_model_data`, since Nexo gives every item its own `item_model`). The textures and models are under
+- **Nexo**: the Oraxen folder became Nexo's own layout. Items use `itemname` and `Pack: texture:` or `model:`; the six wide
+  buttons (`friend_accept`, `friend_deny`, `friend_invite`, `friend_jump`, `friend_send`, `friend_teleport`) also set
+  `Pack.oversized_in_gui: true` and `Components.item_model: nexo:<id>` so they render unclipped in 1.21.6+/26.x even when
+  `Pack.generation.prefer_item_models` is disabled in Nexo's `settings.yml` (Nexo does not propagate `oversized_in_gui` onto
+  the generated `minecraft:paper` definition). The textures and models are under
   `pack/assets/minecraft/` rather than Oraxen's `pack/textures` and `pack/models`, which Nexo converts only from an actual
   Oraxen folder. Item ids are the original's with a `friend_` prefix (`friend_like`, `friend_empty`, ...), so they do not
   clash with other Nexo items.
