@@ -74,7 +74,7 @@ object DefaultMenus {
         """
         {
           type = "input"
-          title = "Add friend"
+          title = "Add Friend"
           prompt = "&eType the player's name, or cancel"
           submit = "Send request"
           max-length = 16
@@ -91,7 +91,7 @@ object DefaultMenus {
         """
         {
           type = "input"
-          title = "Change status"
+          title = "Change Status"
           prompt = "&eType your new status (or leave empty to clear), or cancel"
           initial = "%xalifriends_status_raw%"
           submit = "Save"
@@ -136,7 +136,7 @@ object DefaultMenus {
         appendLine("  }")
         appendLine("  empty {")
         appendLine("""    material = "barrier"""")
-        appendLine("""    name = "&7No friends yet"""")
+        appendLine("""    name = "&7No Friends Yet"""")
         appendLine("""    lore = ["&eClick to add a friend"]""")
         appendLine("    click.any.actions = [")
         appendLine(addFriendInput(main, 6))
@@ -187,7 +187,7 @@ object DefaultMenus {
                 prev {
                   material = "nexo:friend_arrow_left"
                   slot = 36
-                  name = "&ePrevious page"
+                  name = "&ePrevious Page"
                   lore = ["&7Page {page_prev} of {pages}"]
                   bedrock.hidden = true
                   view.require = [{ condition { type = "compare", left = "{page}", op = "GT", right = "1" } }]
@@ -196,7 +196,7 @@ object DefaultMenus {
                 next {
                   material = "nexo:friend_arrow_right"
                   slot = 44
-                  name = "&eNext page"
+                  name = "&eNext Page"
                   lore = ["&7Page {page_next} of {pages}"]
                   bedrock.hidden = true
                   view.require = [{ condition { type = "compare", left = "{page}", op = "LT", right = "{pages}" } }]
@@ -234,7 +234,7 @@ object DefaultMenus {
         appendLine("    ]")
         appendLine("    update = true")
         if (hidden) appendLine("    bedrock.hidden = true")
-        else appendLine("""    bedrock { left-label = "&eChange status", right-label = "&cClear status" }""")
+        else appendLine("""    bedrock { left-label = "&eChange Status", right-label = "&cClear Status" }""")
         appendLine("    click.left.actions = [")
         appendLine(statusInput(returnMenu, 6))
         appendLine("    ]")
@@ -246,7 +246,7 @@ object DefaultMenus {
         appendLine("  $key {")
         appendLine("""    material = "$material"""")
         appendLine("    $placement")
-        appendLine("""    name = "&aAdd friend"""")
+        appendLine("""    name = "&aAdd Friend"""")
         appendLine("""    lore = ["&7Send a friend request by player name"]""")
         if (hidden) appendLine("    bedrock.hidden = true")
         appendLine("    click.any.actions = [")
@@ -312,7 +312,7 @@ object DefaultMenus {
               }
               empty {
                 material = "barrier"
-                name = "&7No friend requests"
+                name = "&7No Friend Requests"
                 lore = ["&7Nobody has sent you a friend request."]
               }
             }
@@ -320,7 +320,7 @@ object DefaultMenus {
               prev {
                 material = "nexo:friend_arrow_left"
                 slot = 18
-                name = "&ePrevious page"
+                name = "&ePrevious Page"
                 lore = ["&7Page {page_prev} of {pages}"]
                 bedrock.hidden = true
                 view.require = [{ condition { type = "compare", left = "{page}", op = "GT", right = "1" } }]
@@ -329,7 +329,7 @@ object DefaultMenus {
               next {
                 material = "nexo:friend_arrow_right"
                 slot = 26
-                name = "&eNext page"
+                name = "&eNext Page"
                 lore = ["&7Page {page_next} of {pages}"]
                 bedrock.hidden = true
                 view.require = [{ condition { type = "compare", left = "{page}", op = "LT", right = "{pages}" } }]
@@ -391,7 +391,7 @@ object DefaultMenus {
                 material = "nexo:friend_like"
                 slot = 2
                 priority = 10
-                name = "&eMake a favorite"
+                name = "&eMake a Favorite"
                 lore = ["&7Favorites are listed first"]
                 update = true
                 click.any.actions = [{ type = "xalifriends:favorite", player = "%xalifriends_selected_uuid%" }]
@@ -399,7 +399,7 @@ object DefaultMenus {
               remove {
                 material = "nexo:friend_cancel"
                 slot = 8
-                name = "&cRemove friend"
+                name = "&cRemove Friend"
                 lore = ["&7Asks you to confirm first"]
                 click.any.actions = [{ type = "open", menu = "$REMOVE" }]
               }
@@ -495,7 +495,7 @@ object DefaultMenus {
         append(header("Friend settings page 1 (Nexo pack): requests, notifications, private messages, jumping and status.", nexoTitle(GLYPH_SETTINGS), 54, "&8Friend settings (1/2)"))
         appendLine("items {")
         appendLine(nexoStatusButton(SETTINGS_1))
-        appendLine(nexoBooleanToggle("invites", 10, [11, 12, 13, 14, 15], "Friend requests"))
+        appendLine(nexoBooleanToggle("invites", 10, [11, 12, 13, 14, 15], "Friend Requests"))
         appendLine(nexoBooleanToggle("notifies", 19, [20, 21, 22, 23, 24], "Notifications"))
         appendLine(
             indent(
@@ -504,7 +504,7 @@ object DefaultMenus {
                   material = "nexo:friend_toggle_on"
                   slot = 28
                   priority = 0
-                  name = "&ePrivate messages"
+                  name = "&ePrivate Messages"
                   lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
                   update = true
                   view.require = [{ condition { type = "xalifriends:setting", setting = "msgs", value = "everyone" } }]
@@ -514,7 +514,7 @@ object DefaultMenus {
                   material = "nexo:friend_toggle_onlyfriends"
                   slot = 28
                   priority = 5
-                  name = "&ePrivate messages"
+                  name = "&ePrivate Messages"
                   lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
                   update = true
                   view.require = [{ condition { type = "xalifriends:setting", setting = "msgs", value = "friends" } }]
@@ -524,7 +524,7 @@ object DefaultMenus {
                   material = "nexo:friend_toggle_off"
                   slot = 28
                   priority = 10
-                  name = "&ePrivate messages"
+                  name = "&ePrivate Messages"
                   lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
                   update = true
                   click.any.actions = [{ type = "xalifriends:toggle", setting = "msgs" }]
@@ -532,7 +532,7 @@ object DefaultMenus {
                 msgs_label {
                   material = "nexo:friend_empty"
                   slots = [29, 30, 31, 32, 33]
-                  name = "&ePrivate messages"
+                  name = "&ePrivate Messages"
                   lore = ["&7Now: &f%xalifriends_setting_msgs%", "", "&eClick to change"]
                   update = true
                   bedrock.hidden = true
@@ -549,7 +549,7 @@ object DefaultMenus {
                 next_page {
                   material = "nexo:friend_empty"
                   slot = 35
-                  name = "&eMore settings"
+                  name = "&eMore Settings"
                   lore = ["&7Last seen, server visibility"]
                   click.any.actions = [{ type = "open", menu = "$SETTINGS_2" }]
                 }
@@ -570,15 +570,15 @@ object DefaultMenus {
         append(header("Friend settings page 2 (Nexo pack): last seen, server visibility and status.", nexoTitle(GLYPH_SETTINGS2), 54, "&8Friend settings (2/2)"))
         appendLine("items {")
         appendLine(nexoStatusButton(SETTINGS_2))
-        appendLine(nexoBooleanToggle("lastseen", 10, [11, 12, 13, 14, 15], "Show when you were last online"))
-        appendLine(nexoBooleanToggle("server", 19, [20, 21, 22, 23], "Friends see which server you are on"))
+        appendLine(nexoBooleanToggle("lastseen", 10, [11, 12, 13, 14, 15], "Show When You Were Last Online"))
+        appendLine(nexoBooleanToggle("server", 19, [20, 21, 22, 23], "Friends See Which Server You Are On"))
         appendLine(
             indent(
                 """
                 prev_page {
                   material = "nexo:friend_empty"
                   slot = 27
-                  name = "&ePrevious settings"
+                  name = "&ePrevious Settings"
                   lore = ["&7Requests, notifications, messages, jumping"]
                   click.any.actions = [{ type = "open", menu = "$SETTINGS_1" }]
                 }
@@ -599,10 +599,10 @@ object DefaultMenus {
         appendLine("  status {")
         appendLine("""    material = "nexo:friend_empty"""")
         appendLine("    slots = [2, 3, 4, 5, 6]")
-        appendLine("""    name = "&eChange status"""")
+        appendLine("""    name = "&eChange Status"""")
         appendLine("""    lore = ["&7Current: &f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]""")
         appendLine("    update = true")
-        appendLine("""    bedrock { left-label = "&eChange status", right-label = "&cClear status" }""")
+        appendLine("""    bedrock { left-label = "&eChange Status", right-label = "&cClear Status" }""")
         appendLine("    click.left.actions = [")
         appendLine(statusInput(returnMenu, 6))
         appendLine("    ]")
@@ -691,7 +691,7 @@ object DefaultMenus {
         appendLine("  }")
         appendLine("  empty {")
         appendLine("""    material = "barrier"""")
-        appendLine("""    name = "&7No friends yet"""")
+        appendLine("""    name = "&7No Friends Yet"""")
         appendLine("""    lore = ["&eClick to add a friend"]""")
         appendLine("    click.any.actions = [")
         appendLine(addFriendInput(main, 6))
@@ -706,7 +706,7 @@ object DefaultMenus {
                 prev {
                   material = "arrow"
                   slot = 45
-                  name = "&ePrevious page"
+                  name = "&ePrevious Page"
                   lore = ["&7Page {page_prev} of {pages}"]
                   bedrock.hidden = true
                   view.require = [{ condition { type = "compare", left = "{page}", op = "GT", right = "1" } }]
@@ -733,7 +733,7 @@ object DefaultMenus {
         appendLine("  add {")
         appendLine("""    material = "emerald"""")
         appendLine("    slot = 48")
-        appendLine("""    name = "&aAdd friend"""")
+        appendLine("""    name = "&aAdd Friend"""")
         appendLine("""    lore = ["&7Send a friend request by player name"]""")
         appendLine("    click.any.actions = [")
         appendLine(addFriendInput(main, 6))
@@ -742,10 +742,10 @@ object DefaultMenus {
         appendLine("  status {")
         appendLine("""    material = "name_tag"""")
         appendLine("    slot = 49")
-        appendLine("""    name = "&eYour status"""")
+        appendLine("""    name = "&eYour Status"""")
         appendLine("""    lore = ["&f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]""")
         appendLine("    update = true")
-        appendLine("""    bedrock { left-label = "&eChange status", right-label = "&cClear status" }""")
+        appendLine("""    bedrock { left-label = "&eChange Status", right-label = "&cClear Status" }""")
         appendLine("    click.left.actions = [")
         appendLine(statusInput(main, 6))
         appendLine("    ]")
@@ -764,7 +764,7 @@ object DefaultMenus {
                 next {
                   material = "arrow"
                   slot = 53
-                  name = "&eNext page"
+                  name = "&eNext Page"
                   lore = ["&7Page {page_next} of {pages}"]
                   bedrock.hidden = true
                   view.require = [{ condition { type = "compare", left = "{page}", op = "LT", right = "{pages}" } }]
@@ -813,7 +813,7 @@ object DefaultMenus {
               }
               empty {
                 material = "barrier"
-                name = "&7No friend requests"
+                name = "&7No Friend Requests"
                 lore = ["&7Nobody has sent you a friend request."]
               }
             }
@@ -822,7 +822,7 @@ object DefaultMenus {
               prev {
                 material = "arrow"
                 slot = 45
-                name = "&ePrevious page"
+                name = "&ePrevious Page"
                 lore = ["&7Page {page_prev} of {pages}"]
                 bedrock.hidden = true
                 view.require = [{ condition { type = "compare", left = "{page}", op = "GT", right = "1" } }]
@@ -843,7 +843,7 @@ object DefaultMenus {
               next {
                 material = "arrow"
                 slot = 53
-                name = "&eNext page"
+                name = "&eNext Page"
                 lore = ["&7Page {page_next} of {pages}"]
                 bedrock.hidden = true
                 view.require = [{ condition { type = "compare", left = "{page}", op = "LT", right = "{pages}" } }]
@@ -886,7 +886,7 @@ object DefaultMenus {
                 material = "gray_dye"
                 slot = 11
                 priority = 10
-                name = "&eMake a favorite"
+                name = "&eMake a Favorite"
                 lore = ["&7Favorites are listed first"]
                 update = true
                 click.any.actions = [{ type = "xalifriends:favorite", player = "%xalifriends_selected_uuid%" }]
@@ -894,7 +894,7 @@ object DefaultMenus {
               remove {
                 material = "barrier"
                 slot = 15
-                name = "&cRemove friend"
+                name = "&cRemove Friend"
                 lore = ["&7Asks you to confirm first"]
                 click.any.actions = [{ type = "open", menu = "$REMOVE" }]
               }
@@ -968,12 +968,12 @@ object DefaultMenus {
         appendLine("items {")
         appendLine("  filler { material = \"gray_stained_glass_pane\", slots = [${(0 until 36).joinToString()}], priority = 100, name = \" \" }")
         val toggles = listOf(
-            Toggle("invites", "paper", 10, "Friend requests"),
+            Toggle("invites", "paper", 10, "Friend Requests"),
             Toggle("notifies", "bell", 12, "Notifications"),
-            Toggle("msgs", "writable_book", 14, "Private messages from"),
-            Toggle("lastseen", "clock", 16, "Show when you were last online"),
-            Toggle("jump", "ender_pearl", 20, "Friends may jump to you"),
-            Toggle("server", "compass", 24, "Friends see which server you are on"),
+            Toggle("msgs", "writable_book", 14, "Private Messages From"),
+            Toggle("lastseen", "clock", 16, "Show When You Were Last Online"),
+            Toggle("jump", "ender_pearl", 20, "Friends May Jump to You"),
+            Toggle("server", "compass", 24, "Friends See Which Server You Are On"),
         )
         for (toggle in toggles) {
             appendLine(
@@ -995,10 +995,10 @@ object DefaultMenus {
         appendLine("  status {")
         appendLine("""    material = "name_tag"""")
         appendLine("    slot = 22")
-        appendLine("""    name = "&eYour status"""")
+        appendLine("""    name = "&eYour Status"""")
         appendLine("""    lore = ["&f%xalifriends_status%", "", "&7Left-click to change it", "&7Right-click to clear it"]""")
         appendLine("    update = true")
-        appendLine("""    bedrock { left-label = "&eChange status", right-label = "&cClear status" }""")
+        appendLine("""    bedrock { left-label = "&eChange Status", right-label = "&cClear Status" }""")
         appendLine("    click.left.actions = [")
         appendLine(statusInput(SETTINGS_1, 6))
         appendLine("    ]")
