@@ -10,7 +10,7 @@ import mc.xalitoria.friends.paper.data.config.MainConfig.Gui.Style
  * (`xalifriends:setting`, `xalifriends:has-requests`, `xalifriends:selected`), addon actions (`xalifriends:*`), native
  * `input` prompts (for adding a friend and changing status), `skull` heads and Bedrock-friendly metadata.
  *
- * The `nexo` style draws the resource pack's GUI backgrounds (`<white><font:nexo:default>ᛮᛯ<glyph></font></white>`),
+ * The `nexo` style draws the resource pack's GUI backgrounds (`<white><font:nexo:shift>\ue105\ue102</font><font:nexo:default><glyph></font></white>`),
  * custom button items (`nexo:friend_*`) and `player_head` custom model data (`5000` little head, `10050` 2x2 big head).
  */
 object DefaultMenus {
@@ -23,8 +23,8 @@ object DefaultMenus {
     /** Old or style-specific menu names removed on `/xalifriends menus reset` when not part of the written style. */
     val RETIRED_NAMES: Set<String> = setOf("friends-player", "friends-settings", "friends-settings2", SETTINGS_2)
 
-    /** Nexo glyph characters from `friends/resourcepack/nexo/glyphs/friends.yml`, shifted onto the chest background. */
-    private const val NEXO_SHIFT = "ᛮᛯ"
+    /** Nexo glyph characters from `friends/resourcepack/nexo/glyphs/friends.yml`, shifted 18 pixels left (Nexo's `nexo:shift` font: -16 and -2) onto the chest background. */
+    private const val NEXO_SHIFT = "<font:nexo:shift>\\ue105\\ue102</font>"
     private const val GLYPH_FRIENDS = "ᛧ"
     private const val GLYPH_PROFILE = "᛫"
     private const val GLYPH_REQUESTS = "᛬"
@@ -52,7 +52,7 @@ object DefaultMenus {
         )
     }
 
-    private fun nexoTitle(glyph: String): String = "<white><font:nexo:default>$NEXO_SHIFT$glyph</font></white>"
+    private fun nexoTitle(glyph: String): String = "<white>$NEXO_SHIFT<font:nexo:default>$glyph</font></white>"
 
     private fun indent(text: String, spaces: Int): String {
         val pad = " ".repeat(spaces)
