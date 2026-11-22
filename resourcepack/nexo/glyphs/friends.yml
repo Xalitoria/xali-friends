@@ -33,11 +33,6 @@ settings2:
   ascent: 37
   height: 256
   char: ᛸ
-friends_neg_shift_16:
-  texture: required/null.png
-  ascent: -32768
-  height: -18
-  char: ᛮ
 friends_neg_shift_2:
   texture: required/null.png
   ascent: -32768

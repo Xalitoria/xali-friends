@@ -51,13 +51,6 @@ font_images:
     scale_ratio: 256
     y_position: 37
 
-  friends_neg_shift_16:
-    show_in_gui: true
-    path: required/null.png
-    symbol: ᛮ
-    scale_ratio: -18
-    y_position: -32768
-
   friends_neg_shift_2:
     show_in_gui: true
     path: required/null.png
