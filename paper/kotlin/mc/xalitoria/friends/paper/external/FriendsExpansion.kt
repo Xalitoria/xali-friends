@@ -4,6 +4,7 @@ import mc.xalitoria.friends.paper.XaliFriends
 import mc.xalitoria.friends.paper.data.model.FriendEntry
 import mc.xalitoria.friends.paper.data.model.Profile
 import mc.xalitoria.friends.paper.data.model.RequestEntry
+import mc.xalitoria.friends.paper.data.model.SettingState
 import mc.xalitoria.friends.paper.data.model.Snapshot
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
@@ -16,10 +17,13 @@ import org.bukkit.entity.Player
  * the database held of them when it was last read in the background (empty until the first read is done). The others are about
  * the menu a player has open, and are empty for a player who is not online here.
  *
- * - `friends`, `online`, `requests`: counts. `status`: the player's own status.
+ * - `name`: the player's own name.
+ * - `friends`, `online`, `requests`: counts. `status`: the player's own status (or `words.no-status`); `status_raw` is empty when unset.
  * - `page_friends`, `pages_friends`, `page_requests`, `pages_requests`: the page the player's menu is on, and how many there are.
  * - `has_next_friends`, `has_previous_friends`, `has_next_requests`, `has_previous_requests`: true or false.
  * - `setting_invites`, `setting_notifies`, `setting_msgs`, `setting_lastseen`, `setting_jump`, `setting_server`: a setting as a word.
+ *   With `_state` after the name (`setting_msgs_state`) it is the same in a fixed form that a menu can test: `on` or `off`, and
+ *   for `msgs` `everyone`, `friends` or `nobody`.
  * - `friend_<n>_<field>`: place n (from 1) of the friends page the player's menu is on. Fields: `present` (true/false),
  *   `name`, `uuid`, `status`, `online` (true/false), `state` (the online/offline word), `seen` (online, and on which
  *   server when it is known and shown, or when they were last seen), `server` (empty when unknown), `jumpable`
@@ -44,10 +48,25 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
         val key = params.lowercase()
 
         return when {
+            key == "name" -> snapshot.profile.name
             key == "friends" -> snapshot.friends.size.toString()
             key == "online" -> snapshot.friends.count { view.isOnline(viewer, it.profile) }.toString()
             key == "requests" -> snapshot.requests.size.toString()
             key == "status" -> view.status(snapshot.profile)
+            key == "status_raw" -> snapshot.profile.status.orEmpty()
+            key.startsWith("setting_") && key.endsWith("_state") -> when (key.removePrefix("setting_").removeSuffix("_state")) {
+                "invites" -> state(snapshot.settings.invites)
+                "notifies" -> state(snapshot.settings.notifies)
+                "msgs" -> when (snapshot.settings.msgs) {
+                    SettingState.ENABLED -> "everyone"
+                    SettingState.FRIENDS_ONLY -> "friends"
+                    SettingState.DISABLED -> "nobody"
+                }
+                "lastseen" -> state(snapshot.settings.showLastSeen)
+                "jump" -> state(snapshot.settings.jump)
+                "server" -> state(snapshot.settings.showServer)
+                else -> null
+            }
             key.startsWith("setting_") -> when (key.removePrefix("setting_")) {
                 "invites" -> view.toggle(snapshot.settings.invites)
                 "notifies" -> view.toggle(snapshot.settings.notifies)
@@ -62,6 +81,8 @@ class FriendsExpansion(private val plugin: XaliFriends) : PlaceholderExpansion()
             else -> null
         }
     }
+
+    private fun state(on: Boolean): String = if (on) "on" else "off"
 
     private fun isMenu(key: String): Boolean = MENU_KEYS.any { key.startsWith(it) }
 

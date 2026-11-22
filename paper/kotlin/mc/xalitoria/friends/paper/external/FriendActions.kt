@@ -12,6 +12,7 @@ import net.xalitoria.menu.MenuContext
 import net.xalitoria.menu.Settings
 import net.xalitoria.menu.XaliMenuApi
 import org.bukkit.entity.Player
+import java.util.UUID
 
 /** What an action does once its work is done: drawn again, closed, left alone, or replaced by another menu. */
 sealed interface After {
@@ -38,6 +39,7 @@ object FriendActionKinds {
 
     /** The actions that name another player in `player` (a UUID, a name or, for the answers, `all`), with what they do afterwards when `after` is not written. */
     val TARGETED = mapOf(
+        "add" to After.Refresh,
         "accept" to After.Refresh,
         "deny" to After.Refresh,
         "remove" to After.Refresh,
@@ -69,12 +71,14 @@ object FriendActionKinds {
  *
  * | Action | Keys |
  * |---|---|
+ * | `xalifriends:add` | `player`: a name or UUID; placeholders and `{input}` are filled in |
  * | `xalifriends:accept`, `deny` | `player`: a UUID, a name or `all`; placeholders are filled in |
  * | `xalifriends:remove`, `favorite`, `jump` | `player` |
  * | `xalifriends:toggle` | `setting`: `invites`, `notifies`, `msgs`, `lastseen`, `jump` or `server` |
+ * | `xalifriends:status` | `text`: the new status (empty clears it); placeholders and `{input}` are filled in |
  * | `xalifriends:clear-status` | |
- * | `xalifriends:select` | `place`: the friend at that place of the list is the one their menu is about |
- * | `xalifriends:page` | `list`: `friends` or `requests`; `move`: `next`, `previous` or `first` |
+ * | `xalifriends:select` | `player`: a friend's UUID or name (`{uuid}` from a catalog), or `place`: 1-based place in legacy menus |
+ * | `xalifriends:page` | `list`: `friends` or `requests`; `move`: `next`, `previous` or `first` (for legacy menus) |
  *
  * `after` is `refresh` (the default, `close` for `jump`), `close`, `none` or `open:<menu>`. `select` and `page` only set
  * what the next draw shows, so they run at once and draw the menu again themselves.
@@ -88,6 +92,7 @@ class FriendActions(private val plugin: XaliFriends, private val api: XaliMenuAp
                 val player = settings.requireString("player")
                 val after = after(settings, default)
                 when (kind) {
+                    "add" -> background(after) { actor, ctx -> plugin.service.add(actor, ctx.parse(player)) }
                     "accept" -> background(after) { actor, ctx ->
                         val target = ctx.parse(player)
                         if (target.equals("all", ignoreCase = true)) plugin.service.answerAll(actor, accept = true) else plugin.service.accept(actor, target)
@@ -106,15 +111,27 @@ class FriendActions(private val plugin: XaliFriends, private val api: XaliMenuAp
             val key = FriendActionKinds.setting(settings.requireString("setting"))
             background(after(settings, After.Refresh)) { actor, _ -> plugin.service.toggle(actor, key) }
         })
+        api.registerAction(plugin, FriendActionKinds.PREFIX + "status", ActionType { settings ->
+            val text = settings.requireString("text")
+            background(after(settings, After.Refresh)) { actor, ctx -> plugin.service.status(actor, ctx.parse(text)) }
+        })
         api.registerAction(plugin, FriendActionKinds.PREFIX + "clear-status", ActionType { settings ->
             background(after(settings, After.Refresh)) { actor, _ -> plugin.service.status(actor, "") }
         })
         api.registerAction(plugin, FriendActionKinds.PREFIX + "select", ActionType { settings ->
-            val place = settings.int("place") ?: throw IllegalArgumentException("'place' is missing or not a number")
-            require(place >= 1) { "'place' is $place; the first is 1" }
+            val target = settings.string("player")
+            val place = settings.int("place")
+            require(target != null || place != null) { "select needs 'player' or 'place'" }
+            if (place != null) require(place >= 1) { "'place' is $place; the first is 1" }
             immediate { ctx ->
                 val player = ctx.player
-                plugin.cache.state(player.uniqueId).selected = plugin.listings.friendAt(player, place)?.profile?.uuid
+                plugin.cache.state(player.uniqueId).selected = if (target != null) {
+                    val value = ctx.parse(target).trim()
+                    runCatching { UUID.fromString(value) }.getOrNull()
+                        ?: plugin.cache.get(player.uniqueId)?.friends?.firstOrNull { it.profile.name.equals(value, ignoreCase = true) }?.profile?.uuid
+                } else {
+                    plugin.listings.friendAt(player, place!!)?.profile?.uuid
+                }
             }
         })
         api.registerAction(plugin, FriendActionKinds.PREFIX + "page", ActionType { settings ->

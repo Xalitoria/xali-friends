@@ -92,7 +92,7 @@ see [Moving the original's data in](#moving-the-originals-data-in).
 | `friends.per-page` | `5` | Lines per page of `/friend list` and `/friend requests`. |
 | `defaults` | all on, messages from friends only | What a new player starts with: `friend-requests`, `notifications`, `private-messages` (`ENABLED`, `FRIENDS_ONLY` or `DISABLED`), `show-last-seen`, `jump`, `show-server`. |
 | `notifications` | `1`, `1` | `online-friends-minimum` and `requests-minimum`: how many friends online, or requests waiting, a joining player needs before being told. |
-| `gui` | on | `enabled`, `menu` (name of the main menu), `write-menus`, `friends-per-page` and `requests-per-page`, see [The menus](#the-menus). |
+| `gui` | on | `enabled`, `menu` (name of the main menu), `style` (`auto`, `vanilla` or `nexo`), `write-menus`, and legacy `friends-per-page` / `requests-per-page`, see [The menus](#the-menus). |
 | `packs` | none | The [resource pack](#the-resource-pack) installer. |
 | `cache.refresh-seconds` | `30` | How often each online player's friends are read again. |
 | `database` | SQLite | `type` (`sqlite`, `mysql` or `mariadb`), `table-prefix` and the connection settings. `mariadb` uses MariaDB's driver and `mysql` MySQL's; the MySQL driver cannot read MariaDB 11's metadata. |
@@ -115,6 +115,7 @@ see [Moving the original's data in](#moving-the-originals-data-in).
 | `/xfriend toggle <invites\|notifies\|msgs\|lastseen\|jump\|server>` | | Change a setting. |
 | `/xfriend menu`, `menu page <friends\|requests> <next\|previous\|first>`, `menu select <n>` | | What menus written by an earlier version run. They only set what the next draw shows. |
 | `/xalifriends reload` | `friends` | Reload the config and messages. Permission `xalifriends.reload`. |
+| `/xalifriends menus reset [auto\|vanilla\|nexo]` | | Rewrite the default friend menus into XaliMenu's folder (then run `/xmenu reload`). Permission `xalifriends.reload`. |
 | `/xalifriends pack update` | | Install the menu resource pack into Nexo or ItemsAdder again, see [The resource pack](#the-resource-pack). Permission `xalifriends.pack`. |
 
 Everyone may use the friend commands (`xalifriends.friend`, default on; `xalifriends.jump`, default on, for `jump`). A
@@ -137,52 +138,74 @@ messages to them are let through rather than blocked.
 
 ### The menus
 
-With XaliMenu and PlaceholderAPI, five menus are written into `plugins/XaliMenu/menus` the first time: `friends`,
-`friends-requests`, `friends-player`, `friends-settings` and `friends-remove` (confirms a removal). `/friend` opens the
-first. They are ordinary XaliMenu files from then on: edit them there. A `material` can be anything XaliMenu knows, **a
-Nexo item (`nexo:<id>`) included**, or ItemsAdder's. `gui.friends-per-page` and `gui.requests-per-page` (21 by default,
-28 at most for the written files) say how many places the lists have; when the lists in a menu change, change these to
-match.
+With XaliMenu and PlaceholderAPI, the default friend menus are written into `plugins/XaliMenu/menus` when missing:
+`friends`, `friends-requests`, `friends-player`, `friends-settings`, `friends-remove` (confirms a removal) and, in the
+`nexo` style, `friends-settings2` (the second settings page matching the resource pack). `/friend` opens the first.
+`gui.style` picks the written look: `vanilla` (plain items), `nexo` (the friend GUI pack's backgrounds, `nexo:friend_*`
+buttons and scaled heads, with clean `bedrock` titles/forms) or `auto` (the default: `nexo` when `packs.handler` is
+`nexo`, otherwise `vanilla`). Run `/xalifriends menus reset [vanilla|nexo]` followed by `/xmenu reload` to rewrite
+existing menu files after switching styles.
 
-The menus draw from placeholders, leave a place empty with XaliMenu's `text` conditions on them, and do things with this
-plugin's own actions, registered with XaliMenu when it is installed. Each does what the `/xfriend` command of the same name
-does, in the background, and then draws the menu again, so a click needs no command and no wait.
+They are ordinary XaliMenu files from then on and can be edited directly or in `/xmenu edit`. They use XaliMenu's paged
+**catalogs**, **conditions**, **actions** and native `input` prompts (for adding a friend and editing status, using
+dialogs on Java 1.21.6+, anvils on older Java clients and forms on Bedrock).
+
+**Catalogs** (for `pages.catalog`):
+
+| Catalog | Settings | Element values |
+|---|---|---|
+| `xalifriends:friends` | `filter`: `all` (default), `online`, `offline` or `favorites`. | `name`, `uuid`, `status`, `online`, `state`, `seen`, `server`, `jumpable`, `since`, `favorite`, `star` (`"★ "` for favorites, empty otherwise). Values are plain text (XaliMenu shows catalog values verbatim). |
+| `xalifriends:requests` | `repeat`: 1 to 9 (default 1); repeats each request so a `pages.matrix` row can hold a head and multi-slot buttons. | `name`, `uuid`, `date`. |
+
+**Conditions** (for `view` and `require` gates):
+
+| Condition | Keys | Holds when |
+|---|---|---|
+| `xalifriends:setting` | `setting` (`invites`, `notifies`, `msgs`, `lastseen`, `jump` or `server`), `value` (`on`/`off`, or `everyone`/`friends`/`nobody` for `msgs`). | The viewer's setting matches `value`. |
+| `xalifriends:has-requests` | | The viewer has at least one pending friend request. |
+| `xalifriends:selected` | `check`: `present`, `favorite`, `jumpable` or `online`. | The friend picked for `friends-player` satisfies `check`. |
+
+**Actions** (each runs off-thread and then updates the menu according to `after`):
 
 | Action | Keys |
 |---|---|
-| `xalifriends:accept`, `deny` | `player`: a UUID, a name or `all`. Placeholders are filled in. |
+| `xalifriends:add` | `player`: a name or UUID (`{input}` from an `input` prompt). |
+| `xalifriends:accept`, `deny` | `player`: a UUID, a name or `all`. Placeholders and `{uuid}` are filled in. |
 | `xalifriends:remove`, `favorite`, `jump` | `player` |
 | `xalifriends:toggle` | `setting`: `invites`, `notifies`, `msgs`, `lastseen`, `jump` or `server`. |
+| `xalifriends:status` | `text`: the new status (empty clears it; `{input}` from an `input` prompt). |
 | `xalifriends:clear-status` | |
-| `xalifriends:select` | `place`: the friend at that place of the list becomes the one `friends-player` is about. |
-| `xalifriends:page` | `list`: `friends` or `requests`; `move`: `next` (the default), `previous` or `first`. |
+| `xalifriends:select` | `player`: a friend's UUID or name (`{uuid}` from a catalog); also keeps `place` (1-based) for legacy menus. |
+| `xalifriends:page` | `list`: `friends` or `requests`; `move`: `next` (the default), `previous` or `first` (for legacy menus). |
 
 `after` says what happens once the work is done: `refresh` (the default; `close` for `jump`), `close`, `none` or
-`open:<menu>`. `select` and `page` only set what the next draw shows, so they run at once. A wrong key makes XaliMenu report
-the menu as broken. The action needs the viewer to have `xalifriends.friend`, like the commands. Menus written by an earlier
-version, which run `/xfriend` through the `player` action, keep working; they are only written when missing, so delete a
-file to get the new one.
+`open:<menu>`. `select` and `page` only set what the next draw shows, so they run at once. A wrong key makes XaliMenu
+report the menu as broken. The actions need `xalifriends.friend`, like the commands. Legacy menus written by earlier
+versions (using `%xalifriends_friend_<n>_...%`, `xalifriends:page` or `/xfriend` player commands) keep working;
+`gui.friends-per-page` and `gui.requests-per-page` apply only to those legacy placeholders.
 
-```
-click.left.actions = [{ type = "xalifriends:accept", player = "%xalifriends_request_1_uuid%" }]
+```hocon
+click.left.actions = [{ type = "xalifriends:accept", player = "{uuid}" }]
 click.any.actions = [{ type = "xalifriends:remove", player = "%xalifriends_selected_uuid%", after = "open:friends" }]
 ```
 
 #### Placeholders
 
-`%xalifriends_...%`, for the player the text is for. `friends`, `online`, `requests`, `status` and the `setting_` ones also work for a
-player who is not online here (another player's profile, a player on another server): the first request reads them from the
-database in the background and answers with nothing until that is done, and after that they come from memory, are read again
-when 30 seconds old while they keep being asked for, and are dropped when nobody has asked for ten minutes. The ones about the
-menu (`page_`, `pages_`, `has_`, `friend_`, `request_` and `selected_`) are empty for a player who has no menu open on this server.
+`%xalifriends_...%`, for the player the text is for. `name`, `friends`, `online`, `requests`, `status`, `status_raw` and
+the `setting_` ones also work for a player who is not online here (another player's profile, a player on another server):
+the first request reads them from the database in the background and answers with nothing until that is done, and after
+that they come from memory, are read again when 30 seconds old while they keep being asked for, and are dropped when
+nobody has asked for ten minutes. The ones about the menu (`page_`, `pages_`, `has_`, `friend_`, `request_` and
+`selected_`) are empty for a player who has no menu open on this server.
 
 | Placeholder | Meaning |
 |---|---|
-| `friends`, `online`, `requests` | Counts. `status` is the player's own status. |
-| `page_friends`, `pages_friends`, `page_requests`, `pages_requests` | The page the menu is on, and how many there are. |
-| `has_next_friends`, `has_previous_friends`, `has_next_requests`, `has_previous_requests` | `true` or `false`. |
-| `setting_invites`, `setting_notifies`, `setting_msgs`, `setting_lastseen`, `setting_jump`, `setting_server` | A setting as a word (from `words` in the language file). |
-| `friend_<n>_<field>` | Place *n* (from 1) of the friends on the current page. Fields: `present`, `name`, `uuid`, `status`, `online`, `state`, `seen` (online, and on which server when that is known and shown), `server` (empty when unknown or hidden), `jumpable` (`true` when the viewer may jump to them now), `since`, `favorite`, `marker`. |
+| `name` | The player's own name. |
+| `friends`, `online`, `requests` | Counts. `status` is the player's own status (`words.no-status` when unset); `status_raw` is empty when unset. |
+| `page_friends`, `pages_friends`, `page_requests`, `pages_requests` | The page a legacy menu is on, and how many there are. |
+| `has_next_friends`, `has_previous_friends`, `has_next_requests`, `has_previous_requests` | `true` or `false` (for legacy menus). |
+| `setting_invites`, `setting_notifies`, `setting_msgs`, `setting_lastseen`, `setting_jump`, `setting_server` | A setting as a word (from `words` in the language file). With `_state` appended (`setting_msgs_state`): fixed machine values (`on`/`off`, and `everyone`/`friends`/`nobody` for `msgs`). |
+| `friend_<n>_<field>` | Place *n* (from 1) of the friends on the current page (legacy menus). Fields: `present`, `name`, `uuid`, `status`, `online`, `state`, `seen` (online, and on which server when that is known and shown), `server` (empty when unknown or hidden), `jumpable` (`true` when the viewer may jump to them now), `since`, `favorite`, `marker`. |
 | `request_<n>_<field>` | The same for requests: `present`, `name`, `uuid`, `date`. |
 | `selected_<field>` | The friend picked in the menu, with a friend's fields. |
 
@@ -317,7 +340,7 @@ Sources are under `friends/<submodule>/kotlin`, tests under `friends/<submodule>
 | `command`, `modal/command/XCommand.kt` | `FriendCommand` (`/xfriend`), `XaliFriendsCommand` (`/xalifriends`), and the base that registers aliases. |
 | `service` | `FriendService` (what the commands and menu actions do, off the main thread), `FriendCache` (each online player's friends and settings, in memory), `Listings` (the order and pages), `Presentation` (dates, who is online, words for a setting) and `MessageRule` (who a player takes private messages from; the gate XaliChat asks). |
 | `data/db` | The tables, the repositories (`Pairing.kt` orders the two UUIDs of a friendship) and `legacy/`, the one-time import of the original's tables. |
-| `external` | Everything that names another plugin: `MenuHook` and `FriendActions` (XaliMenu's actions), `DefaultMenus` (the written menu files), `ChatHook` (XaliChat's gate) and `FriendsExpansion` (PlaceholderAPI). |
+| `external` | Everything that names another plugin: `MenuHook`, `FriendActions` and `FriendMenuExtensions` (XaliMenu's actions, catalogs and conditions), `DefaultMenus` (the vanilla and Nexo menu files), `ChatHook` (XaliChat's gate) and `FriendsExpansion` (PlaceholderAPI). |
 | `proxy/ProxyLink.kt` | The server end of the proxy channel. |
 | `pack/PackInstaller.kt` | The resource pack installer for Nexo and ItemsAdder. |
 

@@ -169,8 +169,11 @@ class XaliFriends : JavaPlugin() {
     private fun enableMenus() {
         val hook = MenuHook(this)
         menu = hook
-        if (config.data.gui.writeMenus && hook.writeMenus()) {
-            logger.info("Friend menus are in XaliMenu's menus folder; /xmenu reload reads them if XaliMenu has already started")
+        if (config.data.gui.writeMenus) {
+            val written = hook.writeMenus()
+            if (!written.isNullOrEmpty()) {
+                logger.info("Wrote ${written.size} friend menu(s) (${config.data.menuStyle().name.lowercase()} style) to XaliMenu's menus folder; /xmenu reload reads them if XaliMenu has already started")
+            }
         }
     }
 

@@ -43,6 +43,18 @@ data class MainConfig(
     )
     val migration: Migration = Migration(),
 ) {
+    /** How the written menus look: [Gui.style], with `auto` settled by the pack installer's handler. */
+    fun menuStyle(): Gui.Style = when (gui.style) {
+        Gui.Style.AUTO -> if (packs.handler == Packs.Handler.NEXO) Gui.Style.NEXO else Gui.Style.VANILLA
+        else -> gui.style
+    }
+
+    /** Players per page of the friend list for legacy placeholder-based menus (catalog menus size themselves from their layout). */
+    fun friendsPerPage(): Int = gui.friendsPerPage.takeIf { it > 0 } ?: 21
+
+    /** Players per page of the request list for legacy placeholder-based menus (catalog menus size themselves from their layout). */
+    fun requestsPerPage(): Int = gui.requestsPerPage.takeIf { it > 0 } ?: 21
+
     @Serializable
     data class Friends(
         @YamlComment(
@@ -105,19 +117,32 @@ data class MainConfig(
     @Serializable
     data class Gui(
         val enabled: Boolean = true,
-        @YamlComment("The name of the main menu in XaliMenu. The others are friends-requests, friends-player and friends-settings.")
+        @YamlComment("The name of the main menu in XaliMenu. The others are friends-requests, friends-player, friends-remove and friends-settings (and friends-settings2 in the nexo style).")
         val menu: String = "friends",
         @YamlComment(
-            "Writes the five menus into XaliMenu's menus folder when they are missing, so they can be edited there.",
-            "Their friend and request slots hold this many players per page; if a menu is changed, change these to match.",
+            "How the written menus look: vanilla (plain items), nexo (the friend GUI pack's backgrounds and buttons, which needs the",
+            "pack installed in Nexo) or auto, which is nexo when packs.handler is nexo. Only read when the menus are written.",
+        )
+        val style: Style = Style.AUTO,
+        @YamlComment(
+            "Writes the menus into XaliMenu's menus folder when they are missing, so they can be edited there.",
+            "Run /xalifriends menus reset to overwrite existing files with the current style.",
         )
         @SerialName("write-menus")
         val writeMenus: Boolean = true,
+        @YamlComment("Used only by legacy placeholder-based menus (%xalifriends_friend_<n>_...%); paged catalog menus follow their own layout.")
         @SerialName("friends-per-page")
         val friendsPerPage: Int = 21,
         @SerialName("requests-per-page")
         val requestsPerPage: Int = 21,
-    )
+    ) {
+        @Serializable
+        enum class Style {
+            @SerialName("auto") AUTO,
+            @SerialName("vanilla") VANILLA,
+            @SerialName("nexo") NEXO,
+        }
+    }
 
     @Serializable
     data class Packs(

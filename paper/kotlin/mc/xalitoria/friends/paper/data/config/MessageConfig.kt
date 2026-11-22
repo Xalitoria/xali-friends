@@ -33,9 +33,11 @@ data class MessageConfig(
             &d/{0} &rjump <friend> &7- go to the server a friend is on
             &d/{0} &rtoggle <invites|notifies|msgs|lastseen|jump|server> &7- change a setting
             &d/{0} &rpack update &7- install the menus' resource pack into Nexo or ItemsAdder
+            &d/{0} &rmenus reset [vanilla|nexo] &7- rewrite the default friend menus in XaliMenu
         """.trimIndent(),
         val reload: Reload = Reload(),
         val pack: Pack = Pack(),
+        val menus: Menus = Menus(),
     ) {
         fun help(label: String): String = help.formatArgs(label)
 
@@ -61,6 +63,17 @@ data class MessageConfig(
         data class Reload(
             val pass: String = "Configuration reloaded.",
         )
+
+        @Serializable
+        data class Menus(
+            val unavailable: String = "XaliMenu is not enabled or menus are disabled in config.yml.",
+            @SerialName("bad-style")
+            private val badStyle: String = "Unknown menu style '{0}'; use auto, vanilla or nexo.",
+            private val written: String = "Wrote {0} friend menu(s) ({1} style). Run /xmenu reload to apply them.",
+        ) {
+            fun badStyle(style: String): String = badStyle.formatArgs(style)
+            fun written(count: Int, style: String): String = written.formatArgs(count, style)
+        }
     }
 
     @Serializable

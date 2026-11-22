@@ -42,9 +42,9 @@ class Listings(private val plugin: XaliFriends) {
         if (friends) state.friendsPage = next else state.requestsPage = next
     }
 
-    fun friendsPerPage(): Int = plugin.config.data.gui.friendsPerPage.coerceAtLeast(1)
+    fun friendsPerPage(): Int = plugin.config.data.friendsPerPage().coerceAtLeast(1)
 
-    fun requestsPerPage(): Int = plugin.config.data.gui.requestsPerPage.coerceAtLeast(1)
+    fun requestsPerPage(): Int = plugin.config.data.requestsPerPage().coerceAtLeast(1)
 
     /** The friend in place [index] (from 1) of the page [viewer]'s menu is on. */
     fun friendAt(viewer: Player, index: Int): FriendEntry? {
